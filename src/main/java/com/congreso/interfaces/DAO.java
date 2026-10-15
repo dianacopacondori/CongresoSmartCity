@@ -3,16 +3,6 @@ package com.congreso.interfaces;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Interface genérica para operaciones CRUD básicas.
- * Aplica el principio de inversión de dependencias (DIP) de SOLID.
- *
- * @param <T> el tipo de entidad
- * @param <ID> el tipo del identificador de la entidad
- *
- * @author Equipo de Desarrollo
- * @version 1.0.0
- */
 public interface DAO<T, ID> {
 
     /**

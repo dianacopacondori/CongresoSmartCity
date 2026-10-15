@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Smart City Congress</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 p-0">
+      <div th:replace="~{fragments/navbar-admin :: sidebar}"></div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="col-md-10 p-4">
+      <h2 class="mb-4">Admin Dashboard</h2>
+
+      <!-- Tarjetas de estadísticas -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="card stat-card p-3">
+            <div class="stat-label">Total Asistentes</div>
+            <div class="stat-value text-primary" th:text="${totalAsistentes}">1,250</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card stat-card p-3" style="border-left-color: #198754;">
+            <div class="stat-label">Registrados Hoy</div>
+            <div class="stat-value text-success" th:text="${registradosHoy}">85</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card stat-card p-3" style="border-left-color: #ffc107;">
+            <div class="stat-label">Ingresos Totales</div>
+            <div class="stat-value text-warning" th:text="'$' + ${totalIngresos}">$125,000</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="card stat-card p-3" style="border-left-color: #dc3545;">
+            <div class="stat-label">Pagos Pendientes</div>
+            <div class="stat-value text-danger" th:text="${pagosPendientes}">12</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gestión de Actividades -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white">
+          <h5 class="mb-0">📅 Gestión de Actividades</h5>
+          <a th:href="@{/admin/actividades/nueva}" class="btn btn-primary btn-sm">
+            + Añadir Nueva Actividad
+          </a>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Ubicación</th>
+                <th>Capacidad</th>
+                <th>Acciones</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="act : ${actividades}">
+                <td th:text="${act.titulo}">Opening Ceremony</td>
+                <td th:text="${act.fecha}">Oct 26, 2026</td>
+                <td th:text="${act.horarioInicio}">09:00 AM</td>
+                <td th:text="${act.sala.nombre}">Main Hall</td>
+                <td>
+                                        <span class="badge"
+                                              th:classappend="${act.hayCupoDisponible()} ? 'bg-success' : 'bg-danger'"
+                                              th:text="${act.inscritos} + '/' + ${act.cupo}">
+                                            50/500
+                                        </span>
+                </td>
+                <td>
+                  <a th:href="@{/admin/actividades/editar/{id}(id=${act.codigo})}"
+                     class="btn btn-sm btn-outline-primary">✏️</a>
+                  <a th:href="@{/admin/actividades/eliminar/{id}(id=${act.codigo})}"
+                     class="btn btn-sm btn-outline-danger">🗑️</a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado de Pagos -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="mb-0">💳 Estado de Pagos</h5>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <select class="form-select">
+                <option>Filtrar por estado: Todos</option>
+                <option>Pagado</option>
+                <option>Pendiente</option>
+                <option>Parcial</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control" placeholder="Buscar por nombre...">
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-primary">🔍 Aplicar Filtros</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+              <tr>
+                <th>Asistente</th>
+                <th>Email</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="pago : ${pagos}">
+                <td th:text="${pago.asistente.nombres} + ' ' + ${pago.asistente.apellidos}">
+                  Alice Johnson
+                </td>
+                <td th:text="${pago.asistente.correo}">alice@example.com</td>
+                <td th:text="'$' + ${pago.importe}">$100.00</td>
+                <td>
+                                        <span class="badge"
+                                              th:classappend="${pago.estado.name() == 'PAGADO'} ? 'bg-success' :
+                                                              (${pago.estado.name() == 'PARCIAL'} ? 'bg-warning' : 'bg-danger')"
+                                              th:text="${pago.estado}">
+                                            Paid
+                                        </span>
+                </td>
+                <td th:text="${pago.fechaPago}">Oct 15, 2026</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

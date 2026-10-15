@@ -29,13 +29,6 @@ public class EncriptadorPassword {
         return passwordEncoder.encode(contrasenaPlana);
     }
 
-    /**
-     * Verifica si una contraseña en texto plano coincide con una contraseña encriptada.
-     *
-     * @param contrasenaPlana la contraseña en texto plano
-     * @param contrasenaEncriptada la contraseña encriptada
-     * @return true si coinciden, false en caso contrario
-     */
     public boolean verificar(String contrasenaPlana, String contrasenaEncriptada) {
         return passwordEncoder.matches(contrasenaPlana, contrasenaEncriptada);
     }

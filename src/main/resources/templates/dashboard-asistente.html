@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Panel - Smart City Congress</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar-publico :: navbar}"></nav>
+
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Bienvenido, <span th:text="${usuario.nombres}">Asistente</span>! 👋</h2>
+            <p class="text-muted">Panel de control del participante</p>
+        </div>
+    </div>
+
+    <!-- Tarjetas de resumen -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card p-3">
+                <div class="stat-label">Mi Inscripción</div>
+                <div class="stat-value text-primary" th:text="${inscripcion.estado}">PENDIENTE</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card p-3" style="border-left-color: #198754;">
+                <div class="stat-label">Actividades</div>
+                <div class="stat-value text-success" th:text="${actividades.size()}">0</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card p-3" style="border-left-color: #ffc107;">
+                <div class="stat-label">Estado de Pago</div>
+                <div class="stat-value text-warning" th:text="${pago.estado}">PENDIENTE</div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card p-3" style="border-left-color: #dc3545;">
+                <div class="stat-label">Asistencias</div>
+                <div class="stat-value text-danger" th:text="${asistencias.size()}">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/actividades}" class="btn btn-outline-primary w-100">📅 Ver Actividades</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/mi-agenda}" class="btn btn-outline-success w-100"> Mi Agenda</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/fotocheck}" class="btn btn-outline-info w-100">🎫 Descargar Fotocheck</a>
+        </div>
+        <div class="col-md-3 mb-2">
+            <a th:href="@{/mis-asistencias}" class="btn btn-outline-warning w-100">✅ Mis Asistencias</a>
+        </div>
+    </div>
+
+    <!-- Agenda personalizada -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">📋 Mi Agenda Personalizada</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Actividad</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Sala</th>
+                        <th>Ponente</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="act : ${actividades}">
+                        <td th:text="${act.titulo}">Título</td>
+                        <td><span class="badge bg-info" th:text="${act.tipo}">Ponencia</span></td>
+                        <td th:text="${act.fecha}">2026-10-26</td>
+                        <td th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00 - 10:30</td>
+                        <td th:text="${act.sala.nombre}">Sala A</td>
+                        <td th:text="${act.ponente.nombres}">Dr. Pérez</td>
+                    </tr>
+                    <tr th:if="${actividades.empty}">
+                        <td colspan="6" class="text-center text-muted">
+                            Aún no has seleccionado actividades.
+                            <a th:href="@{/actividades}">Explorar actividades</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

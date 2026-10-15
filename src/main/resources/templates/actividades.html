@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Actividades - Smart City Congress</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<nav th:replace="~{fragments/navbar-publico :: navbar}"></nav>
+
+<div class="container py-5">
+  <h2 class="mb-4">📅 Ponencias y Talleres Disponibles</h2>
+
+  <!-- Filtros -->
+  <div class="card mb-4 p-3">
+    <div class="row">
+      <div class="col-md-4">
+        <input type="text" class="form-control" placeholder="🔍 Buscar por nombre...">
+      </div>
+      <div class="col-md-3">
+        <select class="form-select">
+          <option>Todos los tipos</option>
+          <option>Ponencias</option>
+          <option>Talleres</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <input type="date" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100">Filtrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de actividades -->
+  <div class="row">
+    <div class="col-md-6 mb-4" th:each="act : ${actividades}">
+      <div class="card card-hover h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge"
+                              th:classappend="${act.tipo == 'PONENCIA'} ? 'bg-primary' : 'bg-success'"
+                              th:text="${act.tipo}">PONENCIA</span>
+            <span class="badge bg-secondary" th:text="${act.estado}">ACTIVA</span>
+          </div>
+          <h5 class="card-title" th:text="${act.titulo}">Título de la actividad</h5>
+          <p class="card-text text-muted small" th:text="${act.descripcion}">Descripción...</p>
+
+          <ul class="list-unstyled small">
+            <li>📅 <strong>Fecha:</strong> <span th:text="${act.fecha}">2026-10-26</span></li>
+            <li>🕐 <strong>Horario:</strong> <span th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00 - 10:30</span></li>
+            <li> <strong>Sala:</strong> <span th:text="${act.sala.nombre}">Sala A</span></li>
+            <li>👤 <strong>Ponente:</strong> <span th:text="${act.ponente.nombres}">Dr. Pérez</span></li>
+            <li>👥 <strong>Cupos:</strong>
+              <span th:text="${act.inscritos} + '/' + ${act.cupo}">50/500</span>
+            </li>
+          </ul>
+
+          <div class="d-grid">
+            <button class="btn btn-primary"
+                    th:disabled="${!act.hayCupoDisponible()}"
+                    th:text="${act.hayCupoDisponible()} ? 'Inscribirme' : 'Cupo Agotado'">
+              Inscribirme
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

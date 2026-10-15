@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar" class="sidebar">
+  <div class="text-center mb-4">
+    <h4 class="text-white">🏙️ Admin Panel</h4>
+    <small class="text-muted" th:text="${usuario.nombres}">Administrador</small>
+  </div>
+  <nav class="nav flex-column">
+    <a class="nav-link active" th:href="@{/admin/dashboard}">
+      <i>📊</i> Dashboard
+    </a>
+    <a class="nav-link" th:href="@{/admin/actividades}">
+      <i>📅</i> Actividades
+    </a>
+    <a class="nav-link" th:href="@{/admin/asistentes}">
+      <i>👥</i> Asistentes
+    </a>
+    <a class="nav-link" th:href="@{/admin/pagos}">
+      <i>💳</i> Pagos
+    </a>
+    <a class="nav-link" th:href="@{/admin/asistencias}">
+      <i>✅</i> Asistencias
+    </a>
+    <a class="nav-link" th:href="@{/admin/reportes}">
+      <i>📈</i> Reportes
+    </a>
+    <a class="nav-link" th:href="@{/admin/usuarios}">
+      <i>👤</i> Usuarios
+    </a>
+    <a class="nav-link text-danger mt-4" th:href="@{/usuarios/logout}">
+      <i>🚪</i> Cerrar Sesión
+    </a>
+  </nav>
+</div>
+</body>
+</html>
