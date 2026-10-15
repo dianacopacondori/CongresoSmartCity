@@ -3,6 +3,8 @@ package com.congreso.modelo;
 import com.congreso.modelo.enums.RolUsuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entidad que representa a un colaborador, instructor o ponente.
@@ -22,14 +24,11 @@ public class Colaborador extends Usuario {
     @Column(name = "tipo_colaborador", nullable = false)
     private RolUsuario tipoColaborador; // PONENTE, INSTRUCTOR, COLABORADOR
 
-    // NOTA: Si ya creaste las clases Ponencia y Taller, puedes descomentar estas relaciones:
-    /*
     @OneToMany(mappedBy = "ponente", cascade = CascadeType.ALL)
-    private List<Ponencia> ponencias;
+    private List<Ponencia> ponencias = new ArrayList<>();
 
-    @OneToMany(mappedBy = "responsable", cascade = CascadeType.ALL)
-    private List<Taller> talleres;
-    */
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL)
+    private List<Taller> talleres = new ArrayList<>();
 
     public Colaborador() {
         super();
@@ -48,4 +47,10 @@ public class Colaborador extends Usuario {
 
     public RolUsuario getTipoColaborador() { return tipoColaborador; }
     public void setTipoColaborador(RolUsuario tipoColaborador) { this.tipoColaborador = tipoColaborador; }
+
+    public List<Ponencia> getPonencias() { return ponencias; }
+    public void setPonencias(List<Ponencia> ponencias) { this.ponencias = ponencias; }
+
+    public List<Taller> getTalleres() { return talleres; }
+    public void setTalleres(List<Taller> talleres) { this.talleres = talleres; }
 }

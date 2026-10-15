@@ -26,6 +26,10 @@ public class Pago {
     @JoinColumn(name = "codigo_asistente", nullable = false)
     private Asistente asistente;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "codigo_inscripcion", nullable = false)
+    private Inscripcion inscripcion;
+
     @Min(value = 0, message = "El importe no puede ser negativo")
     @Column(nullable = false)
     private double importe;
@@ -70,6 +74,9 @@ public class Pago {
 
     public Asistente getAsistente() { return asistente; }
     public void setAsistente(Asistente asistente) { this.asistente = asistente; }
+
+    public Inscripcion getInscripcion() { return inscripcion; }
+    public void setInscripcion(Inscripcion inscripcion) { this.inscripcion = inscripcion; }
 
     public double getImporte() { return importe; }
     public void setImporte(double importe) { this.importe = importe; }
