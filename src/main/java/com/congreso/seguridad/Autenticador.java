@@ -4,6 +4,8 @@ import com.congreso.modelo.Usuario;
 import com.congreso.servicio.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -15,6 +17,8 @@ import java.util.Optional;
  */
 @Component
 public class Autenticador {
+
+    private static final Logger log = LoggerFactory.getLogger(Autenticador.class);
 
     private final UsuarioServicio usuarioServicio;
 
@@ -31,7 +35,11 @@ public class Autenticador {
      * @return un Optional con el usuario autenticado, o vacío si las credenciales son incorrectas
      */
     public Optional<Usuario> autenticar(String correo, String contrasena) {
-        return usuarioServicio.autenticar(correo, contrasena);
+        Optional<Usuario> usuario = usuarioServicio.autenticar(correo, contrasena);
+        if (usuario.isEmpty()) {
+            log.warn("Autenticación fallida: credenciales inválidas o usuario inactivo");
+        }
+        return usuario;
     }
 
     /**
