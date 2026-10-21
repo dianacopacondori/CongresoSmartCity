@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AsistenciaDAO extends JpaRepository<Asistencia, Long>, DAO<Asistencia, Long> {
+public interface AsistenciaDAO extends JpaRepository<Asistencia, Long>, DAO<Asistencia, Long>,
+        AsistenciaDAOOperaciones {
 
     List<Asistencia> findByAsistente(Asistente asistente);
 
