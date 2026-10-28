@@ -51,7 +51,18 @@ public class AsistenciaServicio {
         asistencia.setMecanismoValidacion(mecanismoValidacion);
         asistencia.setEstado(EstadoAsistencia.PRESENTE);
 
-        return asistenciaDAO.save(asistencia);
+        return asistenciaDAO.guardarConRegistro(asistencia);
+    }
+
+    public Asistencia corregirAsistencia(Long codigoAsistencia, EstadoAsistencia estado) {
+        if (estado != EstadoAsistencia.PRESENTE && estado != EstadoAsistencia.AUSENTE) {
+            throw new IllegalArgumentException("El estado corregido debe ser PRESENTE o AUSENTE");
+        }
+
+        Asistencia asistencia = asistenciaDAO.findById(codigoAsistencia)
+                .orElseThrow(() -> new IllegalArgumentException("Asistencia no encontrada"));
+        asistencia.setEstado(estado);
+        return asistenciaDAO.guardarConRegistro(asistencia);
     }
 
     public List<Asistencia> listarAsistenciasPorAsistente(Long codigoAsistente) {

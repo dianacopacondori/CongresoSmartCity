@@ -2,104 +2,124 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro - Smart City Congress</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link th:href="@{/css/style.css}" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027b')}" href="../static/css/style.css">
 </head>
-<body class="bg-light">
+<body class="public-page">
 
 <nav th:replace="~{fragments/navbar-publico :: navbar}"></nav>
 
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="card shadow">
-        <div class="card-body p-5">
-          <h2 class="text-center mb-4">Registro de Participante</h2>
+<main class="registration-page">
+  <div class="container py-4 py-lg-5">
+    <div class="row justify-content-center g-0 registration-layout">
+      <aside class="col-lg-4 registration-aside">
+        <span class="registration-mark">SC<span>.</span></span>
+        <span class="login-eyebrow">SMART CITY CONGRESS</span>
+        <h1>Tu próxima idea puede cambiar una ciudad.</h1>
+        <p>Completa tu registro y prepárate para conectar con personas que están construyendo el futuro urbano.</p>
+        <div class="registration-benefits">
+          <span><b>01</b> Accede a las actividades del congreso</span>
+          <span><b>02</b> Organiza tu agenda personal</span>
+          <span><b>03</b> Mantén tu información a mano</span>
+        </div>
+      </aside>
 
-          <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div class="col-lg-7">
+        <div class="card registration-card">
+          <div class="card-body p-4 p-md-5">
+            <span class="section-kicker">CREA TU CUENTA</span>
+            <h2 class="mt-2 mb-1">Registro de participante</h2>
+            <p class="text-muted mb-4">Completa tus datos para unirte al congreso.</p>
 
-          <form th:action="@{/usuarios/registro}" th:object="${usuario}" method="post">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Nombres *</label>
-                <input type="text" class="form-control" th:field="*{nombres}" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Apellidos *</label>
-                <input type="text" class="form-control" th:field="*{apellidos}" required>
-              </div>
-            </div>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">DNI/RUC *</label>
-                <input type="text" class="form-control" th:field="*{identificacion}" required>
+            <form th:action="@{/usuarios/registro}" action="/usuarios/registro" th:object="${usuario}" method="post">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Nombres *</label>
+                  <input type="text" class="form-control" th:field="*{nombres}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Apellidos *</label>
+                  <input type="text" class="form-control" th:field="*{apellidos}" required>
+                </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Edad</label>
-                <input type="number" class="form-control" th:field="*{edad}" min="16" max="100">
-              </div>
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">Correo electrónico *</label>
-              <input type="email" class="form-control" th:field="*{correo}" required>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" th:field="*{telefono}">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">DNI/RUC *</label>
+                  <input type="text" class="form-control" th:field="*{identificacion}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Edad</label>
+                  <input type="number" class="form-control" th:field="*{edad}" min="16" max="100">
+                </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Contraseña *</label>
-                <input type="password" class="form-control" th:field="*{contrasena}"
-                       minlength="8" required>
-              </div>
-            </div>
 
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Procedencia</label>
-                <input type="text" class="form-control" th:field="*{procedencia}">
+              <div class="mb-3">
+                <label class="form-label">Correo electrónico *</label>
+                <input type="email" class="form-control" th:field="*{correo}" required>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Ocupación</label>
-                <input type="text" class="form-control" th:field="*{ocupacion}">
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Teléfono</label>
+                  <input type="tel" class="form-control" th:field="*{telefono}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Contraseña *</label>
+                  <input type="password" class="form-control" th:field="*{contrasena}" minlength="8" required>
+                </div>
               </div>
-            </div>
 
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Universidad</label>
-                <input type="text" class="form-control" th:field="*{universidad}">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Procedencia</label>
+                  <input type="text" class="form-control" th:field="*{procedencia}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Ocupación</label>
+                  <input type="text" class="form-control" th:field="*{ocupacion}">
+                </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Empresa</label>
-                <input type="text" class="form-control" th:field="*{empresa}">
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Universidad</label>
+                  <input type="text" class="form-control" th:field="*{universidad}">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Empresa</label>
+                  <input type="text" class="form-control" th:field="*{empresa}">
+                </div>
               </div>
-            </div>
 
-            <div class="mb-3">
-              <label class="form-label">Modalidad de pago preferida</label>
-              <select class="form-select" th:field="*{modalidadPagoPreferida}">
-                <option th:each="m : ${T(com.congreso.modelo.enums.ModalidadPago).values()}"
-                        th:value="${m}" th:text="${m}">COMPLETO</option>
-              </select>
-            </div>
+              <div class="mb-3">
+                <label class="form-label">Modalidad de pago preferida</label>
+                <select class="form-select" th:field="*{modalidadPagoPreferida}">
+                  <option th:each="m : ${T(com.congreso.modelo.enums.ModalidadPago).values()}"
+                          th:value="${m}" th:text="${m}">COMPLETO</option>
+                </select>
+              </div>
 
-            <button type="submit" class="btn btn-primary w-100">Registrarme</button>
-          </form>
+              <button type="submit" class="btn btn-primary btn-lg w-100 mt-2">Crear mi cuenta</button>
+            </form>
 
-          <p class="text-center mt-3">
-            ¿Ya tienes cuenta? <a th:href="@{/usuarios/login}">Inicia sesión</a>
-          </p>
+            <p class="text-center mt-4 mb-0">
+              <span class="text-muted">¿Ya tienes cuenta?</span>
+              <a th:href="@{/usuarios/login}" href="login.html" class="fw-semibold text-decoration-none">Inicia sesión</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

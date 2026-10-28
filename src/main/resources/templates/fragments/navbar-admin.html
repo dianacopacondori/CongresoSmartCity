@@ -1,37 +1,162 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="sidebar" class="sidebar">
-  <div class="text-center mb-4">
-    <h4 class="text-white">🏙️ Admin Panel</h4>
-    <small class="text-muted" th:text="${usuario.nombres}">Administrador</small>
+
+<header th:fragment="topbar" class="admin-topbar">
+  <div class="admin-topbar-left">
+    <button class="admin-hamburger" type="button" id="adminHamburger"
+            aria-controls="adminSidebar" aria-expanded="false" aria-label="Abrir o cerrar menú lateral">
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+      <span class="hamburger-line" aria-hidden="true"></span>
+    </button>
+    <a class="admin-brand" th:href="@{/admin/dashboard}" href="dashboard-admin.html">
+      <span class="admin-brand-mark">SC</span>
+      <span class="admin-brand-text">
+        <strong>Smart City</strong>
+        <small>Panel admin</small>
+      </span>
+    </a>
   </div>
-  <nav class="nav flex-column">
-    <a class="nav-link active" th:href="@{/admin/dashboard}">
-      <i>📊</i> Dashboard
+
+  <nav class="admin-top-links" aria-label="Accesos rápidos">
+    <a th:href="@{/admin/dashboard}" href="dashboard-admin.html">Inicio</a>
+    <a th:href="@{/admin/actividades}" href="admin-actividades.html">Actividades</a>
+    <a th:href="@{/admin/asistentes}" href="#">Asistentes</a>
+    <a th:href="@{/admin/pagos}" href="#">Pagos</a>
+    <a th:href="@{/}" href="index.html">Sitio público</a>
+  </nav>
+
+  <div class="admin-topbar-right">
+    <div class="admin-user-chip">
+      <span class="admin-user-avatar"
+            th:text="${usuario != null ? #strings.substring(usuario.nombres,0,1) : 'A'}">A</span>
+      <div class="admin-user-meta">
+        <strong th:text="${usuario != null ? usuario.nombres : 'Administrador'}">Administrador</strong>
+        <small>Administración</small>
+      </div>
+    </div>
+    <a class="admin-logout-btn" th:href="@{/usuarios/logout}" href="login.html">Salir</a>
+  </div>
+</header>
+
+<aside th:fragment="sidebar" class="admin-sidebar" id="adminSidebar" aria-label="Menú de administración">
+  <div class="admin-sidebar-header">
+    <span class="section-kicker admin-sidebar-kicker">NAVEGACIÓN</span>
+    <button type="button" class="admin-sidebar-close d-lg-none" id="adminSidebarClose" aria-label="Cerrar menú">×</button>
+  </div>
+
+  <div class="admin-sidebar-profile">
+    <span class="admin-user-avatar"
+          th:text="${usuario != null ? #strings.substring(usuario.nombres,0,1) : 'A'}">A</span>
+    <div>
+      <strong th:text="${usuario != null ? usuario.nombres + ' ' + usuario.apellidos : 'Administrador'}">Administrador</strong>
+      <small>Gestión del congreso</small>
+    </div>
+  </div>
+
+  <nav class="admin-side-nav">
+    <a class="admin-side-link" th:href="@{/admin/dashboard}" href="dashboard-admin.html">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9" rx="1.2"/><rect x="14" y="3" width="7" height="5" rx="1.2"/>
+          <rect x="14" y="12" width="7" height="9" rx="1.2"/><rect x="3" y="16" width="7" height="5" rx="1.2"/>
+        </svg>
+      </span>
+      <span>Dashboard</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/actividades}">
-      <i>📅</i> Actividades
+    <a class="admin-side-link" th:href="@{/admin/actividades}" href="admin-actividades.html">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>
+        </svg>
+      </span>
+      <span>Actividades</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/asistentes}">
-      <i>👥</i> Asistentes
+    <a class="admin-side-link" th:href="@{/admin/asistentes}" href="#">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 8h5M19.5 5.5v5"/>
+        </svg>
+      </span>
+      <span>Asistentes</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/pagos}">
-      <i>💳</i> Pagos
+    <a class="admin-side-link" th:href="@{/admin/pagos}" href="#">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/>
+        </svg>
+      </span>
+      <span>Pagos</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/asistencias}">
-      <i>✅</i> Asistencias
+    <a class="admin-side-link" th:href="@{/admin/asistencias}" href="#">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12.5 9 17l11-11"/>
+        </svg>
+      </span>
+      <span>Asistencias</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/reportes}">
-      <i>📈</i> Reportes
+    <a class="admin-side-link" th:href="@{/admin/reportes}" href="#">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
+        </svg>
+      </span>
+      <span>Reportes</span>
     </a>
-    <a class="nav-link" th:href="@{/admin/usuarios}">
-      <i>👤</i> Usuarios
-    </a>
-    <a class="nav-link text-danger mt-4" th:href="@{/usuarios/logout}">
-      <i>🚪</i> Cerrar Sesión
+    <a class="admin-side-link" th:href="@{/admin/usuarios}" href="#">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
+        </svg>
+      </span>
+      <span>Usuarios</span>
     </a>
   </nav>
-</div>
+
+  <div class="admin-sidebar-footer">
+    <a class="admin-side-link danger" th:href="@{/usuarios/logout}" href="login.html">
+      <span class="side-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 17l5-5-5-5M20 12H9M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/>
+        </svg>
+      </span>
+      <span>Cerrar sesión</span>
+    </a>
+  </div>
+</aside>
+
+<div th:fragment="overlay" class="admin-sidebar-overlay" id="adminSidebarOverlay" hidden></div>
+
+<th:block th:fragment="scripts">
+  <script>
+    (function () {
+      const body = document.body;
+      const hamburger = document.getElementById('adminHamburger');
+      const closeBtn = document.getElementById('adminSidebarClose');
+      const overlay = document.getElementById('adminSidebarOverlay');
+
+      function setSidebar(open) {
+        body.classList.toggle('sidebar-open', open);
+        if (hamburger) hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (overlay) overlay.hidden = !open;
+      }
+      function toggleSidebar() { setSidebar(!body.classList.contains('sidebar-open')); }
+
+      if (hamburger) hamburger.addEventListener('click', toggleSidebar);
+      if (closeBtn) closeBtn.addEventListener('click', function () { setSidebar(false); });
+      if (overlay) overlay.addEventListener('click', function () { setSidebar(false); });
+
+      if (window.matchMedia('(min-width: 992px)').matches) setSidebar(true);
+
+      window.addEventListener('resize', function () {
+        if (window.matchMedia('(min-width: 992px)').matches) setSidebar(true);
+        else setSidebar(false);
+      });
+    })();
+  </script>
+</th:block>
+
 </body>
 </html>

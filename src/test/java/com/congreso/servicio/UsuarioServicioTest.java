@@ -71,6 +71,45 @@ class UsuarioServicioTest {
     }
 
     @Test
+    void testRegistrarUsuario_NombreNulo() {
+        asistentePrueba.setNombres(null);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> usuarioServicio.registrarUsuario(asistentePrueba)
+        );
+
+        assertEquals("El nombre no puede ser nulo ni estar vacío", exception.getMessage());
+        verifyNoInteractions(usuarioDAO);
+    }
+
+    @Test
+    void testRegistrarUsuario_NombreVacio() {
+        asistentePrueba.setNombres(" ");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> usuarioServicio.registrarUsuario(asistentePrueba)
+        );
+
+        assertEquals("El nombre no puede ser nulo ni estar vacío", exception.getMessage());
+        verifyNoInteractions(usuarioDAO);
+    }
+
+    @Test
+    void testRegistrarUsuario_CorreoConFormatoInvalido() {
+        asistentePrueba.setCorreo("correo-invalido");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> usuarioServicio.registrarUsuario(asistentePrueba)
+        );
+
+        assertEquals("El correo electrónico debe tener un formato válido", exception.getMessage());
+        verifyNoInteractions(usuarioDAO);
+    }
+
+    @Test
     void testRegistrarUsuario_CorreoExistente() {
         // Arrange
         when(usuarioDAO.existsByCorreo("juan@example.com")).thenReturn(true);
