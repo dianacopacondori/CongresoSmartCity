@@ -6,29 +6,37 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Asistencia;
 import com.congreso.modelo.enums.EstadoAsistencia;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AsistenciaDAO extends JpaRepository<Asistencia, Long>, DAO<Asistencia, Long> {
+public interface AsistenciaDAO extends JpaRepository<Asistencia, Long>{
 
-    List<Asistencia> findByAsistente(Asistente asistente);
+    // Regla de negocio: Previene el doble registro de asistencia
+    boolean existsByAsistenteAndActividadAndFechaAndEstadoIn(
+            Asistente asistente,
+            Actividad actividad,
+            LocalDate fecha,
+            List<EstadoAsistencia> estados);
 
+    // Método solicitado por AsistenciaServicio
+    Optional<Asistencia> findByAsistenteAndActividad(Asistente asistente, Actividad actividad);
+
+    // Método solicitado por AsistenciaServicio
     List<Asistencia> findByActividad(Actividad actividad);
 
-    List<Asistencia> findByFecha(LocalDate fecha);
+    // Alias para mantener compatibilidad con tu servicio
+    default List<Asistencia> findByAsistente(Asistente asistente) {
+        return findByAsistenteOrderByFechaDesc(asistente);
+    }
 
-    @Query("SELECT a FROM Asistencia a WHERE a.asistente = :asistente AND a.actividad = :actividad")
-    Optional<Asistencia> buscarPorAsistenteYActividad(@Param("asistente") Asistente asistente,
-                                                      @Param("actividad") Actividad actividad);
+    List<Asistencia> findByAsistenteOrderByFechaDesc(Asistente asistente);
 
-    @Query("SELECT a FROM Asistencia a WHERE a.fecha BETWEEN :inicio AND :fin")
-    List<Asistencia> buscarPorRangoFechas(@Param("inicio") LocalDate inicio,
-                                          @Param("fin") LocalDate fin);
+    List<Asistencia> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
+    // Método solicitado por AsistenciaServicio para contar presentes
     long countByActividadAndEstado(Actividad actividad, EstadoAsistencia estado);
 }

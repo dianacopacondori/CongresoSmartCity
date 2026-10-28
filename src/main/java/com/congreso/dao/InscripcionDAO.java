@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface InscripcionDAO extends JpaRepository<Inscripcion, Long>, DAO<Inscripcion, Long> {
+public interface InscripcionDAO extends JpaRepository<Inscripcion, Long> {
 
     List<Inscripcion> findByAsistente(Asistente asistente);
 

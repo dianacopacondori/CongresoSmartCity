@@ -86,4 +86,11 @@ public class InscripcionServicio {
     public void eliminarInscripcion(Long codigo) {
         inscripcionDAO.deleteById(codigo);
     }
+
+    /**
+     * Lista todas las inscripciones del sistema (para el administrador).
+     */
+    public List<Inscripcion> listarTodasLasInscripciones() {
+        return inscripcionDAO.findAll();
+    }
 }

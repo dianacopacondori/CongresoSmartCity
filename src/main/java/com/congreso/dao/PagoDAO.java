@@ -4,30 +4,39 @@ import com.congreso.interfaces.DAO;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Pago;
 import com.congreso.modelo.enums.EstadoPago;
-import com.congreso.modelo.enums.ModalidadPago;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface PagoDAO extends JpaRepository<Pago, Long>, DAO<Pago, Long> {
+public interface PagoDAO extends JpaRepository<Pago, Long>{
 
-    List<Pago> findByAsistente(Asistente asistente);
+    List<Pago> findByAsistenteOrderByFechaPagoDesc(Asistente asistente);
 
-    List<Pago> findByEstado(EstadoPago estado);
+    // Alias solicitado por el servicio
+    default List<Pago> findByAsistente(Asistente asistente) {
+        return findByAsistenteOrderByFechaPagoDesc(asistente);
+    }
 
-    List<Pago> findByModalidad(ModalidadPago modalidad);
+    List<Pago> findByEstadoIn(List<EstadoPago> estados);
 
-    @Query("SELECT p FROM Pago p WHERE p.asistente = :asistente AND p.estado <> com.congreso.modelo.enums.EstadoPago.PAGADO")
-    List<Pago> buscarPendientesPorAsistente(@Param("asistente") Asistente asistente);
+    List<Pago> findByFechaPagoBetween(LocalDate fechaInicio, LocalDate fechaFin);
 
-    @Query("SELECT COALESCE(SUM(p.saldo), 0.0) FROM Pago p WHERE p.asistente = :asistente AND p.estado <> com.congreso.modelo.enums.EstadoPago.PAGADO")
+    Optional<Pago> findByCodigoPago(Long codigoPago);
+
+    // Método solicitado por PagoServicio: Suma los saldos pendientes o parciales
+    @Query("SELECT COALESCE(SUM(p.saldo), 0.0) FROM Pago p WHERE p.asistente = :asistente AND p.estado IN ('PENDIENTE', 'PARCIAL')")
     Double calcularSaldoTotal(@Param("asistente") Asistente asistente);
 
-    @Query("SELECT p FROM Pago p WHERE p.fechaPago BETWEEN :inicio AND :fin")
-    List<Pago> buscarPorRangoFechas(@Param("inicio") LocalDate inicio,
-                                    @Param("fin") LocalDate fin);
+    // Método solicitado por PagoServicio: Filtra solo los pagos no completados
+    default List<Pago> buscarPendientesPorAsistente(Asistente asistente) {
+        return findByAsistente(asistente).stream()
+                .filter(p -> p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.PARCIAL)
+                .toList();
+    }
 }
