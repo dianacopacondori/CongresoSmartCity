@@ -2,105 +2,196 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Panel - Smart City Congress</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi panel - Smart City Congress</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20261027b')}" href="/css/style.css">
 </head>
-<body>
+<body class="public-page">
 
 <nav th:replace="~{fragments/navbar-publico :: navbar}"></nav>
 
-<div class="container py-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2>Bienvenido, <span th:text="${usuario.nombres}">Asistente</span>! 👋</h2>
-            <p class="text-muted">Panel de control del participante</p>
-        </div>
-    </div>
+<main class="attendee-dashboard">
+    <div class="container py-4 py-lg-5">
+        <header class="dashboard-hero attendee-hero mb-4 mb-lg-5">
+            <div class="dashboard-hero-content">
+                <span class="eyebrow">TU ESPACIO PERSONAL <span class="eyebrow-dot"></span> SMART CITY CONGRESS</span>
+                <h1>¡Hola, <span th:text="${usuario.nombres}">Asistente</span>!</h1>
+                <p>Tu experiencia en el congreso, organizada en un solo lugar.</p>
+            </div>
+            <a th:href="@{/actividades}" href="/actividades" class="dashboard-hero-action">
+                Explorar actividades <span aria-hidden="true">→</span>
+            </a>
+            <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
+            <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
+        </header>
 
-    <!-- Tarjetas de resumen -->
-    <div class="row mb-4">
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card p-3">
-                <div class="stat-label">Mi Inscripción</div>
-                <div class="stat-value text-primary" th:text="${inscripcion.estado}">PENDIENTE</div>
-            </div>
+        <div class="dashboard-section-label">
+            <span class="section-kicker">TU RESUMEN</span>
+            <span class="text-muted small">Información de tu participación</span>
         </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card p-3" style="border-left-color: #198754;">
-                <div class="stat-label">Actividades</div>
-                <div class="stat-value text-success" th:text="${actividades.size()}">0</div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card p-3" style="border-left-color: #ffc107;">
-                <div class="stat-label">Estado de Pago</div>
-                <div class="stat-value text-warning" th:text="${pago.estado}">PENDIENTE</div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card stat-card p-3" style="border-left-color: #dc3545;">
-                <div class="stat-label">Asistencias</div>
-                <div class="stat-value text-danger" th:text="${asistencias.size()}">0</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Acciones rápidas -->
-    <div class="row mb-4">
-        <div class="col-md-3 mb-2">
-            <a th:href="@{/actividades}" class="btn btn-outline-primary w-100">📅 Ver Actividades</a>
-        </div>
-        <div class="col-md-3 mb-2">
-            <a th:href="@{/mi-agenda}" class="btn btn-outline-success w-100"> Mi Agenda</a>
-        </div>
-        <div class="col-md-3 mb-2">
-            <a th:href="@{/fotocheck}" class="btn btn-outline-info w-100">🎫 Descargar Fotocheck</a>
-        </div>
-        <div class="col-md-3 mb-2">
-            <a th:href="@{/mis-asistencias}" class="btn btn-outline-warning w-100">✅ Mis Asistencias</a>
-        </div>
-    </div>
-
-    <!-- Agenda personalizada -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">📋 Mi Agenda Personalizada</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th>Actividad</th>
-                        <th>Tipo</th>
-                        <th>Fecha</th>
-                        <th>Horario</th>
-                        <th>Sala</th>
-                        <th>Ponente</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="act : ${actividades}">
-                        <td th:text="${act.titulo}">Título</td>
-                        <td><span class="badge bg-info" th:text="${act.tipo}">Ponencia</span></td>
-                        <td th:text="${act.fecha}">2026-10-26</td>
-                        <td th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00 - 10:30</td>
-                        <td th:text="${act.sala.nombre}">Sala A</td>
-                        <td th:text="${act.ponente.nombres}">Dr. Pérez</td>
-                    </tr>
-                    <tr th:if="${actividades.empty}">
-                        <td colspan="6" class="text-center text-muted">
-                            Aún no has seleccionado actividades.
-                            <a th:href="@{/actividades}">Explorar actividades</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+        <section class="row g-3 g-xl-4 mb-4 mb-lg-5" aria-label="Resumen de participación">
+            <div class="col-sm-6 col-xl-3">
+                <div class="card dashboard-stat-card stat-teal">
+                    <div class="stat-topline">
+                        <span class="stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
+                            </svg>
+                        </span>
+                        <span class="stat-trend">Participación</span>
+                    </div>
+                    <div class="stat-label">Mi inscripción</div>
+                    <div class="stat-value" th:text="${inscripcionEstado}">PENDIENTE</div>
+                    <div class="stat-footnote">Estado de tu registro</div>
+                </div>
             </div>
-        </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card dashboard-stat-card stat-green">
+                    <div class="stat-topline">
+                        <span class="stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                            </svg>
+                        </span>
+                        <span class="stat-trend">Programación</span>
+                    </div>
+                    <div class="stat-label">Actividades</div>
+                    <div class="stat-value" th:text="${actividades.size()}">0</div>
+                    <div class="stat-footnote">En tu agenda personal</div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card dashboard-stat-card stat-amber">
+                    <div class="stat-topline">
+                        <span class="stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                <rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/>
+                            </svg>
+                        </span>
+                        <span class="stat-trend">Inscripción</span>
+                    </div>
+                    <div class="stat-label">Estado de pago</div>
+                    <div class="stat-value" th:text="${pagoEstado}">PENDIENTE</div>
+                    <div class="stat-footnote">Consulta el estado de tu pago</div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+                <div class="card dashboard-stat-card stat-rose">
+                    <div class="stat-topline">
+                        <span class="stat-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                <path d="M4 12.5 9 17l11-11"/>
+                            </svg>
+                        </span>
+                        <span class="stat-trend">Asistencia</span>
+                    </div>
+                    <div class="stat-label">Asistencias</div>
+                    <div class="stat-value" th:text="${asistencias.size()}">0</div>
+                    <div class="stat-footnote">Registros de participación</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions mb-4 mb-lg-5">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">ACCESOS DIRECTOS</span>
+                    <h2>¿Qué te gustaría hacer?</h2>
+                </div>
+            </div>
+            <div class="row g-3">
+                <div class="col-sm-6 col-xl-3">
+                    <a th:href="@{/actividades}" href="/actividades" class="quick-action-card">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                            </svg>
+                        </span>
+                        <span><strong>Ver actividades</strong><small>Explora sesiones y talleres</small></span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <a th:href="@{/mi-agenda}" href="/mi-agenda" class="quick-action-card">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>
+                            </svg>
+                        </span>
+                        <span><strong>Mi agenda</strong><small>Consulta tu programación</small></span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <a th:href="@{/fotocheck}" href="/fotocheck" class="quick-action-card">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5 17c1.3-1.7 3-2.5 4-2.5s2.7.8 4 2.5M15 10h4M15 14h4"/>
+                            </svg>
+                        </span>
+                        <span><strong>Mi fotocheck</strong><small>Descarga tu identificación</small></span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <a th:href="@{/mis-asistencias}" href="/mis-asistencias" class="quick-action-card">
+                        <span class="quick-action-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                                <path d="M4 12.5 9 17l11-11"/>
+                            </svg>
+                        </span>
+                        <span><strong>Mis asistencias</strong><small>Revisa tu participación</small></span>
+                        <span class="quick-action-arrow" aria-hidden="true">→</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="card dashboard-section agenda-section">
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">TU PROGRAMACIÓN</span>
+                    <h2>Mi agenda</h2>
+                    <p>Las actividades que has seleccionado para el congreso.</p>
+                </div>
+                <a th:href="@{/mi-agenda}" href="/mi-agenda" class="section-link">Ver agenda completa <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="agenda-list" th:if="${!actividades.empty}">
+                <article class="agenda-item" th:each="act : ${actividades}">
+                    <div class="agenda-time">
+                        <span class="agenda-date" th:text="${act.fecha}">2026-10-26</span>
+                        <span class="agenda-hour" th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00 - 10:30</span>
+                    </div>
+                    <div class="agenda-detail">
+                        <span class="activity-type" th:text="${act.tipo}">Ponencia</span>
+                        <h3 th:text="${act.titulo}">Título de la actividad</h3>
+                        <p>
+                            <span th:text="${act.sala.nombre}">Sala A</span>
+                            <span class="agenda-separator">·</span>
+                            <span th:text="${act.responsableNombre}">Ponente</span>
+                        </p>
+                    </div>
+                    <span class="agenda-marker" aria-hidden="true"></span>
+                </article>
+            </div>
+            <div class="agenda-empty-state" th:if="${actividades.empty}">
+                <span class="empty-state-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/>
+                    </svg>
+                </span>
+                <h3>Tu agenda comienza aquí</h3>
+                <p>Aún no has seleccionado actividades. Explora el programa y guarda las sesiones que te interesen.</p>
+                <a th:href="@{/actividades}" href="/actividades" class="btn btn-primary">Explorar actividades <span aria-hidden="true">→</span></a>
+            </div>
+        </section>
     </div>
-</div>
+</main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

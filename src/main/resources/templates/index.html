@@ -3,101 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart City International Congress</title>
+    <title>Congreso Internacional Smart City</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css(v='20261027b')}" href="../static/css/style.css">
 </head>
-<body>
+<body class="public-page home-page">
 
-<!-- Navbar -->
 <nav th:replace="~{fragments/navbar-publico :: navbar}"></nav>
 
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
-        <h1>Welcome to Smart City International Congress</h1>
-        <p class="subtitle">Innovating Urban Futures</p>
-        <a th:href="@{/usuarios/registro}" class="btn btn-light btn-lg px-5">Register Now</a>
-    </div>
-</section>
-
-<!-- About Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h2 class="mb-4">About the Congress</h2>
-                <p>
-                    The Smart City International Congress is a premier event bringing together
-                    global leaders, innovators, and policymakers to discuss and shape the future
-                    of urban development. Explore cutting-edge technologies, sustainable solutions,
-                    and collaborative strategies for building smarter, more resilient cities.
-                </p>
-                <p>
-                    Join us for three days of inspiring keynotes, hands-on workshops, and
-                    networking opportunities with industry pioneers.
-                </p>
-            </div>
-            <div class="col-md-6">
-                <img src="https://via.placeholder.com/600x400/667eea/ffffff?text=Smart+City+Congress"
-                     class="img-fluid rounded shadow" alt="Congress">
-            </div>
+        <span class="home-eyebrow">CIUDADES MÁS HUMANAS · FUTUROS MÁS INTELIGENTES</span>
+        <h1>El futuro de las ciudades se construye en conjunto</h1>
+        <p class="subtitle">Conectamos ideas, tecnología y personas para imaginar mejores entornos urbanos.</p>
+        <div class="hero-actions">
+            <a th:href="@{/usuarios/registro}" href="#" class="btn btn-light btn-lg px-4">Únete al congreso <span aria-hidden="true">→</span></a>
+            <a th:href="@{/actividades}" href="actividades.html" class="btn btn-outline-light btn-lg px-4">Explorar programa</a>
+        </div>
+        <div class="hero-highlights">
+            <span><strong>Innovación</strong> para las ciudades</span>
+            <span><strong>Ideas</strong> que generan impacto</span>
+            <span><strong>Personas</strong> que hacen el cambio</span>
         </div>
     </div>
 </section>
 
-<!-- Key Themes -->
-<section class="py-5 bg-light">
+<section class="home-about py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Key Themes</h2>
-        <div class="row text-center">
-            <div class="col-md-3 mb-4">
-                <div class="card card-hover h-100 p-4">
-                    <div class="theme-icon"></div>
-                    <h5>Sustainable Urban Planning</h5>
-                </div>
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <span class="section-kicker">EL CONGRESO</span>
+                <h2 class="home-section-title mb-4">Un espacio para diseñar ciudades más inteligentes</h2>
+                <p>
+                    El Congreso Internacional Smart City reúne a líderes, innovadores y responsables
+                    de políticas públicas para conversar sobre el futuro del desarrollo urbano.
+                    Descubre soluciones sostenibles y nuevas formas de construir ciudades resilientes.
+                </p>
+                <p>
+                    Participa en conferencias, talleres y encuentros con personas que están
+                    transformando sus comunidades.
+                </p>
+                <a th:href="@{/actividades}" href="actividades.html" class="section-link">Conoce las actividades <span aria-hidden="true">→</span></a>
             </div>
-            <div class="col-md-3 mb-4">
-                <div class="card card-hover h-100 p-4">
-                    <div class="theme-icon">📡</div>
-                    <h5>Digital Infrastructure</h5>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card card-hover h-100 p-4">
-                    <div class="theme-icon">🚗</div>
-                    <h5>Smart Mobility</h5>
-                </div>
-            </div>
-            <div class="col-md-3 mb-4">
-                <div class="card card-hover h-100 p-4">
-                    <div class="theme-icon">🌿</div>
-                    <h5>Green Technologies</h5>
+            <div class="col-md-6 mt-4 mt-md-0">
+                <div class="city-illustration" role="img" aria-label="Ilustración abstracta de una ciudad inteligente">
+                    <span class="city-sun"></span>
+                    <span class="city-building building-one"></span>
+                    <span class="city-building building-two"></span>
+                    <span class="city-building building-three"></span>
+                    <span class="city-building building-four"></span>
+                    <span class="city-ground"></span>
+                    <span class="city-caption">IDEAS PARA UN FUTURO URBANO SOSTENIBLE</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Speakers -->
-<section class="py-5">
+<section class="home-themes py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Our Speakers</h2>
-        <div class="row">
-            <div class="col-md-4 mb-4" th:each="ponente : ${ponentes}">
-                <div class="card card-hover text-center">
-                    <img src="https://via.placeholder.com/200" class="card-img-top" alt="Speaker">
+        <div class="home-section-heading text-center">
+            <span class="section-kicker">TEMAS QUE NOS MUEVEN</span>
+            <h2 class="home-section-title">Una mirada integral a la ciudad</h2>
+            <p>Conocimiento y colaboración para responder a los desafíos urbanos.</p>
+        </div>
+        <div class="row text-center g-3">
+            <div class="col-md-3 mb-4">
+                <div class="card theme-card card-hover h-100">
+                    <div class="theme-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/>
+                        </svg>
+                    </div>
+                    <h5>Planificación sostenible</h5>
+                    <p>Ciudades inclusivas, resilientes y pensadas para las personas.</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card theme-card card-hover h-100">
+                    <div class="theme-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4.5 18a8.5 8.5 0 0 1 15 0"/><path d="M7.5 15a5.5 5.5 0 0 1 9 0"/><circle cx="12" cy="19.5" r="1.5" fill="currentColor" stroke="none"/>
+                        </svg>
+                    </div>
+                    <h5>Infraestructura digital</h5>
+                    <p>Tecnología conectada para servicios urbanos más eficientes.</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card theme-card card-hover h-100">
+                    <div class="theme-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 17h18M5 17l1.5-5h11L19 17M8 12l1-3h6l1 3"/><circle cx="7.5" cy="19" r="1.5"/><circle cx="16.5" cy="19" r="1.5"/>
+                        </svg>
+                    </div>
+                    <h5>Movilidad inteligente</h5>
+                    <p>Mejores alternativas para movernos por la ciudad.</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card theme-card card-hover h-100">
+                    <div class="theme-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21c0-6 0-10 0-14"/><path d="M12 7c3 0 6-2 6-5-3 0-6 2-6 5Z"/><path d="M12 12c-3 0-6-2-6-5 3 0 6 2 6 5Z"/>
+                        </svg>
+                    </div>
+                    <h5>Tecnologías verdes</h5>
+                    <p>Innovación al servicio del equilibrio ambiental.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-featured py-5">
+    <div class="container">
+        <div class="home-section-heading text-center">
+            <span class="section-kicker">EN LA AGENDA</span>
+            <h2 class="home-section-title">Sesiones destacadas</h2>
+            <p>Una muestra del programa para empezar a planificar tu visita.</p>
+        </div>
+        <div class="row g-4" th:if="${!actividadesDestacadas.empty}">
+            <div class="col-md-4" th:each="act : ${actividadesDestacadas}">
+                <article class="card activity-card card-hover h-100">
+                    <div class="activity-card-accent" aria-hidden="true"></div>
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${ponente.nombres}">Dr. Jane Doe</h5>
-                        <p class="card-text text-muted" th:text="${ponente.institucion}">Urban Planner</p>
+                        <span class="activity-type" th:text="${act.tipo}">PONENCIA</span>
+                        <h3 class="card-title h5" th:text="${act.titulo}">Título</h3>
+                        <p class="card-text text-muted small" th:text="${act.descripcion}">Descripción</p>
+                        <div class="activity-meta">
+                            <div>
+                                <span class="meta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+                                    </svg>
+                                </span>
+                                <span th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00</span>
+                            </div>
+                            <div>
+                                <span class="meta-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>
+                                    </svg>
+                                </span>
+                                <span th:text="${act.sala.nombre}">Sala</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a th:href="@{/actividades}" href="actividades.html" class="btn btn-primary">Ver programa completo</a>
+        </div>
+    </div>
+</section>
+
+<section class="home-speakers py-5">
+    <div class="container">
+        <div class="home-section-heading text-center">
+            <span class="section-kicker">VOCES QUE INSPIRAN</span>
+            <h2 class="home-section-title">Conoce a nuestros ponentes</h2>
+        </div>
+        <div class="row g-4" th:if="${!ponentes.empty}">
+            <div class="col-md-4 mb-4" th:each="ponente : ${ponentes}">
+                <div class="card speaker-card card-hover text-center">
+                    <div class="speaker-avatar" aria-hidden="true"
+                         th:text="${#strings.substring(ponente.nombres,0,1)}">◎</div>
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${ponente.nombres + ' ' + ponente.apellidos}">Dr. Jane Doe</h5>
+                        <p class="card-text text-muted" th:text="${ponente.institucion}">Institución</p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="speakers-empty-state" th:if="${ponentes.empty}">
+            <span class="empty-state-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
+                </svg>
+            </span>
+            <p>Pronto anunciaremos a las personas invitadas.</p>
+        </div>
     </div>
 </section>
 
-<!-- Footer -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
