@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light public-navbar fixed-top">
   <div class="container">
-    <a class="navbar-brand fw-bold" th:href="@{/}">
-      🏙️ Smart City Congress
+    <a class="navbar-brand" th:href="@{/}" href="../templates/index.html">
+      <span class="brand-mark">SC<span>.</span></span>
+      <span>Smart City Congress</span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarPublico">
-      <span class="navbar-toggler-icon"></span>
+
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#menuPublico" aria-controls="menuPublico"
+            aria-expanded="false" aria-label="Abrir menú">
+      <span class="menu-toggle-icon" aria-hidden="true"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarPublico">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" th:href="@{/}">Inicio</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/actividades}">Actividades</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/ponentes}">Ponentes</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/contacto}">Contacto</a></li>
-        <li class="nav-item ms-2">
-          <a class="btn btn-outline-primary" th:href="@{/usuarios/login}">Iniciar Sesión</a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item"><a class="nav-link" th:href="@{/}" href="index.html">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/actividades}" href="actividades.html">Actividades</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/ponentes}" href="#">Ponentes</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/contacto}" href="#">Contacto</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-outline-primary btn-sm" th:href="@{/usuarios/login}" href="login.html">Iniciar sesión</a>
         </li>
-        <li class="nav-item ms-2">
-          <a class="btn btn-primary" th:href="@{/usuarios/registro}">Registrarse</a>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-primary btn-sm" th:href="@{/usuarios/registro}" href="registro.html">Registrarse</a>
         </li>
       </ul>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="menuPublico" aria-labelledby="menuPublicoTitulo">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="menuPublicoTitulo">Smart City Congress</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" th:href="@{/}" href="index.html">Inicio</a>
+        <a class="nav-link" th:href="@{/actividades}" href="actividades.html">Actividades</a>
+        <a class="nav-link" th:href="@{/ponentes}" href="#">Ponentes</a>
+        <a class="nav-link" th:href="@{/contacto}" href="#">Contacto</a>
+        <hr>
+        <a class="btn btn-outline-primary" th:href="@{/usuarios/login}" href="login.html">Iniciar sesión</a>
+        <a class="btn btn-primary" th:href="@{/usuarios/registro}" href="registro.html">Registrarse</a>
+      </nav>
     </div>
   </div>
 </nav>

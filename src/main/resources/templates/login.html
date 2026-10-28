@@ -2,61 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iniciar Sesión - Smart City Congress</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link th:href="@{/css/style.css}" rel="stylesheet">
-  <style>
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-    }
-    .login-card {
-        max-width: 450px;
-        margin: auto;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027b')}" href="../static/css/style.css">
 </head>
-<body>
-<div class="container">
-  <div class="card login-card p-4">
-    <div class="text-center mb-4">
-      <h2>🏙️ Smart City Congress</h2>
-      <p class="text-muted">Inicia sesión en tu cuenta</p>
-    </div>
-
-    <!-- Mensajes de error/éxito -->
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
-
-    <form th:action="@{/usuarios/login}" method="post">
-      <div class="mb-3">
-        <label for="correo" class="form-label">Correo electrónico</label>
-        <input type="email" class="form-control" id="correo" name="correo"
-               placeholder="usuario@ejemplo.com" required>
+<body class="login-page">
+<main class="container">
+  <div class="row justify-content-center align-items-stretch login-layout">
+    <aside class="col-lg-5 login-welcome">
+      <a th:href="@{/}" href="index.html" class="login-brand">
+        <span class="brand-mark">SC<span>.</span></span>
+        Smart City Congress
+      </a>
+      <div>
+        <span class="login-eyebrow">BIENVENIDO DE NUEVO</span>
+        <h1>Las ciudades del futuro empiezan con una idea.</h1>
+        <p>Ingresa a tu cuenta y continúa formando parte de la conversación.</p>
       </div>
-      <div class="mb-3">
-        <label for="contrasena" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="contrasena" name="contrasena"
-               placeholder="••••••••" required>
-      </div>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="recordar">
-        <label class="form-check-label" for="recordar">Recordarme</label>
-      </div>
-      <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
-    </form>
+      <a th:href="@{/actividades}" href="actividades.html" class="login-side-link">Explorar el congreso <span aria-hidden="true">→</span></a>
+    </aside>
 
-    <div class="text-center mt-3">
-      <a th:href="@{/usuarios/registro}" class="text-decoration-none">¿No tienes cuenta? Regístrate</a>
-    </div>
-    <div class="text-center mt-2">
-      <a th:href="@{/}" class="text-decoration-none small">← Volver al inicio</a>
+    <div class="col-lg-6">
+      <div class="card login-card p-4 p-md-5">
+        <div class="mb-4">
+          <span class="section-kicker">TU CUENTA</span>
+          <h2 class="mt-2 mb-1">Iniciar sesión</h2>
+          <p class="text-muted mb-0">Accede a tu espacio personal del congreso.</p>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+
+        <form th:action="@{/usuarios/login}" action="/usuarios/login" method="post">
+          <div class="mb-3">
+            <label for="correo" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="correo" name="correo"
+                   placeholder="usuario@ejemplo.com" required>
+          </div>
+          <div class="mb-3">
+            <label for="contrasena" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="contrasena" name="contrasena"
+                   placeholder="••••••••" required>
+          </div>
+          <div class="mb-4 form-check">
+            <input type="checkbox" class="form-check-input" id="recordar">
+            <label class="form-check-label" for="recordar">Recordarme</label>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg w-100">Iniciar sesión</button>
+        </form>
+
+        <div class="text-center mt-4">
+          <span class="text-muted">¿No tienes una cuenta?</span>
+          <a th:href="@{/usuarios/registro}" href="registro.html" class="fw-semibold text-decoration-none">Regístrate</a>
+        </div>
+        <div class="login-demo-hint mt-4">
+          <span class="section-kicker">ACCESO DE PRUEBA</span>
+          <p class="small text-muted mb-0 mt-2">
+            Admin: <strong>admin@smartcity.com</strong> / admin1234<br>
+            Asistente: <strong>asistente@smartcity.com</strong> / asistente1
+          </p>
+        </div>
+        <div class="text-center mt-3">
+          <a th:href="@{/}" href="index.html" class="text-decoration-none small">← Volver al inicio</a>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</main>
 </body>
 </html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividades - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027c')}" href="../static/css/style.css">
+</head>
+<body class="dashboard-page dashboard-admin-page">
+
+<header th:replace="~{fragments/navbar-admin :: topbar}"></header>
+<aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside>
+<div th:replace="~{fragments/navbar-admin :: overlay}"></div>
+
+<main class="admin-main">
+  <div class="admin-main-inner">
+    <header class="dashboard-hero admin-hero mb-4">
+      <div class="dashboard-hero-content">
+        <span class="eyebrow">GESTIÓN <span class="eyebrow-dot"></span> ACTIVIDADES</span>
+        <h1>Programación del congreso</h1>
+        <p>Crea, edita y organiza las sesiones del evento.</p>
+      </div>
+      <a th:href="@{/admin/actividades/nueva}" href="actividad-form.html" class="dashboard-hero-action">
+        <span aria-hidden="true">＋</span> Nueva actividad
+      </a>
+    </header>
+
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <section class="card dashboard-section">
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">LISTADO</span>
+          <h2>Todas las actividades</h2>
+          <p th:text="${actividades.size()} + ' sesiones registradas'">0 sesiones</p>
+        </div>
+      </div>
+      <div class="table-responsive dashboard-table">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+            <th>Horario</th>
+            <th>Sala</th>
+            <th>Responsable</th>
+            <th>Cupo</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="act : ${actividades}">
+            <td><span class="activity-type" th:text="${act.tipo}">PONENCIA</span></td>
+            <td th:text="${act.titulo}">Título</td>
+            <td th:text="${act.fecha}">2026-10-26</td>
+            <td th:text="${act.horarioInicio} + ' - ' + ${act.horarioFin}">09:00 - 10:30</td>
+            <td th:text="${act.sala != null ? act.sala.nombre : '—'}">Sala</td>
+            <td th:text="${act.responsableNombre}">Responsable</td>
+            <td th:text="${act.inscritos} + '/' + ${act.cupo}">0/50</td>
+            <td class="table-actions">
+              <a th:href="@{/admin/actividades/editar/{id}(id=${act.codigo})}"
+                 href="actividad-form.html"
+                 class="btn btn-sm btn-outline-primary">Editar</a>
+              <a th:href="@{/admin/actividades/eliminar/{id}(id=${act.codigo})}"
+                 href="#"
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="return confirm('¿Eliminar esta actividad?')">Eliminar</a>
+            </td>
+          </tr>
+          <tr th:if="${actividades.empty}">
+            <td colspan="8">
+              <div class="dashboard-empty-state">
+                <span class="empty-state-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                  </svg>
+                </span>
+                <strong>Aún no hay actividades</strong>
+                <span>Crea la primera sesión para llenar la programación.</span>
+                <a th:href="@{/admin/actividades/nueva}" href="actividad-form.html" class="btn btn-outline-primary btn-sm">Crear actividad</a>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block>
+</body>
+</html>

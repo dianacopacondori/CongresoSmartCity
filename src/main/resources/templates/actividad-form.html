@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${edicion} ? 'Editar actividad' : 'Nueva actividad'">Actividad</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027c')}" href="../static/css/style.css">
+</head>
+<body class="dashboard-page dashboard-admin-page">
+
+<header th:replace="~{fragments/navbar-admin :: topbar}"></header>
+<aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside>
+<div th:replace="~{fragments/navbar-admin :: overlay}"></div>
+
+<main class="admin-main">
+  <div class="admin-main-inner">
+    <header class="form-page-header mb-4">
+      <div>
+        <a th:href="@{/admin/actividades}" href="admin-actividades.html" class="back-link">← Volver a actividades</a>
+        <span class="section-kicker d-block mt-3">PROGRAMACIÓN</span>
+        <h1 th:text="${edicion} ? 'Editar actividad' : 'Nueva actividad'">Nueva actividad</h1>
+        <p>Define el tipo, horario, sala y responsable de la sesión.</p>
+      </div>
+    </header>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form class="card form-shell"
+          th:object="${form}"
+          th:action="${edicion} ? @{/admin/actividades/editar/{id}(id=*{codigo})} : @{/admin/actividades}"
+          action="/admin/actividades"
+          method="post">
+      <input type="hidden" th:field="*{codigo}">
+
+      <div class="form-shell-grid">
+        <section>
+          <h2>Información general</h2>
+          <div class="mb-3">
+            <label class="form-label" for="tipo">Tipo *</label>
+            <select class="form-select" id="tipo" th:field="*{tipo}" th:disabled="${edicion}" onchange="toggleTipoFields()">
+              <option value="PONENCIA">Ponencia</option>
+              <option value="TALLER">Taller</option>
+            </select>
+            <input type="hidden" th:if="${edicion}" th:field="*{tipo}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="titulo">Título *</label>
+            <input class="form-control" id="titulo" th:field="*{titulo}" required maxlength="200"
+                   placeholder="Ej. Ciudades resilientes y datos abiertos">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="4"
+                      maxlength="1000" placeholder="Resume de qué trata la sesión"></textarea>
+          </div>
+        </section>
+
+        <section>
+          <h2>Agenda y cupo</h2>
+          <div class="mb-3">
+            <label class="form-label" for="fecha">Fecha *</label>
+            <input class="form-control" type="date" id="fecha" th:field="*{fecha}" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="horarioInicio">Inicio *</label>
+              <input class="form-control" type="time" id="horarioInicio" th:field="*{horarioInicio}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="horarioFin">Fin *</label>
+              <input class="form-control" type="time" id="horarioFin" th:field="*{horarioFin}" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="cupo">Cupo *</label>
+            <input class="form-control" type="number" id="cupo" th:field="*{cupo}" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="salaId">Sala *</label>
+            <select class="form-select" id="salaId" th:field="*{salaId}" required>
+              <option value="">Selecciona una sala</option>
+              <option th:each="sala : ${salas}" th:value="${sala.codigo}"
+                      th:text="${sala.nombre + ' · ' + sala.ubicacion + ' (' + sala.capacidad + ' pers.)'}">
+                Sala
+              </option>
+            </select>
+          </div>
+        </section>
+
+        <section class="form-span-2" id="fieldsPonencia">
+          <h2>Detalles de ponencia</h2>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="colaboradorPonente">Ponente *</label>
+              <select class="form-select" id="colaboradorPonente" name="colaboradorId">
+                <option value="">Selecciona un ponente</option>
+                <option th:each="p : ${ponentes}" th:value="${p.codigo}"
+                        th:selected="${form.colaboradorId == p.codigo}"
+                        th:text="${p.nombres + ' ' + p.apellidos}">Ponente</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="tema">Tema</label>
+              <input class="form-control" id="tema" th:field="*{tema}" maxlength="200"
+                     placeholder="Tema principal de la ponencia">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-span-2" id="fieldsTaller" hidden>
+          <h2>Detalles de taller</h2>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="colaboradorInstructor">Instructor *</label>
+              <select class="form-select" id="colaboradorInstructor" name="colaboradorIdAlt">
+                <option value="">Selecciona un instructor</option>
+                <option th:each="i : ${instructores}" th:value="${i.codigo}"
+                        th:selected="${form.colaboradorId == i.codigo}"
+                        th:text="${i.nombres + ' ' + i.apellidos}">Instructor</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="nivelDificultad">Nivel</label>
+              <input class="form-control" id="nivelDificultad" th:field="*{nivelDificultad}" maxlength="50">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="materialesRequeridos">Materiales</label>
+              <input class="form-control" id="materialesRequeridos" th:field="*{materialesRequeridos}" maxlength="500">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="objetivos">Objetivos</label>
+              <input class="form-control" id="objetivos" th:field="*{objetivos}" maxlength="500">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="form-shell-actions">
+        <a th:href="@{/admin/actividades}" href="admin-actividades.html" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"
+                th:text="${edicion} ? 'Guardar cambios' : 'Crear actividad'">Crear actividad</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  function toggleTipoFields() {
+    const tipo = document.getElementById('tipo').value;
+    const ponencia = document.getElementById('fieldsPonencia');
+    const taller = document.getElementById('fieldsTaller');
+    const selectPonente = document.getElementById('colaboradorPonente');
+    const selectInstructor = document.getElementById('colaboradorInstructor');
+
+    const esTaller = tipo === 'TALLER';
+    ponencia.hidden = esTaller;
+    taller.hidden = !esTaller;
+
+    if (esTaller) {
+      selectPonente.removeAttribute('name');
+      selectPonente.removeAttribute('required');
+      selectInstructor.setAttribute('name', 'colaboradorId');
+      selectInstructor.setAttribute('required', 'required');
+    } else {
+      selectInstructor.removeAttribute('name');
+      selectInstructor.removeAttribute('required');
+      selectPonente.setAttribute('name', 'colaboradorId');
+      selectPonente.setAttribute('required', 'required');
+    }
+  }
+  toggleTipoFields();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block>
+</body>
+</html>
