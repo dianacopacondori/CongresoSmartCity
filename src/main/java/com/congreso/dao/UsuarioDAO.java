@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
  * Extiende JpaRepository para obtener operaciones CRUD básicas.
  */
 @Repository
-public interface UsuarioDAO extends JpaRepository<Usuario, Long>, DAO<Usuario, Long> {
+public interface UsuarioDAO extends JpaRepository<Usuario, Long>{
 
     /**
      * Busca un usuario por su correo electrónico.
@@ -76,4 +77,6 @@ public interface UsuarioDAO extends JpaRepository<Usuario, Long>, DAO<Usuario, L
      * @return true si existe un usuario con esa identificación, false en caso contrario
      */
     boolean existsByIdentificacion(String identificacion);
+
+    List<Usuario> findByRolAndFechaCreacionBetween(RolUsuario rol, LocalDateTime inicio, LocalDateTime fin);
 }

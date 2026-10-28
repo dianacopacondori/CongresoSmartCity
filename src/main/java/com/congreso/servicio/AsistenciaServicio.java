@@ -38,8 +38,9 @@ public class AsistenciaServicio {
         Actividad actividad = actividadDAO.findById(codigoActividad)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
 
-        if (asistenciaDAO.buscarPorAsistenteYActividad(asistente, actividad).isPresent()) {
-            throw new IllegalStateException("La asistencia ya fue registrada");
+        // Validación de regla de negocio: No permitir doble registro
+        if (asistenciaDAO.findByAsistenteAndActividad(asistente, actividad).isPresent()) {
+            throw new IllegalStateException("La asistencia para esta actividad ya fue registrada");
         }
 
         Asistencia asistencia = new Asistencia();
@@ -50,18 +51,7 @@ public class AsistenciaServicio {
         asistencia.setMecanismoValidacion(mecanismoValidacion);
         asistencia.setEstado(EstadoAsistencia.PRESENTE);
 
-        return asistenciaDAO.guardarConRegistro(asistencia);
-    }
-
-    public Asistencia corregirAsistencia(Long codigoAsistencia, EstadoAsistencia estado) {
-        if (estado != EstadoAsistencia.PRESENTE && estado != EstadoAsistencia.AUSENTE) {
-            throw new IllegalArgumentException("El estado corregido debe ser PRESENTE o AUSENTE");
-        }
-
-        Asistencia asistencia = asistenciaDAO.findById(codigoAsistencia)
-                .orElseThrow(() -> new IllegalArgumentException("Asistencia no encontrada"));
-        asistencia.setEstado(estado);
-        return asistenciaDAO.guardarConRegistro(asistencia);
+        return asistenciaDAO.save(asistencia);
     }
 
     public List<Asistencia> listarAsistenciasPorAsistente(Long codigoAsistente) {
@@ -74,6 +64,36 @@ public class AsistenciaServicio {
         Actividad actividad = actividadDAO.findById(codigoActividad)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
         return asistenciaDAO.findByActividad(actividad);
+    }
+
+    // --- MÉTODOS AGREGADOS PARA EL SERVLET ---
+
+    /**
+     * Alias para que el servlet pueda llamarlo con este nombre.
+     */
+    public List<Asistencia> consultarAsistenciasPorActividad(Long codigoActividad) {
+        return listarAsistenciasPorActividad(codigoActividad);
+    }
+
+    /**
+     * Obtiene todas las asistencias del sistema (para el administrador).
+     */
+    public List<Asistencia> obtenerTodasLasAsistencias() {
+        return asistenciaDAO.findAll();
+    }
+
+    /**
+     * Corrige el estado de una asistencia a "CORREGIDA" (solo administrador).
+     */
+    public void corregirAsistencia(Long codigoAsistencia, String justificacion) {
+        Asistencia asistencia = asistenciaDAO.findById(codigoAsistencia)
+                .orElseThrow(() -> new IllegalArgumentException("Registro de asistencia no encontrado"));
+
+        asistencia.setEstado(EstadoAsistencia.CORREGIDA);
+        // Nota: Si agregas un campo 'observaciones' a la entidad Asistencia, puedes guardarlo aquí:
+        // asistencia.setObservaciones("Corregido por admin. Justificación: " + justificacion);
+
+        asistenciaDAO.save(asistencia);
     }
 
     public long contarPresentes(Long codigoActividad) {

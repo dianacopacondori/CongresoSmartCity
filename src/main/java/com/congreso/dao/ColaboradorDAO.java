@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ColaboradorDAO extends JpaRepository<Colaborador, Long>, DAO<Colaborador, Long> {
+public interface ColaboradorDAO extends JpaRepository<Colaborador, Long> {
 
     List<Colaborador> findByTipoColaborador(RolUsuario tipo);
 

@@ -2,6 +2,7 @@ package com.congreso.servicio;
 
 import com.congreso.dao.AsistenteDAO;
 import com.congreso.modelo.Asistente;
+import com.congreso.modelo.enums.EstadoUsuario;
 import com.congreso.modelo.enums.ModalidadPago;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,21 @@ public class AsistenteServicio {
         return asistenteDAO.findAll();
     }
 
+    /**
+     * NUEVO: Alias para el servlet (lista todos los asistentes).
+     */
+    public List<Asistente> obtenerTodosLosAsistentes() {
+        return listarAsistentes();
+    }
+
+    /**
+     * NUEVO: Búsqueda parcial por nombre o apellido.
+     * Requiere que AsistenteDAO tenga el método buscarPorNombre con @Query.
+     */
+    public List<Asistente> buscarPorNombre(String nombre) {
+        return asistenteDAO.buscarPorNombre(nombre);
+    }
+
     public List<Asistente> buscarPorModalidadPago(ModalidadPago modalidad) {
         return asistenteDAO.findByModalidadPagoPreferida(modalidad);
     }
@@ -46,5 +62,16 @@ public class AsistenteServicio {
 
     public void eliminarAsistente(Long codigo) {
         asistenteDAO.deleteById(codigo);
+    }
+
+    /**
+     * NUEVO: Suspensión lógica del asistente (cambia estado a SUSPENDIDO).
+     */
+    public Asistente suspenderAsistente(Long codigo) {
+        Asistente asistente = asistenteDAO.findById(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Asistente no encontrado"));
+
+        asistente.setEstado(EstadoUsuario.SUSPENDIDO);
+        return asistenteDAO.save(asistente);
     }
 }

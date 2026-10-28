@@ -92,10 +92,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.7.2-jre</version>
+            <version>33.0.0-jre</version>
         </dependency>
 
-        <!-- Apache POI  -->
+        <!-- Apache POI (ya lo tienen) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
