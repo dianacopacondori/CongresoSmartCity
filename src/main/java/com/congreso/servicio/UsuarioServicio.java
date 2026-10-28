@@ -5,12 +5,15 @@ import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.EstadoUsuario;
 import com.congreso.modelo.enums.RolUsuario;
 import com.congreso.seguridad.EncriptadorPassword;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Servicio para la gestión de usuarios.
@@ -19,6 +22,11 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UsuarioServicio {
+
+    private static final Pattern PATRON_CORREO =
+            Pattern.compile("^[A-Za-z0-9_%+-]+(?:\\.[A-Za-z0-9_%+-]+)*@"
+                    + "(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\\.)+"
+                    + "[A-Za-z]{2,63}$");
 
     private final UsuarioDAO usuarioDAO;
     private final EncriptadorPassword encriptadorPassword;
@@ -34,9 +42,12 @@ public class UsuarioServicio {
      *
      * @param usuario el usuario a registrar
      * @return el usuario registrado
-     * @throws IllegalArgumentException si el correo o identificación ya existen
+     * @throws IllegalArgumentException si los datos de registro son inválidos o el correo
+     *                                   o identificación ya existen
      */
     public Usuario registrarUsuario(Usuario usuario) {
+        validarDatosRegistro(usuario);
+
         // Validar que el correo no exista
         if (usuarioDAO.existsByCorreo(usuario.getCorreo())) {
             throw new IllegalArgumentException("El correo electrónico ya está registrado");
@@ -55,6 +66,22 @@ public class UsuarioServicio {
 
         // Guardar el usuario
         return usuarioDAO.save(usuario);
+    }
+
+    private void validarDatosRegistro(Usuario usuario) {
+        Preconditions.checkArgument(usuario != null, "Los datos del usuario son obligatorios");
+        Preconditions.checkArgument(
+                !Strings.isNullOrEmpty(usuario.getNombres()) && !usuario.getNombres().trim().isEmpty(),
+                "El nombre no puede ser nulo ni estar vacío"
+        );
+        Preconditions.checkArgument(
+                !Strings.isNullOrEmpty(usuario.getCorreo()),
+                "El correo electrónico no puede ser nulo ni estar vacío"
+        );
+        Preconditions.checkArgument(
+                PATRON_CORREO.matcher(usuario.getCorreo()).matches(),
+                "El correo electrónico debe tener un formato válido"
+        );
     }
 
     /**
