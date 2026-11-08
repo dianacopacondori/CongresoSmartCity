@@ -54,7 +54,8 @@ public class ActividadServicio {
      * Usado por el servlet para mostrar actividades disponibles al asistente.
      */
     public List<Actividad> obtenerActividadesActivas() {
-        return actividadDAO.findByEstadoAndInscritosLessThan(EstadoActividad.ACTIVA, 999999);
+        return actividadDAO.findByEstado(EstadoActividad.ACTIVA).stream()
+                .filter(Actividad::hayCupoDisponible).toList();
     }
 
     /**

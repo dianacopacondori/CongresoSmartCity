@@ -1198,6 +1198,8 @@ body.public-page { padding-top: var(--nav-height); }
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .admin-logout-btn:hover { background: #fff; color: var(--accent-deep); border-color: #fff; }
+.admin-topbar-right form, .admin-sidebar-footer form { margin: 0; }
+.admin-sidebar-footer button.admin-side-link { width: 100%; border: 0; text-align: left; font: inherit; cursor: pointer; }
 
 /* ============ Admin sidebar ============ */
 .admin-sidebar {

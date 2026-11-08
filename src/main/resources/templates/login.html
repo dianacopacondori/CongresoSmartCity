@@ -48,23 +48,12 @@
             <input type="password" class="form-control" id="contrasena" name="contrasena"
                    placeholder="••••••••" required>
           </div>
-          <div class="mb-4 form-check">
-            <input type="checkbox" class="form-check-input" id="recordar">
-            <label class="form-check-label" for="recordar">Recordarme</label>
-          </div>
           <button type="submit" class="btn btn-primary btn-lg w-100">Iniciar sesión</button>
         </form>
 
         <div class="text-center mt-4">
           <span class="text-muted">¿No tienes una cuenta?</span>
           <a th:href="@{/usuarios/registro}" href="registro.html" class="fw-semibold text-decoration-none">Regístrate</a>
-        </div>
-        <div class="login-demo-hint mt-4">
-          <span class="section-kicker">ACCESO DE PRUEBA</span>
-          <p class="small text-muted mb-0 mt-2">
-            Admin: <strong>admin@smartcity.com</strong> / admin1234<br>
-            Asistente: <strong>asistente@smartcity.com</strong> / asistente1
-          </p>
         </div>
         <div class="text-center mt-3">
           <a th:href="@{/}" href="index.html" class="text-decoration-none small">← Volver al inicio</a>

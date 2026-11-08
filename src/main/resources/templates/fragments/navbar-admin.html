@@ -36,7 +36,9 @@
         <small>Administración</small>
       </div>
     </div>
-    <a class="admin-logout-btn" th:href="@{/usuarios/logout}" href="login.html">Salir</a>
+    <form th:action="@{/usuarios/logout}" method="post">
+      <button class="admin-logout-btn" type="submit">Salir</button>
+    </form>
   </div>
 </header>
 
@@ -116,14 +118,16 @@
   </nav>
 
   <div class="admin-sidebar-footer">
-    <a class="admin-side-link danger" th:href="@{/usuarios/logout}" href="login.html">
+    <form th:action="@{/usuarios/logout}" method="post">
+      <button class="admin-side-link danger" type="submit">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 17l5-5-5-5M20 12H9M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/>
         </svg>
       </span>
-      <span>Cerrar sesión</span>
-    </a>
+        <span>Cerrar sesión</span>
+      </button>
+    </form>
   </div>
 </aside>
 

@@ -62,7 +62,7 @@
           <div class="activity-card-accent" aria-hidden="true"></div>
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="activity-type" th:text="${act.tipo}">PONENCIA</span>
+              <span class="activity-type" th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? 'PONENCIA' : 'TALLER'}">PONENCIA</span>
               <span class="activity-status" th:text="${act.estado}">ACTIVA</span>
             </div>
             <h2 class="card-title" th:text="${act.titulo}">Título de la actividad</h2>
@@ -90,7 +90,7 @@
                     <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
                   </svg>
                 </span>
-                <span th:text="${act.responsableNombre}">Ponente</span>
+                <span th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? act.ponente.nombres + ' ' + act.ponente.apellidos : act.instructor.nombres + ' ' + act.instructor.apellidos}">Ponente</span>
               </div>
               <div>
                 <span class="meta-icon" aria-hidden="true">

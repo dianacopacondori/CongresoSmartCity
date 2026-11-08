@@ -131,7 +131,7 @@
                 <article class="card activity-card card-hover h-100">
                     <div class="activity-card-accent" aria-hidden="true"></div>
                     <div class="card-body">
-                        <span class="activity-type" th:text="${act.tipo}">PONENCIA</span>
+                        <span class="activity-type" th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? 'PONENCIA' : 'TALLER'}">PONENCIA</span>
                         <h3 class="card-title h5" th:text="${act.titulo}">Título</h3>
                         <p class="card-text text-muted small" th:text="${act.descripcion}">Descripción</p>
                         <div class="activity-meta">

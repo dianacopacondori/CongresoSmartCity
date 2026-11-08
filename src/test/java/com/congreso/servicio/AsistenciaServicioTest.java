@@ -44,19 +44,19 @@ class AsistenciaServicioTest {
         asistencia.setCodigo(15L);
         asistencia.setEstado(EstadoAsistencia.PRESENTE);
         when(asistenciaDAO.findById(15L)).thenReturn(Optional.of(asistencia));
-        when(asistenciaDAO.guardarConRegistro(asistencia)).thenReturn(asistencia);
 
-        Asistencia resultado = asistenciaServicio.corregirAsistencia(15L, EstadoAsistencia.AUSENTE);
+        asistenciaServicio.corregirAsistencia(15L, "Registro manual");
 
-        assertEquals(EstadoAsistencia.AUSENTE, resultado.getEstado());
-        verify(asistenciaDAO).guardarConRegistro(asistencia);
+        assertEquals(EstadoAsistencia.CORREGIDA, asistencia.getEstado());
+        verify(asistenciaDAO).save(asistencia);
     }
 
     @Test
-    void corregirAsistenciaRechazaEstadoCorregida() {
+    void corregirAsistenciaRechazaRegistroInexistente() {
+        when(asistenciaDAO.findById(15L)).thenReturn(Optional.empty());
         assertThrows(IllegalArgumentException.class,
-                () -> asistenciaServicio.corregirAsistencia(15L, EstadoAsistencia.CORREGIDA));
+                () -> asistenciaServicio.corregirAsistencia(15L, "Registro manual"));
 
-        verify(asistenciaDAO, never()).findById(15L);
+        verify(asistenciaDAO, never()).save(org.mockito.ArgumentMatchers.any());
     }
 }
