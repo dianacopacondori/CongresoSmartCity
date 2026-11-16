@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mi perfil</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="public-page"><nav th:replace="~{fragments/navbar-publico :: navbar}"></nav><main class="container py-5 mt-5">
+  <a th:href="@{/dashboard-asistente}">← Mi panel</a><h1 class="mt-3">Mi perfil</h1>
+  <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <div class="card p-4" th:if="${asistente != null}"><dl class="row mb-0">
+    <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9" th:text="|${asistente.nombres} ${asistente.apellidos}|">Nombre</dd>
+    <dt class="col-sm-3">Identificación</dt><dd class="col-sm-9" th:text="${asistente.identificacion}">Documento</dd>
+    <dt class="col-sm-3">Correo</dt><dd class="col-sm-9" th:text="${asistente.correo}">Correo</dd>
+    <dt class="col-sm-3">Teléfono</dt><dd class="col-sm-9" th:text="${asistente.telefono ?: 'No registrado'}">Teléfono</dd>
+    <dt class="col-sm-3">Procedencia</dt><dd class="col-sm-9" th:text="${asistente.procedencia ?: 'No registrada'}">Procedencia</dd>
+    <dt class="col-sm-3">Ocupación</dt><dd class="col-sm-9" th:text="${asistente.ocupacion ?: 'No registrada'}">Ocupación</dd>
+    <dt class="col-sm-3">Universidad</dt><dd class="col-sm-9" th:text="${asistente.universidad ?: 'No registrada'}">Universidad</dd>
+    <dt class="col-sm-3">Empresa</dt><dd class="col-sm-9" th:text="${asistente.empresa ?: 'No registrada'}">Empresa</dd>
+  </dl></div><p th:if="${asistente == null}">No se encontró tu perfil de asistente.</p>
+  <p class="text-muted mt-3">La edición del perfil no está disponible hasta que el servidor valide la titularidad y los campos permitidos.</p>
+</main><script th:src="@{/js/bootstrap.bundle.min.js(v='5.3.0')}" src="/js/bootstrap.bundle.min.js"></script></body></html>

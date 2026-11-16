@@ -45,8 +45,7 @@ public class ConfiguracionSeguridad {
                 .requestMatchers("/admin/**", "/asistentes/admin/**", "/pagos/admin/**",
                         "/inscripciones/admin/**", "/inscripciones/confirmar/**",
                         "/asistencias/admin/**", "/asistencias/registrar",
-                        "/reportes/**", "/actividades/nueva", "/actividades/editar/**",
-                        "/actividades/eliminar/**").hasRole("ADMINISTRADOR")
+                        "/reportes/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/dashboard-asistente").hasRole("ASISTENTE")
                 .anyRequest().authenticated()
         );

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light public-navbar fixed-top">
+<th:block th:fragment="navbar">
+<nav class="navbar navbar-expand-lg navbar-light public-navbar fixed-top">
   <div class="container">
     <a class="navbar-brand" th:href="@{/}" href="../templates/index.html">
       <span class="brand-mark">SC<span>.</span></span>
@@ -29,7 +30,7 @@
       </ul>
     </div>
   </div>
-
+</nav>
   <div class="offcanvas offcanvas-start" tabindex="-1" id="menuPublico" aria-labelledby="menuPublicoTitulo">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="menuPublicoTitulo">Smart City Congress</h5>
@@ -47,6 +48,6 @@
       </nav>
     </div>
   </div>
-</nav>
+</th:block>
 </body>
 </html>

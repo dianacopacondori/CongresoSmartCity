@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Generar reporte | Administración</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="dashboard-page dashboard-admin-page"><header th:replace="~{fragments/navbar-admin :: topbar}"></header><aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside><div th:replace="~{fragments/navbar-admin :: overlay}"></div><main class="admin-main"><div class="admin-main-inner"><h1>Generar reporte</h1><a th:href="@{/reportes/admin/listar}">Ver historial</a>
+  <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+  <form th:action="@{/reportes/admin/generar}" method="get" class="card p-4 mt-3"><label class="form-label" for="tipo">Tipo de reporte</label><select id="tipo" name="tipo" class="form-select mb-3" required><option value="">Selecciona un tipo</option><option th:each="tipo : ${tiposReporte}" th:value="${tipo}" th:text="${tipo}">ASISTENTES</option></select>
+    <label class="form-label" for="fechaInicio">Desde (opcional)</label><input id="fechaInicio" name="fechaInicio" type="date" class="form-control mb-3">
+    <label class="form-label" for="fechaFin">Hasta (opcional)</label><input id="fechaFin" name="fechaFin" type="date" class="form-control mb-3">
+    <label class="form-label" for="actividadId">Código de actividad (opcional)</label><input id="actividadId" name="actividadId" type="number" min="1" class="form-control mb-3">
+    <button type="submit" class="btn btn-primary">Generar reporte</button>
+  </form></div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>
