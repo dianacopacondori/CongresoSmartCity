@@ -1,0 +1,351 @@
+AUDITORÍA DE PENDIENTES - CONGRESO INTERNACIONAL SMART CITY
+Fecha de revisión: 16 de noviembre de 2026
+Segunda revisión: 16 de noviembre de 2026; se precisaron hallazgos no demostrados.
+Proyecto: CongresoSmartCity (Java 17, Spring Boot, Thymeleaf, Spring Security, JPA y PostgreSQL)
+
+OBJETO Y LÍMITES
+Se comparó el código actual con el caso de estudio de ocho páginas aportado por el usuario.
+Se mantiene Spring Boot; la referencia a PHP del documento no se adopta. Se ignora el
+párrafo sobre inmuebles, ajeno al congreso. El informe es una revisión estática de
+controladores, servicios, entidades, plantillas, seguridad, configuración y pruebas.
+No se ejecutaron pruebas nuevas, no se modificó código ni se comprobó la base de datos
+o un recorrido completo autenticado en estas revisiones. Los riesgos de concurrencia se
+deducen del código y deben verificarse con pruebas reales. Hay modificaciones previas
+en application.properties y en un archivo de log; no se tocaron. No se reproducen
+valores de credenciales en este informe.
+
+CORRECCIONES DE LA PRIMERA REVISIÓN
+- Se retiró un hallazgo falso sobre enlaces a Google Fonts: las plantillas actuales
+  ya no incluyen esos recursos externos. No debe tratarse como pendiente.
+- Se matizaron C04 y A07: sin consultar el esquema real no se puede asegurar que
+  falten restricciones únicas en PostgreSQL; sí faltan defensas explícitas en código
+  y pruebas de concurrencia.
+- Se corrigió M03: la ausencia de @DateTimeFormat no prueba que las fechas ISO fallen.
+  El defecto comprobable es la pérdida de opciones al volver al menú tras un error.
+- Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
+  al bloqueo de la política CSP.
+Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
+
+ESTADO QUE YA EXISTE
+Existen las plantillas solicitadas por los controladores, el portal público, registro,
+login, paneles, CRUD básico de actividades, formularios y listados de varios módulos,
+Spring Security con roles y CSRF, BCrypt, recursos Bootstrap locales y algunas pruebas
+de vistas, controladores y servicios. Tener una vista o endpoint no equivale a que el
+proceso de negocio funcione. Los hallazgos se ordenan por impacto, de mayor a menor.
+
+============================================================
+SEVERIDAD CRÍTICA - posible acceso indebido, manipulación o datos financieros falsos
+============================================================
+
+C01. Edición del perfil sin comprobar titularidad ni limitar campos.
+Evidencia: AsistenteServlet POST /asistentes/mi-perfil recibe @ModelAttribute Asistente y
+AsistenteServicio.actualizarAsistente hace save(asistente) sin comparar su código con el
+usuario autenticado. La vista es solo lectura, pero la URL POST sigue disponible.
+Riesgo: un cliente puede enviar identificadores y propiedades sensibles (rol, estado,
+contraseña u otros campos) en lugar de limitarse a sus propios datos. La persistencia
+exacta dependerá de JPA, pero no hay defensa de titularidad ni lista de campos.
+Modificar: crear DTO de perfil con campos editables explícitos; obtener ID desde la
+autenticación; cargar la entidad existente y actualizar solo campos permitidos; proteger
+rol/estado/contraseña; pruebas de POST manipulado, otro usuario y datos inválidos.
+
+C02. Registro de pagos acepta entidad enviada por el cliente sin autorización de negocio.
+Evidencia: PagoServlet POST /pagos/nuevo recibe @ModelAttribute Pago; PagoServicio.
+registrarPago(Pago) realiza save directo sin comprobar asistente, inscripción, importe,
+cuotas, saldo ni estado. La vista no ofrece formulario por seguridad, pero POST existe.
+Riesgo: pagos vinculados a terceros o con valores/estados inventados; integridad
+financiera y confirmaciones no confiables.
+Modificar: deshabilitar ese POST hasta implementar un DTO y flujo de pago simulado o
+pasarela autorizada; derivar asistente desde sesión, validar inscripción propia y
+tarifa definida en servidor; calcular saldo/estado solo en servidor y registrar operación.
+
+C03. Agregar actividad permite indicar el código de inscripción de otra persona.
+Evidencia: InscripcionServlet POST /inscripciones/agregar-actividad recibe
+codigoInscripcion del cliente; verifica solo que exista un usuario en sesión.
+InscripcionServicio.inscribirActividad busca la inscripción por ID sin verificar dueño.
+Riesgo: modificar la agenda y consumir cupos de otros participantes.
+Modificar: resolver inscripción del asistente autenticado o validar su propiedad en
+servicio; restringir a rol ASISTENTE, comprobar estado de inscripción y ofrecer prueba
+de acceso cruzado con dos cuentas.
+
+C04. Cupos y selección susceptibles a duplicados y carreras entre usuarios.
+Evidencia: InscripcionServicio.inscribirActividad hace findById, comprueba cupo,
+inscripcion.agregarActividad y save sin bloqueo/versión. Inscripcion.agregarActividad
+no rechaza explícitamente que la misma actividad ya esté en la lista. Dos
+transacciones concurrentes podrían superar cupo o perder incrementos; un reenvío
+no tiene una respuesta de negocio explícita para la selección ya existente.
+El efecto final dependerá de las restricciones reales y del rollback transaccional.
+No se inspeccionó el esquema generado: NO se afirma que falte una restricción única.
+Modificar: bloqueo pesimista u optimista de Actividad, validación de duplicados,
+verificación de unicidad de (inscripción, actividad) EN EL ESQUEMA REAL, actualización
+coherente del contador y pruebas simultáneas con último cupo, reenvío y rollback.
+
+C05. Abonos admiten importes inválidos y pueden producir éxito o saldo incorrecto.
+Evidencia: PagoServlet POST /pagos/admin/registrar-cuota/{pagoId} recibe double monto;
+PagoServicio.registrarAbono pasa el valor a Pago.registrarPago, que resta cualquier
+monto menor que saldo. Cero, negativos, exceso y valores no finitos no se rechazan en
+servidor. El input HTML min/max no protege una petición directa.
+Modificar: usar BigDecimal para dinero, exigir monto > 0, finito y <= saldo, impedir
+abonos duplicados indebidos; guardar historial de cuotas y probar bordes/errores.
+
+C06. Configuración sensible y modo de desarrollo en configuración principal.
+Evidencia: application.properties define perfiles dev/local por defecto, credenciales
+de BD con valor alternativo literal y spring.jpa.hibernate.ddl-auto=update.
+Riesgo: exposición si el repositorio se comparte, uso accidental de ajustes de
+desarrollo y cambios no controlados del esquema.
+Modificar: retirar credenciales del repositorio, rotar si fueron reales, exigir
+variables/archivo local no versionado, separar perfiles y usar migraciones controladas
+para entornos compartidos. Respetar la edición previa de este archivo al abordarlo.
+
+============================================================
+SEVERIDAD ALTA - procesos esenciales incorrectos o incompletos
+============================================================
+
+A01. «Inscribirme» no ejecuta operación real y un endpoint anuncia éxito ficticio.
+Evidencia: actividades.html contiene botón sin form ni enlace; ActividadServlet POST
+/actividades/inscribir/{actividadId} conserva TODO y añade «Inscripción exitosa» sin
+persistir. No debe reutilizarse sin reemplazar por la operación real.
+Modificar: conectar el botón a POST con CSRF; validar sesión, rol, inscripción propia,
+actividad activa, cupo y cruce de horario; confirmar SOLO tras commit y devolver error
+claro ante fallos.
+
+A02. La creación y confirmación de inscripción no siguen aún las reglas del documento.
+Evidencia: InscripcionServlet /inscripciones/nueva crea una inscripción con cualquier
+tipo String; InscripcionServicio.crearInscripcion no evita duplicados ni comprueba
+tarifa/pago. /inscripciones/confirmar/{codigo} marca CONFIRMADA sin verificar pago ni
+condiciones del organizador. La ruta /inscripciones/confirmacion aparece tras crear
+una solicitud PENDIENTE; su texto sí aclara que la confirmación final es posterior.
+Modificar: definir tipos admitidos, unicidad/evento y estados; calcular tarifa,
+validar pago o condición definida, distinguir solicitud recibida de confirmación y
+probar transiciones válidas e inválidas.
+
+A03. Agenda personal excluye actividades de inscripciones pendientes.
+Evidencia: InscripcionServicio.obtenerAgendaPersonalizada usa exclusivamente
+buscarConfirmadasPorAsistente. La selección podría guardarse en PENDIENTE pero no
+verse hasta confirmar, contradiciendo la expectativa de «agregada a tu agenda».
+Modificar: acordar regla de negocio; mostrar selecciones pendientes diferenciadas de
+confirmadas o impedir su elección antes del pago según la política definida. Reflejar
+en panel del asistente, agenda y mensajes.
+
+A04. Eliminación de inscripciones deja cupos/contadores sin reconciliar.
+Evidencia: InscripcionServicio.eliminarInscripcion solo hace deleteById; Inscripcion
+incrementa Actividad.inscritos al agregar, pero no se decrementa al eliminar.
+Modificar: cancelación transaccional y reversible según regla; liberar cupos una sola
+vez, respetar confirmaciones/pagos y mantener consistencia de la tabla intermedia.
+
+A05. El flujo de pago ni vincula correctamente inscripción ni representa matrícula.
+Evidencia: PagoServicio.registrarPago(codigoAsistente, importe, modalidad, cuotas,
+codigoInscripcion) carga Inscripcion pero no la asigna a Pago; Pago.inscripcion es
+nullable=false. El flujo POST actual usa la sobrecarga que guarda la entidad sin
+validar. Las vistas pago-formulario y mis-pagos avisan que no está implementado;
+PagoServlet /mis-pagos es TODO.
+Modificar: acordar pago simulado o pasarela y tarifa; vincular pago con inscripción
+propia, mostrar importe, cuotas/saldo/estado reales y consultar solo pagos propios.
+
+A06. La asistencia puede registrarse sin inscripción confirmada o credencial verificada.
+Evidencia: AsistenciaServicio.registrarAsistencia comprueba existencia de asistente,
+actividad y duplicado, pero no comprueba inscripción a esa actividad, pago/estado,
+fecha o fotocheck/código verificable. El formulario acepta IDs y mecanismo MANUAL,
+QR o CODIGO sin validar realmente el código presentado.
+Modificar: validar elegibilidad y credencial, definir mecanismo permitido, asociar
+registrador y rechazar registros fuera de las reglas del evento.
+
+A07. Unicidad de asistencias no verificada y auditoría de correcciones incompleta.
+Evidencia: AsistenciaServicio busca duplicado antes de save; en la entidad Asistencia
+no se declara @UniqueConstraint. No se inspeccionó el esquema real, por lo que NO se
+afirma que falte un índice único en la BD. CorregirAsistencia ignora la justificación
+recibida; Asistencia no guarda motivo ni usuario registrador/corrector. Sin protección
+de concurrencia, dos solicitudes simultáneas podrían duplicar registros si el esquema
+no lo impide.
+Modificar: verificar y garantizar unicidad efectiva, transacción, campos de auditoría
+y pruebas de doble registro/concurrencia/corrección autorizada.
+
+A08. Los reportes no filtran ni exportan resultados útiles.
+Evidencia: ReporteServicio.generarResultados ignora fechaInicio, fechaFin y
+actividadId; exportarReporteExcel y exportarReportePDF devuelven byte[0];
+obtenerTodosLosReportes siempre devuelve lista vacía. El enlace «Descargar Excel» en
+reporte-resultado.html solo envía tipo, perdiendo filtros elegidos.
+Modificar: consultas filtradas reales, persistencia/historial si se ofrece en UI,
+exportación no vacía y conservación de filtros. No anunciar descargas vacías como éxito.
+
+A09. Estadísticas de administración son cifras de ejemplo, no datos del congreso.
+Evidencia: CongresoController.dashboardAdmin fija totales e ingresos y envía listas
+vacías aunque haya registros. El panel puede presentar información financiera falsa.
+Modificar: consultar repositorios/servicios y mostrar valores reales o marcar «sin
+datos»; pruebas con registros y sin registros.
+
+A10. Baja física de asistentes por ruta GET y sin revisar dependencias.
+Evidencia: AsistenteServlet GET /admin/eliminar/{id} llama a AsistenteServicio.
+eliminarAsistente que hace deleteById, mientras UsuarioServicio.eliminarUsuario
+implementa eliminación lógica. El documento exige estados y trazabilidad.
+Modificar: pasar suspensión/cancelación/eliminación a POST con CSRF, preferir baja
+lógica, definir efecto sobre pagos e inscripciones y registrar auditoría.
+
+A11. Fotocheck existe como entidad/servicio, pero falta el recorrido usable.
+Evidencia: no hay controlador ni plantilla de emisión/consulta/descarga para
+fotocheck; FotocheckServicio no se invoca desde los flujos web de inscripción o
+asistencia. La entidad tiene relación única por usuario; el servicio intenta crear
+otro fotocheck tras anulación, lo cual puede chocar con esa restricción.
+Modificar: política de emisión/renovación y formato (digital o PDF), ruta protegida,
+código verificable, integración con inscripción y control de asistencia.
+
+A12. Notificaciones por correo no completan confirmación ni agenda.
+Evidencia: NotificacionServicio tiene métodos, pero ningún flujo web de inscripción,
+confirmación o agenda los llama; el NotificadorMock solo registra en log y declara
+éxito simulado. La dependencia de correo no implica entrega real.
+Modificar: acordar entorno de pruebas SMTP o simulación explícita, registrar destinatario
+y estado, enviar solo después del evento de negocio y no prometer correo entregado
+cuando se ha usado mock.
+
+============================================================
+SEVERIDAD MEDIA - funcionalidad parcial, validación y experiencia deficientes
+============================================================
+
+M01. Filtros y botón «Buscar» del catálogo son decorativos.
+Evidencia: actividades.html muestra texto/tipo/fecha sin names ni <form>;
+ActividadServlet GET /actividades no recibe filtros. El repositorio tiene búsqueda
+por título, pero no está conectada a filtros combinados.
+Modificar: GET con parámetros nombre/tipo/fecha, consulta que conserve solo
+actividades activas con cupo, valores seleccionados, contador real y estado vacío.
+
+M02. Filtros del panel admin de pagos no afectan al listado.
+Evidencia: dashboard-admin.html presenta select, input y «Aplicar filtros» sin form;
+CongresoController.dashboardAdmin envía pagos=[]; el listado /pagos/admin/listar sí
+admite estado, pero no búsqueda por nombre ni se usa desde ese panel.
+Modificar: conectar al listado real o retirar los controles hasta implementarlos;
+validar parámetros y devolver estado de error cuando un filtro sea inválido (hoy
+PagoServicio.buscarPorEstado devuelve silenciosamente lista vacía).
+
+M03. Errores de filtros de reporte sin recuperación adecuada de la vista.
+Evidencia: al fallar reporteServicio.generarReporte, ReporteServlet retorna
+reportes-menu sin volver a cargar tiposReporte; la plantilla necesita ese atributo
+para llenar el select. Fechas o IDs mal formados pueden producir un error de binding
+antes de entrar al try del método. La falta de @DateTimeFormat explícito NO demuestra
+por sí sola un fallo: Spring Boot puede convertir fechas ISO correctamente.
+Modificar: validar fechas/actividad/tipo, manejar errores de binding, conservar
+filtros y opciones al devolver la vista; probar entradas inválidas y exportación.
+
+M04. Edición del perfil visible solo en lectura por seguridad.
+Evidencia: asistente-perfil.html avisa que no se puede editar, aunque el PDF exige
+actualizar datos y el backend conserva POST inseguro (C01).
+Modificar: resolver C01 primero y luego añadir formulario validado para los campos
+permitidos, con mensajes y protección CSRF.
+
+M05. Funciones admin de asistentes/colaboradores/ponentes incompletas.
+Evidencia: AsistenteServlet solo lista, suspende o borra; ColaboradorServicio y DAO
+existen, pero no hay controlador/vistas para gestionar colaboradores, instructores y
+ponentes, sus actividades asignadas y estados. Tampoco hay interfaz para salas.
+Modificar: CRUD con DTOs, permisos de admin, validaciones, protección de asignaciones
+existentes y búsquedas por institución/empresa/código según PDF.
+
+M06. Administración de actividades no impone ventana de cambios ni reglas completas.
+Evidencia: AdminActividadController permite editar/cancelar con POST sin comprobar
+inicio del periodo de inscripción; ActividadServicio.cancelarActividad no contempla
+personas inscritas. La validación de sala se hace por lectura previa, sin mecanismo
+de bloqueo/índice para reservas concurrentes. El formulario no ofrece costo de taller.
+Modificar: definir ventana, política de cancelación y costo, transacciones e integridad
+con inscripciones; validar estado/fecha/responsables y pruebas de choque de sala.
+
+M07. Formulario administrativo de actividad depende de JS para enviar el responsable
+correcto. Evidencia: actividad-form.html usa dos select para el responsable;
+admin-form.js alterna sus nombres y required; no hay cobertura end-to-end para crear
+un taller y editarlo con JS deshabilitado. El formulario actual carga un listener
+EXTERNO compatible con la CSP; no se observó un handler inline en las plantillas.
+Modificar: asegurar un único campo enviado por tipo, validar siempre en servidor,
+probar taller/edición y decidir si se requiere funcionamiento sin JavaScript.
+
+M08. Navegación del asistente no conduce claramente al alta de inscripción y pago.
+Evidencia: dashboard-asistente.html enlaza catálogo, agenda, perfil y asistencias;
+la pantalla de pago solo anuncia que está pendiente. Falta una ruta guiada
+inscripción -> importe/pago -> selección/confirmación -> agenda/fotocheck.
+Modificar: mostrar estado y siguiente acción según el progreso real del usuario,
+sin habilitar pasos que aún no cumplen requisitos.
+
+M09. Registro de usuarios: recuperación de cuenta inexistente y errores poco útiles.
+Evidencia: UsuarioServlet tiene registro/login pero no recuperación de cuenta;
+ante @Valid inválido redirige y pierde errores específicos del BindingResult y datos
+ingresados. Modificar: formulario/servicio de recuperación por token de un solo uso
+y expiración; conservar campos no secretos y errores por campo; proteger el envío.
+
+M10. Consultas/listados con posibles problemas de rendimiento y carga perezosa.
+Evidencia: vistas admin acceden a pago.asistente/inscripcion y asistencia.actividad,
+relaciones LAZY; listados usan findAll sin paginar. No se verificó ejecución con
+registros reales en BD ni fuera de sesión de persistencia.
+Modificar: DTO/proyecciones o consultas JOIN FETCH apropiadas, paginación, orden,
+pruebas de renderizado con JPA real y datos abundantes.
+
+M11. Fecha/estado/contadores de pagos e inscripciones requieren una fuente única.
+Evidencia: CongresoController toma pagos.get(0) como «estado de pago» sin asociarlo
+a la inscripción mostrada; Inscripcion.estado y confirmacion se almacenan por separado
+y pueden divergir con cambios posteriores.
+Modificar: definir relación y transición única del estado; calcular resumen por
+inscripción, no por primer pago de la cuenta; probar cuotas, cancelaciones y múltiples
+inscripciones.
+
+M12. Tipos de usuario adicionales y autorización por rol aún no tienen recorrido web.
+Evidencia: el PDF prevé colaboradores, instructores y ponentes; la configuración de
+seguridad define reglas particulares para admin/asistente y deja el resto en
+anyRequest().authenticated(). No hay páginas privadas específicas para esas funciones.
+Modificar: definir casos de uso reales para cada rol y permisos explícitos antes de
+habilitar controladores o funciones sensibles.
+
+M13. Faltan pruebas del ciclo integral y de seguridad del negocio.
+Evidencia: InscripcionServicioTest está vacío. Hay pruebas de vistas y actividades,
+pero no una suite de registro -> inscripción -> pago -> agenda -> fotocheck ->
+asistencia -> reporte, ni pruebas de acceso cruzado, doble envío y concurrencia.
+Modificar: pruebas unitarias de reglas, MockMvc/CSRF/roles, integración con BD de
+prueba PostgreSQL y transacciones, y recorrido real con datos ficticios.
+
+============================================================
+SEVERIDAD BAJA - mantenimiento, presentación y documentación
+============================================================
+
+B01. Enlaces y textos pueden llevar a expectativas incorrectas.
+Evidencia: «Ver mi agenda» tras crear solicitud pendiente puede llevar a una agenda
+vacía; «Descargar Excel» genera archivo vacío; vistas de pago/perfil contienen avisos
+de funciones no disponibles. Modificar textos/acciones según estados verdaderos y
+ocultar o deshabilitar funciones inconclusas hasta resolver A01-A08.
+
+B02. Documentación de operación y despliegue incompleta o dispersa.
+Evidencia: no se localizó manual general del portal ni migraciones SQL versionadas;
+el PDF solicita manual, instalación y evidencias. Modificar: guía Spring Boot/Java 17,
+variables de entorno, PostgreSQL, perfiles, datos ficticios, migraciones, pruebas y
+demostración paso a paso. No incorporar el párrafo ajeno de inmuebles.
+
+B03. Código auxiliar y mensajes heredados necesitan depuración técnica.
+Evidencia: FiltroSeguridad es clase vacía; hay métodos alias/placeholder y comentarios
+«NUEVO» de integración; algunas plantillas tienen fallback href de prototipado. No
+rompen necesariamente el flujo Thymeleaf, pero dificultan mantenimiento.
+Modificar: retirar solo después de verificar usos, unificar nombres de rutas y
+servicios y mantener un contrato claro entre modelo, controlador y vistas.
+
+============================================================
+DECISIONES DE NEGOCIO PENDIENTES (NO INVENTAR EN CÓDIGO)
+============================================================
+
+D01. Tarifas por tipo de participante, qué acredita condición de estudiante y costo
+de taller; moneda y si se aceptan pagos completos o cuotas según categoría.
+D02. Pago simulado o pasarela autorizada; cuándo una cuota habilita confirmación,
+agenda, fotocheck y asistencia; quién autoriza/verifica un abono.
+D03. Fecha de apertura/cierre de inscripción y límite para modificar/cancelar agenda,
+actividades o inscripción; política de devolución y liberación de cupos.
+D04. Si se seleccionan actividades durante inscripción PENDIENTE o solo después de
+confirmar; qué debe ver el participante en ambos casos.
+D05. Fotocheck digital o descargable, identificación válida, mecanismo de verificación
+y autorización/corrección de asistencia.
+D06. Medio de correo de prueba y criterio de «enviado» frente a «simulado».
+
+ORDEN DE TRABAJO RECOMENDADO
+1. Cerrar superficies inseguras C01-C03 y C05; gestionar configuración sensible C06.
+2. Resolver integridad C04 + A04 con pruebas de concurrencia y de acceso cruzado.
+3. Definir D01-D04 y completar flujo de inscripción, catálogo, filtros y agenda
+   (A01-A05, M01, M08, M11). Solo mostrar éxito después de persistir el cambio real.
+4. Completar fotocheck, asistencia y notificaciones (A06-A07, A11-A12).
+5. Reportes/estadísticas y funciones admin (A08-A10, M02-M06).
+6. Pruebas integrales, rendimiento, documentación y ajustes visuales (M09-M13, B01-B03).
+
+CRITERIO DE CIERRE
+Con datos ficticios y cuentas separadas por rol, debe poder demostrarse sin promesas
+ficticias: registro, inscripción y pago bajo reglas definidas, selección de ponencia y
+taller sin cruces ni sobrecupo incluso con dos usuarios simultáneos, agenda visible,
+fotocheck verificable, asistencia sin duplicados y reporte filtrado/exportable real.
+Cada mensaje de éxito debe reflejar una operación completada y verificable en BD.
