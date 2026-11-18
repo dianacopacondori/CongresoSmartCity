@@ -4,6 +4,7 @@ import com.congreso.dto.ActividadFormulario;
 import com.congreso.servicio.ActividadServicio;
 import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.SalaServicio;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
@@ -70,6 +71,26 @@ class AdminActividadControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/actividades"));
         verify(actividadServicio).crearDesdeFormulario(any(ActividadFormulario.class));
+    }
+
+    @Test
+    void errorDeBaseDeDatosMuestraMensajeSinFiltrarDetalles() throws Exception {
+        when(actividadServicio.crearDesdeFormulario(any(ActividadFormulario.class)))
+                .thenThrow(new DataIntegrityViolationException("null value in column tipo"));
+
+        mvc.perform(post("/admin/actividades")
+                        .param("tipo", "PONENCIA")
+                        .param("titulo", "Ciudad inteligente")
+                        .param("fecha", "2026-11-20")
+                        .param("horarioInicio", "09:00")
+                        .param("horarioFin", "10:00")
+                        .param("cupo", "20")
+                        .param("salaId", "1")
+                        .param("colaboradorId", "2"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/actividad-form"))
+                .andExpect(model().attribute("error",
+                        "No se pudo guardar la actividad. Verifica la sala, el responsable y que el horario esté libre."));
     }
 
     @Test

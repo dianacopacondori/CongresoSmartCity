@@ -5,6 +5,8 @@ import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.RolUsuario;
 import com.congreso.servicio.ReporteServicio;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/reportes")
 public class ReporteServlet {
+
+    private static final Logger log = LoggerFactory.getLogger(ReporteServlet.class);
 
     private final ReporteServicio reporteServicio;
 
@@ -81,7 +85,8 @@ public class ReporteServlet {
             model.addAttribute("reporte", reporte);
             return "admin/reporte-resultado";
         } catch (Exception e) {
-            model.addAttribute("error", "Error al generar el reporte: " + e.getMessage());
+            log.error("Error al generar el reporte solicitado", e);
+            model.addAttribute("error", "No se pudo generar el reporte. Intente nuevamente.");
             return "admin/reportes-menu";
         }
     }

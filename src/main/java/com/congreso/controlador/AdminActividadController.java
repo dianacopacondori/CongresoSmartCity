@@ -7,6 +7,7 @@ import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.SalaServicio;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -63,6 +64,9 @@ public class AdminActividadController {
             return "redirect:/admin/actividades";
         } catch (IllegalArgumentException ex) {
             return mostrarError(model, session, false, ex.getMessage());
+        } catch (DataIntegrityViolationException ex) {
+            return mostrarError(model, session, false,
+                    "No se pudo guardar la actividad. Verifica la sala, el responsable y que el horario esté libre.");
         }
     }
 
@@ -86,6 +90,9 @@ public class AdminActividadController {
             return "redirect:/admin/actividades";
         } catch (IllegalArgumentException ex) {
             return mostrarError(model, session, true, ex.getMessage());
+        } catch (DataIntegrityViolationException ex) {
+            return mostrarError(model, session, true,
+                    "No se pudo guardar la actividad. Verifica la sala, el responsable y que el horario esté libre.");
         }
     }
 
