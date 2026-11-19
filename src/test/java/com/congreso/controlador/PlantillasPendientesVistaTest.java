@@ -58,7 +58,7 @@ class PlantillasPendientesVistaTest {
         usuario.setApellidos("Pérez");
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("usuario", usuario);
-        when(asistenteServicio.buscarPorCodigo(1L)).thenReturn(usuario);
+        when(asistenteServicio.buscarPerfilPropio("user")).thenReturn(usuario);
         when(inscripcionServicio.obtenerAgendaPersonalizada(1L)).thenReturn(List.of());
         when(asistenciaServicio.listarAsistenciasPorAsistente(1L)).thenReturn(List.of());
         for (String ruta : List.of("/inscripciones/nueva", "/inscripciones/confirmacion",

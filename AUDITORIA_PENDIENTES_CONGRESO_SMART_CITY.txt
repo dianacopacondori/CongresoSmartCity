@@ -25,6 +25,7 @@ CORRECCIONES DE LA PRIMERA REVISIÓN
 - Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
   al bloqueo de la política CSP.
 Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
+Estado al 18 de noviembre de 2026: 2 completados (C01 y M04), 32 pendientes.
 
 ESTADO QUE YA EXISTE
 Existen las plantillas solicitadas por los controladores, el portal público, registro,
@@ -37,16 +38,27 @@ proceso de negocio funcione. Los hallazgos se ordenan por impacto, de mayor a me
 SEVERIDAD CRÍTICA - posible acceso indebido, manipulación o datos financieros falsos
 ============================================================
 
-C01. Edición del perfil sin comprobar titularidad ni limitar campos.
-Evidencia: AsistenteServlet POST /asistentes/mi-perfil recibe @ModelAttribute Asistente y
-AsistenteServicio.actualizarAsistente hace save(asistente) sin comparar su código con el
-usuario autenticado. La vista es solo lectura, pero la URL POST sigue disponible.
-Riesgo: un cliente puede enviar identificadores y propiedades sensibles (rol, estado,
-contraseña u otros campos) en lugar de limitarse a sus propios datos. La persistencia
-exacta dependerá de JPA, pero no hay defensa de titularidad ni lista de campos.
-Modificar: crear DTO de perfil con campos editables explícitos; obtener ID desde la
-autenticación; cargar la entidad existente y actualizar solo campos permitidos; proteger
-rol/estado/contraseña; pruebas de POST manipulado, otro usuario y datos inválidos.
+C01. [COMPLETADO - 18 de noviembre de 2026] Edición del perfil sin comprobar titularidad
+ni limitar campos.
+Situación original: el POST /asistentes/mi-perfil aceptaba un Asistente completo y lo
+guardaba sin verificar al propietario; la pantalla era de solo lectura.
+Solución: el POST ahora recibe un DTO validado con campos editables expresamente
+permitidos. El servicio busca al asistente activo por el correo de la autenticación,
+modifica solo sus datos de perfil y conserva ID, identificación, correo, rol, estado y
+contraseña. La ruta exige rol ASISTENTE, conserva la protección CSRF y la vista permite
+editar los campos autorizados. Solo comunica éxito después de guardar; ante errores
+de validación o persistencia no anuncia éxito. Se añadieron pruebas de peticiones
+manipuladas, usuario ajeno en sesión, rol indebido, CSRF, validación y fallo de guardado.
+Verificación inicial: suite Maven `test` satisfactoria.
+Verificación adicional (18 de noviembre de 2026): 3 pruebas de integración con la
+base PostgreSQL local configurada, todas satisfactorias. Se confirmó el motor
+PostgreSQL mediante metadatos JDBC. Con Hibernate en modo
+validate y transacciones revertidas, se insertaron asistentes ficticios y se comprobó
+que un POST manipulado solo actualiza campos permitidos de la cuenta autenticada,
+sin alterar a otro asistente ni su correo, identificación, rol, estado o contraseña;
+también se comprobó que una solicitud inválida no persiste cambios. Comando:
+`mvn -Dtest=AsistentePerfilPostgresIT test`. No se ejecutó un recorrido de navegador
+con inicio de sesión y datos de usuarios reales.
 
 C02. Registro de pagos acepta entidad enviada por el cliente sin autorización de negocio.
 Evidencia: PagoServlet POST /pagos/nuevo recibe @ModelAttribute Pago; PagoServicio.
@@ -224,11 +236,11 @@ por sí sola un fallo: Spring Boot puede convertir fechas ISO correctamente.
 Modificar: validar fechas/actividad/tipo, manejar errores de binding, conservar
 filtros y opciones al devolver la vista; probar entradas inválidas y exportación.
 
-M04. Edición del perfil visible solo en lectura por seguridad.
-Evidencia: asistente-perfil.html avisa que no se puede editar, aunque el PDF exige
-actualizar datos y el backend conserva POST inseguro (C01).
-Modificar: resolver C01 primero y luego añadir formulario validado para los campos
-permitidos, con mensajes y protección CSRF.
+M04. [COMPLETADO - 18 de noviembre de 2026] Edición del perfil visible solo en lectura.
+La vista ahora ofrece un formulario para datos personales permitidos, con validación,
+mensajes de error y CSRF. Se activó solo después de resolver la titularidad y el
+guardado restringido de C01. Correo, identificación y contraseña siguen fuera de
+este formulario; sus eventuales cambios requieren un flujo separado.
 
 M05. Funciones admin de asistentes/colaboradores/ponentes incompletas.
 Evidencia: AsistenteServlet solo lista, suspende o borra; ColaboradorServicio y DAO
@@ -301,8 +313,8 @@ SEVERIDAD BAJA - mantenimiento, presentación y documentación
 
 B01. Enlaces y textos pueden llevar a expectativas incorrectas.
 Evidencia: «Ver mi agenda» tras crear solicitud pendiente puede llevar a una agenda
-vacía; «Descargar Excel» genera archivo vacío; vistas de pago/perfil contienen avisos
-de funciones no disponibles. Modificar textos/acciones según estados verdaderos y
+vacía; «Descargar Excel» genera archivo vacío; la vista de pago anuncia que aún no
+está disponible. Modificar textos/acciones según estados verdaderos y
 ocultar o deshabilitar funciones inconclusas hasta resolver A01-A08.
 
 B02. Documentación de operación y despliegue incompleta o dispersa.
@@ -335,7 +347,7 @@ y autorización/corrección de asistencia.
 D06. Medio de correo de prueba y criterio de «enviado» frente a «simulado».
 
 ORDEN DE TRABAJO RECOMENDADO
-1. Cerrar superficies inseguras C01-C03 y C05; gestionar configuración sensible C06.
+1. C01 completado; cerrar las superficies inseguras C02, C03 y C05, y gestionar C06.
 2. Resolver integridad C04 + A04 con pruebas de concurrencia y de acceso cruzado.
 3. Definir D01-D04 y completar flujo de inscripción, catálogo, filtros y agenda
    (A01-A05, M01, M08, M11). Solo mostrar éxito después de persistir el cambio real.
