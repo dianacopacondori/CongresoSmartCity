@@ -50,6 +50,8 @@ public class ConfiguracionSeguridad {
                         "/reportes/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/dashboard-asistente").hasRole("ASISTENTE")
                 .requestMatchers("/asistentes/mi-perfil").hasRole("ASISTENTE")
+                .requestMatchers("/pagos/nuevo", "/pagos/confirmacion", "/pagos/mis-pagos", "/pagos/abonar/**")
+                    .hasRole("ASISTENTE")
                 .anyRequest().authenticated()
         );
         http.formLogin(form -> form

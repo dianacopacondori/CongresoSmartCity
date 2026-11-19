@@ -25,7 +25,8 @@ CORRECCIONES DE LA PRIMERA REVISIÓN
 - Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
   al bloqueo de la política CSP.
 Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
-Estado al 18 de noviembre de 2026: 2 completados (C01 y M04), 32 pendientes.
+Estado al 18 de noviembre de 2026: 4 completados (C01, C02, A05 y M04),
+30 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
 
 ESTADO QUE YA EXISTE
 Existen las plantillas solicitadas por los controladores, el portal público, registro,
@@ -60,15 +61,39 @@ también se comprobó que una solicitud inválida no persiste cambios. Comando:
 `mvn -Dtest=AsistentePerfilPostgresIT test`. No se ejecutó un recorrido de navegador
 con inicio de sesión y datos de usuarios reales.
 
-C02. Registro de pagos acepta entidad enviada por el cliente sin autorización de negocio.
-Evidencia: PagoServlet POST /pagos/nuevo recibe @ModelAttribute Pago; PagoServicio.
-registrarPago(Pago) realiza save directo sin comprobar asistente, inscripción, importe,
-cuotas, saldo ni estado. La vista no ofrece formulario por seguridad, pero POST existe.
-Riesgo: pagos vinculados a terceros o con valores/estados inventados; integridad
-financiera y confirmaciones no confiables.
-Modificar: deshabilitar ese POST hasta implementar un DTO y flujo de pago simulado o
-pasarela autorizada; derivar asistente desde sesión, validar inscripción propia y
-tarifa definida en servidor; calcular saldo/estado solo en servidor y registrar operación.
+C02. [COMPLETADO - 18 de noviembre de 2026] Registro de pagos aceptaba entidad
+enviada por el cliente sin autorización de negocio.
+Situación original: POST /pagos/nuevo recibía un Pago completo y lo guardaba sin
+validar titular, inscripción, importe, saldo ni estado.
+Solución implementada: pagos académicos simulados, sin tarjetas ni cobro real. El POST
+solo recibe inscripción y modalidad; la cuenta se toma de la autenticación y se
+comprueba titularidad/estado. Tarifas ficticias fijadas en el servidor: Estudiante S/ 50
+(completo o 2 cuotas de S/ 25); Externo S/ 100 (solo completo). Se guarda un Pago por
+inscripción; en cuotas, la primera deja estado PARCIAL y saldo S/ 25; la segunda lleva
+saldo a cero y confirma automáticamente la inscripción. El pago completo confirma de
+inmediato. Se usa transacción y bloqueo sobre la inscripción; el listado personal se
+filtra por cuenta. Se eliminó el guardado libre y el abono administrativo de importe
+arbitrario. Pasan 11 pruebas específicas de servicio y acceso web
+(`mvn -Dtest=PagoSimuladoServicioTest,PagoSimuladoVistaTest test`). La suite general
+actual falla en ConfiguracionSecretoTest porque application.properties contiene
+un valor alternativo para DB_PASSWORD, cambio ajeno a este desarrollo.
+Verificación adicional: las 3 pruebas de PagoSimuladoPostgresIT pasaron contra
+PostgreSQL local con Hibernate en modo validate y rollback de datos ficticios.
+Confirmaron el motor por metadatos JDBC, importe y estado persistidos, confirmación
+tras pago completo/segunda cuota, rechazo de cuotas externas, duplicados, CSRF y
+acceso a inscripción ajena. No se comprobó concurrencia real de dos procesos.
+La suite general (79 pruebas)
+tiene un fallo en ConfiguracionSecretoTest por un valor alternativo en DB_PASSWORD
+de application.properties; no se cambió ese archivo durante este desarrollo.
+Prueba adicional en Chrome headless (18 de noviembre de 2026): registro e inicio de
+sesión reales de dos cuentas ficticias, inscripción Estudiante y Externo, primera
+cuota estudiantil PARCIAL sin confirmar, segunda cuota PAGADO con confirmación
+automática, y pago completo de Externo con confirmación. Se consultaron las filas
+resultantes en PostgreSQL (S/ 50 y S/ 100, saldo cero, ambas confirmadas) y se
+eliminaron exclusivamente los 2 pagos, 2 inscripciones y 2 cuentas creadas para
+la prueba; consulta posterior: cero cuentas de prueba restantes. La navegación
+entre inscripción y pago requirió abrir /pagos/nuevo directamente: falta un enlace
+guiado desde la confirmación de inscripción (M08). No se probó una pasarela real.
 
 C03. Agregar actividad permite indicar el código de inscripción de otra persona.
 Evidencia: InscripcionServlet POST /inscripciones/agregar-actividad recibe
@@ -92,12 +117,11 @@ verificación de unicidad de (inscripción, actividad) EN EL ESQUEMA REAL, actua
 coherente del contador y pruebas simultáneas con último cupo, reenvío y rollback.
 
 C05. Abonos admiten importes inválidos y pueden producir éxito o saldo incorrecto.
-Evidencia: PagoServlet POST /pagos/admin/registrar-cuota/{pagoId} recibe double monto;
-PagoServicio.registrarAbono pasa el valor a Pago.registrarPago, que resta cualquier
-monto menor que saldo. Cero, negativos, exceso y valores no finitos no se rechazan en
-servidor. El input HTML min/max no protege una petición directa.
-Modificar: usar BigDecimal para dinero, exigir monto > 0, finito y <= saldo, impedir
-abonos duplicados indebidos; guardar historial de cuotas y probar bordes/errores.
+Mitigación aplicada con C02: se retiró POST /pagos/admin/registrar-cuota/{pagoId} y
+PagoServicio.registrarAbono/registrarCuota; el flujo simulado solo admite la segunda
+cuota fija de S/ 25, derivada en servidor y una sola vez. Quedan pendientes la prueba
+con PostgreSQL, un historial individual de cuotas y una revisión del método genérico
+Pago.registrarPago(double) antes de reutilizarlo. No se declara C05 completado.
 
 C06. Configuración sensible y modo de desarrollo en configuración principal.
 Evidencia: application.properties define perfiles dev/local por defecto, credenciales
@@ -144,14 +168,11 @@ incrementa Actividad.inscritos al agregar, pero no se decrementa al eliminar.
 Modificar: cancelación transaccional y reversible según regla; liberar cupos una sola
 vez, respetar confirmaciones/pagos y mantener consistencia de la tabla intermedia.
 
-A05. El flujo de pago ni vincula correctamente inscripción ni representa matrícula.
-Evidencia: PagoServicio.registrarPago(codigoAsistente, importe, modalidad, cuotas,
-codigoInscripcion) carga Inscripcion pero no la asigna a Pago; Pago.inscripcion es
-nullable=false. El flujo POST actual usa la sobrecarga que guarda la entidad sin
-validar. Las vistas pago-formulario y mis-pagos avisan que no está implementado;
-PagoServlet /mis-pagos es TODO.
-Modificar: acordar pago simulado o pasarela y tarifa; vincular pago con inscripción
-propia, mostrar importe, cuotas/saldo/estado reales y consultar solo pagos propios.
+A05. [COMPLETADO - 18 de noviembre de 2026] Flujo de pago simulado y consulta personal.
+El flujo anterior no vinculaba inscripción ni validaba datos. Ahora se vincula cada
+pago simulado a la inscripción propia, se presentan tarifa/saldo/estado y se consultan
+solo pagos propios; completar cuotas confirma la inscripción. La prueba de
+PostgreSQL local pasó (ver C02). No se cubren tarifas adicionales de talleres.
 
 A06. La asistencia puede registrarse sin inscripción confirmada o credencial verificada.
 Evidencia: AsistenciaServicio.registrarAsistencia comprueba existencia de asistente,
@@ -267,7 +288,8 @@ probar taller/edición y decidir si se requiere funcionamiento sin JavaScript.
 
 M08. Navegación del asistente no conduce claramente al alta de inscripción y pago.
 Evidencia: dashboard-asistente.html enlaza catálogo, agenda, perfil y asistencias;
-la pantalla de pago solo anuncia que está pendiente. Falta una ruta guiada
+ya hay pantalla de pago simulado, pero la prueba en navegador necesitó abrir
+/pagos/nuevo directamente tras crear la inscripción: falta una ruta guiada
 inscripción -> importe/pago -> selección/confirmación -> agenda/fotocheck.
 Modificar: mostrar estado y siguiente acción según el progreso real del usuario,
 sin habilitar pasos que aún no cumplen requisitos.
@@ -334,10 +356,12 @@ servicios y mantener un contrato claro entre modelo, controlador y vistas.
 DECISIONES DE NEGOCIO PENDIENTES (NO INVENTAR EN CÓDIGO)
 ============================================================
 
-D01. Tarifas por tipo de participante, qué acredita condición de estudiante y costo
-de taller; moneda y si se aceptan pagos completos o cuotas según categoría.
-D02. Pago simulado o pasarela autorizada; cuándo una cuota habilita confirmación,
-agenda, fotocheck y asistencia; quién autoriza/verifica un abono.
+D01. Para la demostración académica se aprobaron: Estudiante S/ 50 (completo o 2 cuotas
+de S/ 25), Externo S/ 100 (solo completo). La condición de estudiante es declarativa,
+sin acreditación; queda pendiente definir cualquier costo adicional de talleres.
+D02. Se aprobó pago simulado, sin cobros reales; la inscripción se confirma al pagar
+el total (no tras la primera cuota). Siguen pendientes las políticas de fotocheck,
+asistencia y acceso a agenda mientras la inscripción está PENDIENTE.
 D03. Fecha de apertura/cierre de inscripción y límite para modificar/cancelar agenda,
 actividades o inscripción; política de devolución y liberación de cupos.
 D04. Si se seleccionan actividades durante inscripción PENDIENTE o solo después de
@@ -347,7 +371,7 @@ y autorización/corrección de asistencia.
 D06. Medio de correo de prueba y criterio de «enviado» frente a «simulado».
 
 ORDEN DE TRABAJO RECOMENDADO
-1. C01 completado; cerrar las superficies inseguras C02, C03 y C05, y gestionar C06.
+1. C01 y C02 completados; cerrar C03 y las tareas restantes de C05, y gestionar C06.
 2. Resolver integridad C04 + A04 con pruebas de concurrencia y de acceso cruzado.
 3. Definir D01-D04 y completar flujo de inscripción, catálogo, filtros y agenda
    (A01-A05, M01, M08, M11). Solo mostrar éxito después de persistir el cambio real.
