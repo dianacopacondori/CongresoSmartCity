@@ -3,6 +3,8 @@ package com.congreso.servicio;
 import com.congreso.dao.AsistenteDAO;
 import com.congreso.dao.InscripcionDAO;
 import com.congreso.dao.PagoDAO;
+import com.congreso.dto.EstadoParticipacion;
+import com.congreso.dto.EstadoParticipacion.Paso;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Pago;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -101,6 +104,42 @@ public class PagoServicio {
     @Transactional(readOnly = true)
     public List<Pago> pagosPropios(String correoAutenticado) {
         return pagoDAO.findByAsistente(asistentePropio(correoAutenticado));
+    }
+
+    @Transactional(readOnly = true)
+    public EstadoParticipacion estadoParticipacion(String correoAutenticado) {
+        Asistente asistente = asistentePropio(correoAutenticado);
+        List<Inscripcion> inscripciones = inscripcionDAO.findByAsistente(asistente);
+        // Preferir una inscripción pendiente que requiera acción. No depender del orden del DAO.
+        Inscripcion actual = inscripciones.stream()
+                .filter(i -> i.getEstado() == EstadoInscripcion.PENDIENTE)
+                .max(Comparator.comparing(Inscripcion::getCodigo))
+                .or(() -> inscripciones.stream()
+                        .filter(i -> i.getEstado() == EstadoInscripcion.CONFIRMADA)
+                        .max(Comparator.comparing(Inscripcion::getCodigo)))
+                .orElse(null);
+        if (actual == null) {
+            return new EstadoParticipacion("SIN INSCRIPCIÓN", "SIN PAGOS", Paso.CREAR_INSCRIPCION, null);
+        }
+        Pago pago = pagoDAO.findByAsistente(asistente).stream()
+                .filter(p -> p.getInscripcion() != null
+                        && actual.getCodigo().equals(p.getInscripcion().getCodigo()))
+                .max(Comparator.comparing(Pago::getCodigoPago))
+                .orElse(null);
+        String estadoPago = pago == null ? "SIN PAGOS" : pago.getEstado().name();
+        Paso paso;
+        if (actual.getEstado() == EstadoInscripcion.CONFIRMADA) {
+            paso = pago != null && pago.getEstado() == EstadoPago.PAGADO
+                    ? Paso.VER_AGENDA : Paso.REVISAR_ESTADO;
+        } else if (pago == null) {
+            paso = Paso.SIMULAR_PAGO;
+        } else if (pago.getEstado() == EstadoPago.PARCIAL
+                && pago.getModalidad() == ModalidadPago.CUOTAS && pago.getSaldo() > 0) {
+            paso = Paso.COMPLETAR_CUOTA;
+        } else {
+            paso = Paso.REVISAR_ESTADO;
+        }
+        return new EstadoParticipacion(actual.getEstado().name(), estadoPago, paso, actual.getCodigo());
     }
 
     private Asistente asistentePropio(String correoAutenticado) {

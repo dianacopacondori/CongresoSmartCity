@@ -27,7 +27,7 @@ class CongresoControllerTest {
         administrador.setRol(RolUsuario.ADMINISTRADOR);
         session.setAttribute("usuario", administrador);
 
-        assertEquals("redirect:/admin/dashboard", controller.dashboardAsistente(new ExtendedModelMap(), session));
+        assertEquals("redirect:/admin/dashboard", controller.dashboardAsistente(new ExtendedModelMap(), session, null));
     }
 
     @Test
@@ -37,6 +37,6 @@ class CongresoControllerTest {
         administrador.setRol(RolUsuario.ASISTENTE);
         session.setAttribute("usuario", administrador);
 
-        assertEquals("redirect:/usuarios/login", controller.dashboardAsistente(new ExtendedModelMap(), session));
+        assertEquals("redirect:/usuarios/login", controller.dashboardAsistente(new ExtendedModelMap(), session, null));
     }
 }

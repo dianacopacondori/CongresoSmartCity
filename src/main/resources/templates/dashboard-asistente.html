@@ -19,9 +19,10 @@
                 <h1>¡Hola, <span th:text="${usuario.nombres}">Asistente</span>!</h1>
                 <p>Tu experiencia en el congreso, organizada en un solo lugar.</p>
             </div>
-            <a th:href="@{/actividades}" href="/actividades" class="dashboard-hero-action">
-                Explorar actividades <span aria-hidden="true">→</span>
-            </a>
+            <a th:if="${pasoSiguiente == 'CREAR_INSCRIPCION'}" th:href="@{/inscripciones/nueva}" class="dashboard-hero-action">Crear inscripción <span aria-hidden="true">→</span></a>
+            <a th:if="${pasoSiguiente == 'SIMULAR_PAGO'}" th:href="@{/pagos/nuevo}" class="dashboard-hero-action">Simular pago <span aria-hidden="true">→</span></a>
+            <a th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}" th:href="@{/pagos/mis-pagos}" class="dashboard-hero-action">Completar segunda cuota <span aria-hidden="true">→</span></a>
+            <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/inscripciones/mi-agenda}" class="dashboard-hero-action">Ver mi agenda <span aria-hidden="true">→</span></a>
             <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
             <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
         </header>
@@ -92,6 +93,20 @@
                     <div class="stat-footnote">Registros de participación</div>
                 </div>
             </div>
+        </section>
+
+        <section class="card p-4 mb-4" aria-label="Siguiente paso de inscripción">
+            <h2 class="h5">Tu siguiente paso</h2>
+            <p th:if="${pasoSiguiente == 'CREAR_INSCRIPCION'}">Aún no tienes una inscripción activa. Crea una para iniciar el pago simulado.</p>
+            <p th:if="${pasoSiguiente == 'SIMULAR_PAGO'}">Tu inscripción está pendiente. Simula el pago para continuar; no se cobrará dinero real.</p>
+            <p th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}">Tu primera cuota simulada está registrada. La inscripción se confirmará solo al completar la segunda cuota.</p>
+            <p th:if="${pasoSiguiente == 'VER_AGENDA'}">La inscripción está confirmada y el pago simulado está completo. Puedes consultar tu agenda.</p>
+            <p th:if="${pasoSiguiente == 'REVISAR_ESTADO'}">El estado de esta inscripción y su pago requiere revisión. Consulta tus pagos o contacta a la organización; no simules un nuevo pago.</p>
+            <a th:if="${pasoSiguiente == 'CREAR_INSCRIPCION'}" th:href="@{/inscripciones/nueva}" class="btn btn-primary align-self-start">Crear inscripción</a>
+            <a th:if="${pasoSiguiente == 'SIMULAR_PAGO'}" th:href="@{/pagos/nuevo}" class="btn btn-primary align-self-start">Simular pago</a>
+            <a th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}" th:href="@{/pagos/mis-pagos}" class="btn btn-primary align-self-start">Ir a mis pagos y completar cuota</a>
+            <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/inscripciones/mi-agenda}" class="btn btn-primary align-self-start">Ver mi agenda</a>
+            <a th:if="${pasoSiguiente == 'REVISAR_ESTADO'}" th:href="@{/pagos/mis-pagos}" class="btn btn-outline-primary align-self-start">Consultar mis pagos</a>
         </section>
 
         <section class="quick-actions mb-4 mb-lg-5">
@@ -183,7 +198,7 @@
                     </svg>
                 </span>
                 <h3>Tu agenda comienza aquí</h3>
-                <p>Aún no has seleccionado actividades. Explora el programa y guarda las sesiones que te interesen.</p>
+                <p>Aún no tienes actividades en tu agenda. Puedes explorar el programa; la selección de actividades estará disponible próximamente.</p>
                 <a th:href="@{/actividades}" href="/actividades" class="btn btn-primary">Explorar actividades <span aria-hidden="true">→</span></a>
             </div>
         </section>

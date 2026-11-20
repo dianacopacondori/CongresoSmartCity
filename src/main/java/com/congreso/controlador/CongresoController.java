@@ -4,6 +4,7 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Administrador;
 import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.RolUsuario;
+import com.congreso.dto.EstadoParticipacion;
 import com.congreso.servicio.ActividadServicio;
 import com.congreso.servicio.AsistenciaServicio;
 import com.congreso.servicio.ColaboradorServicio;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
+import java.security.Principal;
 
 /**
  * Controlador principal para las páginas públicas del congreso.
@@ -73,13 +75,13 @@ public class CongresoController {
      * Dashboard del asistente (ruta exclusiva).
      */
     @GetMapping("/dashboard-asistente")
-    public String dashboardAsistente(Model model, HttpSession session) {
+    public String dashboardAsistente(Model model, HttpSession session, Principal principal) {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/usuarios/login";
         if (usuario instanceof Administrador && usuario.getRol() == RolUsuario.ADMINISTRADOR) {
             return "redirect:/admin/dashboard";
         }
-        if (!(usuario instanceof Asistente asistente) || usuario.getRol() != RolUsuario.ASISTENTE) {
+        if (!(usuario instanceof Asistente) || usuario.getRol() != RolUsuario.ASISTENTE) {
             session.invalidate();
             return "redirect:/usuarios/login";
         }
@@ -87,11 +89,11 @@ public class CongresoController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("actividades", inscripcionServicio.obtenerAgendaPersonalizada(usuario.getCodigo()));
         model.addAttribute("asistencias", asistenciaServicio.listarAsistenciasPorAsistente(usuario.getCodigo()));
-        var inscripciones = inscripcionServicio.listarInscripcionesPorAsistente(asistente);
-        model.addAttribute("inscripcionEstado", inscripciones.isEmpty() ? "SIN INSCRIPCIÓN"
-                : inscripciones.get(inscripciones.size() - 1).getEstado());
-        var pagos = pagoServicio.listarTodosLosPagos(usuario.getCodigo());
-        model.addAttribute("pagoEstado", pagos.isEmpty() ? "SIN PAGOS" : pagos.get(0).getEstado());
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("inscripcionEstado", estado.inscripcion());
+        model.addAttribute("pagoEstado", estado.pago());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
+        model.addAttribute("inscripcionCodigo", estado.codigoInscripcion());
         return "dashboard-asistente";
     }
 

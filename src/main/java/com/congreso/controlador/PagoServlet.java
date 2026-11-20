@@ -3,6 +3,7 @@ package com.congreso.controlador;
 import com.congreso.modelo.Pago;
 import com.congreso.modelo.enums.ModalidadPago;
 import com.congreso.servicio.PagoServicio;
+import com.congreso.dto.EstadoParticipacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class PagoServlet {
     @GetMapping("/nuevo")
     public String mostrarFormularioPago(Principal principal, Model model) {
         model.addAttribute("inscripciones", pagoServicio.inscripcionesPendientesPropias(principal.getName()));
+        model.addAttribute("pasoSiguiente", pagoServicio.estadoParticipacion(principal.getName()).paso().name());
         return "pago-formulario";
     }
 
@@ -66,7 +68,9 @@ public class PagoServlet {
     }
 
     @GetMapping("/confirmacion")
-    public String mostrarConfirmacionPago(Model model) {
+    public String mostrarConfirmacionPago(Principal principal, Model model) {
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
         return "pago-confirmacion";
     }
 

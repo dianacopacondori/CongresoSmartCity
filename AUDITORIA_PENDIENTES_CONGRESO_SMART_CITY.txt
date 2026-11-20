@@ -25,8 +25,8 @@ CORRECCIONES DE LA PRIMERA REVISIÓN
 - Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
   al bloqueo de la política CSP.
 Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
-Estado al 18 de noviembre de 2026: 4 completados (C01, C02, A05 y M04),
-30 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
+Estado al 19 de noviembre de 2026: 5 completados (C01, C02, A05, M04 y M08),
+29 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
 
 ESTADO QUE YA EXISTE
 Existen las plantillas solicitadas por los controladores, el portal público, registro,
@@ -286,13 +286,23 @@ EXTERNO compatible con la CSP; no se observó un handler inline en las plantilla
 Modificar: asegurar un único campo enviado por tipo, validar siempre en servidor,
 probar taller/edición y decidir si se requiere funcionamiento sin JavaScript.
 
-M08. Navegación del asistente no conduce claramente al alta de inscripción y pago.
-Evidencia: dashboard-asistente.html enlaza catálogo, agenda, perfil y asistencias;
-ya hay pantalla de pago simulado, pero la prueba en navegador necesitó abrir
-/pagos/nuevo directamente tras crear la inscripción: falta una ruta guiada
-inscripción -> importe/pago -> selección/confirmación -> agenda/fotocheck.
-Modificar: mostrar estado y siguiente acción según el progreso real del usuario,
-sin habilitar pasos que aún no cumplen requisitos.
+M08. [COMPLETADO - 19 de noviembre de 2026] Navegación del asistente hacia
+inscripción, pago simulado y agenda.
+Antes era necesario abrir /pagos/nuevo directamente tras inscribirse. Ahora el panel
+ofrece el siguiente paso según la inscripción actual y SU pago asociado: crear
+inscripción, simular pago, completar segunda cuota, ver agenda tras pago completo o
+revisar un estado inconsistente. Las pantallas de confirmación enlazan al paso real;
+el formulario de pago evita invitar a crear otra inscripción si ya hay una cuota
+parcial. No se promete selección de actividades ni fotocheck: A01 y A11 pendientes.
+Verificación: 9 pruebas nuevas de servicio/vistas, una prueba de integración con
+PostgreSQL real (rollback, dos inscripciones y pago anterior) y dos recorridos
+completos en Chrome headless con cuentas Estudiante y Externo. El recorrido final
+usó los enlaces visibles panel -> inscripción -> pago -> segunda cuota/confirmación
+-> agenda, sin escribir rutas manualmente. Se eliminaron las 5 cuentas ficticias,
+4 inscripciones y 4 pagos creados en las ejecuciones de navegador (incluida una
+ejecución inicial cuyo script tenía una aserción incorrecta); cero cuentas de prueba
+restantes. La suite general sigue con un único fallo preexistente en
+ConfiguracionSecretoTest, ajeno a M08.
 
 M09. Registro de usuarios: recuperación de cuenta inexistente y errores poco útiles.
 Evidencia: UsuarioServlet tiene registro/login pero no recuperación de cuenta;
@@ -308,12 +318,10 @@ Modificar: DTO/proyecciones o consultas JOIN FETCH apropiadas, paginación, orde
 pruebas de renderizado con JPA real y datos abundantes.
 
 M11. Fecha/estado/contadores de pagos e inscripciones requieren una fuente única.
-Evidencia: CongresoController toma pagos.get(0) como «estado de pago» sin asociarlo
-a la inscripción mostrada; Inscripcion.estado y confirmacion se almacenan por separado
-y pueden divergir con cambios posteriores.
-Modificar: definir relación y transición única del estado; calcular resumen por
-inscripción, no por primer pago de la cuenta; probar cuotas, cancelaciones y múltiples
-inscripciones.
+Mitigación parcial en M08: el panel ya asocia el pago con la inscripción mostrada,
+prioriza una pendiente y no toma pagos.get(0) de otra inscripción. Siguen pendientes
+una fuente única para Inscripcion.estado y confirmacion, política de cancelaciones y
+pruebas exhaustivas de múltiples inscripciones/estados históricos.
 
 M12. Tipos de usuario adicionales y autorización por rol aún no tienen recorrido web.
 Evidencia: el PDF prevé colaboradores, instructores y ponentes; la configuración de
@@ -334,9 +342,10 @@ SEVERIDAD BAJA - mantenimiento, presentación y documentación
 ============================================================
 
 B01. Enlaces y textos pueden llevar a expectativas incorrectas.
-Evidencia: «Ver mi agenda» tras crear solicitud pendiente puede llevar a una agenda
-vacía; «Descargar Excel» genera archivo vacío; la vista de pago anuncia que aún no
-está disponible. Modificar textos/acciones según estados verdaderos y
+La vista de inscripción ahora dirige al pago simulado y solo invita a consultar
+agenda al completar el pago; sigue sin poder seleccionarse actividades. «Descargar
+Excel» genera archivo vacío y algunas vistas aún anuncian pasos pendientes. Ajustar
+los demás textos/acciones según estados verdaderos y
 ocultar o deshabilitar funciones inconclusas hasta resolver A01-A08.
 
 B02. Documentación de operación y despliegue incompleta o dispersa.

@@ -6,6 +6,8 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Usuario;
 import com.congreso.servicio.InscripcionServicio;
+import com.congreso.servicio.PagoServicio;
+import com.congreso.dto.EstadoParticipacion;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.security.Principal;
 
 /**
  * Controlador para la gestión de inscripciones al congreso.
@@ -27,12 +30,14 @@ public class InscripcionServlet {
 
     private final InscripcionServicio inscripcionServicio;
     private final AsistenteDAO asistenteDAO;
+    private final PagoServicio pagoServicio;
 
     @Autowired
     public InscripcionServlet(InscripcionServicio inscripcionServicio,
-                              AsistenteDAO asistenteDAO) {
+                              AsistenteDAO asistenteDAO, PagoServicio pagoServicio) {
         this.inscripcionServicio = inscripcionServicio;
         this.asistenteDAO = asistenteDAO;
+        this.pagoServicio = pagoServicio;
     }
 
     /**
@@ -82,7 +87,9 @@ public class InscripcionServlet {
      * Muestra la confirmación de inscripción.
      */
     @GetMapping("/confirmacion")
-    public String mostrarConfirmacion(Model model) {
+    public String mostrarConfirmacion(Principal principal, Model model) {
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
         return "inscripcion-confirmacion";
     }
 

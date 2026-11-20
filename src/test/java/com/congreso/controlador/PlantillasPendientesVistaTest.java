@@ -5,6 +5,8 @@ import com.congreso.dao.UsuarioDAO;
 import com.congreso.modelo.Administrador;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Reporte;
+import com.congreso.dto.EstadoParticipacion;
+import com.congreso.dto.EstadoParticipacion.Paso;
 import com.congreso.modelo.Pago;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Ponencia;
@@ -59,6 +61,8 @@ class PlantillasPendientesVistaTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("usuario", usuario);
         when(asistenteServicio.buscarPerfilPropio("user")).thenReturn(usuario);
+        when(pagoServicio.estadoParticipacion("user"))
+                .thenReturn(new EstadoParticipacion("SIN INSCRIPCIÓN", "SIN PAGOS", Paso.CREAR_INSCRIPCION, null));
         when(inscripcionServicio.obtenerAgendaPersonalizada(1L)).thenReturn(List.of());
         when(asistenciaServicio.listarAsistenciasPorAsistente(1L)).thenReturn(List.of());
         for (String ruta : List.of("/inscripciones/nueva", "/inscripciones/confirmacion",

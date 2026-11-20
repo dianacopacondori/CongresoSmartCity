@@ -1,6 +1,7 @@
 package com.congreso.controlador;
 
 import com.congreso.dao.UsuarioDAO;
+import com.congreso.dto.EstadoParticipacion;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Pago;
@@ -46,6 +47,9 @@ class PagoSimuladoVistaTest {
         inscripcion.setCodigo(7L);
         when(pagoServicio.inscripcionesPendientesPropias("ana@example.invalid"))
                 .thenReturn(List.of(inscripcion));
+        when(pagoServicio.estadoParticipacion("ana@example.invalid"))
+                .thenReturn(new EstadoParticipacion("PENDIENTE", "SIN PAGOS",
+                        EstadoParticipacion.Paso.SIMULAR_PAGO, 7L));
         when(pagoServicio.pagosPropios("ana@example.invalid")).thenReturn(List.of());
         mvc.perform(get("/pagos/nuevo"))
                 .andExpect(status().isOk())

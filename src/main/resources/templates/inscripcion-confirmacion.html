@@ -2,8 +2,14 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Confirmación de inscripción</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
 <body class="public-page"><nav th:replace="~{fragments/navbar-publico :: navbar}"></nav><main class="container py-5 mt-5">
-  <h1>Solicitud de inscripción recibida</h1><p>Consulta tu agenda y el estado de tu participación desde tu panel.</p>
+  <h1>Estado de inscripción</h1><p th:if="${mensaje}">Tu solicitud fue recibida. Completa el pago simulado para confirmar tu inscripción.</p>
   <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
-  <p>La confirmación final de la inscripción se gestiona por separado.</p>
-  <a class="btn btn-primary" th:href="@{/inscripciones/mi-agenda}">Ver mi agenda</a> <a th:href="@{/dashboard-asistente}">Volver al panel</a>
+  <p th:if="${pasoSiguiente == 'SIMULAR_PAGO'}">Tu inscripción está pendiente de pago; aún no está confirmada.</p>
+  <p th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}">Falta la segunda cuota simulada para confirmar la inscripción.</p>
+  <p th:if="${pasoSiguiente == 'REVISAR_ESTADO'}">Consulta el estado de tu pago antes de continuar.</p>
+  <a th:if="${pasoSiguiente == 'SIMULAR_PAGO'}" class="btn btn-primary" th:href="@{/pagos/nuevo}">Simular pago (sin cobro real)</a>
+  <a th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}" class="btn btn-primary" th:href="@{/pagos/mis-pagos}">Completar segunda cuota</a>
+  <a th:if="${pasoSiguiente == 'VER_AGENDA'}" class="btn btn-primary" th:href="@{/inscripciones/mi-agenda}">Ver mi agenda</a>
+  <a th:if="${pasoSiguiente == 'CREAR_INSCRIPCION'}" class="btn btn-primary" th:href="@{/inscripciones/nueva}">Crear inscripción</a>
+  <a th:href="@{/dashboard-asistente}">Volver al panel</a>
 </main><script th:src="@{/js/bootstrap.bundle.min.js(v='5.3.0')}" src="/js/bootstrap.bundle.min.js"></script></body></html>
