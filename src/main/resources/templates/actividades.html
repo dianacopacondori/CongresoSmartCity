@@ -29,6 +29,10 @@
   </section>
 
   <div class="container activities-content">
+    <div th:if="${mensaje}" class="alert alert-success" role="status" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    <p th:if="${!puedeInscribir and esAsistente}" class="alert alert-info">Para elegir actividades necesitas una inscripción confirmada con el pago simulado completo. <a th:href="@{/dashboard-asistente}">Consulta tu siguiente paso</a>.</p>
+    <p th:if="${!esAsistente}" class="alert alert-info">Para elegir actividades, <a th:href="@{/usuarios/login}">inicia sesión como asistente</a> y completa tu inscripción.</p>
     <div class="card activities-filter mb-4">
       <div class="row g-3 align-items-end">
         <div class="col-lg-4">
@@ -100,11 +104,12 @@
             </div>
             <div class="activity-card-footer">
               <span class="activity-date" th:text="${act.fecha}">2026-10-26</span>
-              <button class="btn btn-primary"
-                      th:disabled="${!act.hayCupoDisponible()}"
-                      th:text="${act.hayCupoDisponible()} ? 'Inscribirme' : 'Cupo agotado'">
-                Inscribirme
-              </button>
+              <form th:if="${puedeInscribir}" th:action="@{/actividades/inscribir/{id}(id=${act.codigo})}" method="post">
+                <button type="submit" class="btn btn-primary"
+                        th:disabled="${!act.hayCupoDisponible() or actividadesSeleccionadas.contains(act.codigo)}"
+                        th:text="${actividadesSeleccionadas.contains(act.codigo) ? 'Ya inscrito' : (act.hayCupoDisponible() ? 'Inscribirme' : 'Cupo agotado')}">Inscribirme</button>
+              </form>
+              <span th:if="${!puedeInscribir and !act.hayCupoDisponible()}" class="text-muted">Cupo agotado</span>
             </div>
           </div>
         </article>

@@ -49,6 +49,7 @@ public class ConfiguracionSeguridad {
                         "/asistencias/admin/**", "/asistencias/registrar",
                         "/reportes/**").hasRole("ADMINISTRADOR")
                 .requestMatchers("/dashboard-asistente").hasRole("ASISTENTE")
+                .requestMatchers("/actividades/inscribir/**").hasRole("ASISTENTE")
                 .requestMatchers("/inscripciones/agregar-actividad").hasRole("ASISTENTE")
                 .requestMatchers("/asistentes/mi-perfil").hasRole("ASISTENTE")
                 .requestMatchers("/pagos/nuevo", "/pagos/confirmacion", "/pagos/mis-pagos", "/pagos/abonar/**")

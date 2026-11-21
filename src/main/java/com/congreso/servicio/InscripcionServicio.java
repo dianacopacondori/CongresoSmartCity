@@ -3,18 +3,23 @@ package com.congreso.servicio;
 import com.congreso.dao.ActividadDAO;
 import com.congreso.dao.AsistenteDAO;
 import com.congreso.dao.InscripcionDAO;
+import com.congreso.dao.PagoDAO;
 import com.congreso.modelo.Actividad;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
+import com.congreso.modelo.Pago;
 import com.congreso.modelo.enums.EstadoActividad;
 import com.congreso.modelo.enums.EstadoInscripcion;
 import com.congreso.modelo.enums.RolUsuario;
+import com.congreso.modelo.enums.EstadoPago;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,30 +28,71 @@ public class InscripcionServicio {
     private final InscripcionDAO inscripcionDAO;
     private final AsistenteDAO asistenteDAO;
     private final ActividadDAO actividadDAO;
+    private final PagoDAO pagoDAO;
 
     @Autowired
     public InscripcionServicio(InscripcionDAO inscripcionDAO,
-                              AsistenteDAO asistenteDAO,
-                              ActividadDAO actividadDAO) {
+                               AsistenteDAO asistenteDAO,
+                               ActividadDAO actividadDAO, PagoDAO pagoDAO) {
         this.inscripcionDAO = inscripcionDAO;
         this.asistenteDAO = asistenteDAO;
         this.actividadDAO = actividadDAO;
+        this.pagoDAO = pagoDAO;
     }
 
     public boolean inscribirActividad(String correoAutenticado, Long codigoInscripcion, Long codigoActividad) {
+        Asistente asistente = asistenteAutenticado(correoAutenticado);
+        Inscripcion inscripcion = inscripcionDAO.bloquearPorCodigo(codigoInscripcion)
+                .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada"));
+        if (!inscripcion.getAsistente().getCodigo().equals(asistente.getCodigo())) {
+            throw new AccessDeniedException("Inscripción ajena al asistente autenticado");
+        }
+        return agregarActividadConfirmada(inscripcion, codigoActividad);
+    }
+
+    public boolean inscribirActividadPropia(String correoAutenticado, Long codigoActividad) {
+        Inscripcion elegida = inscripcionDisponible(correoAutenticado)
+                .orElseThrow(() -> new IllegalStateException("No tienes una inscripción confirmada con pago completo"));
+        return inscribirActividad(correoAutenticado, elegida.getCodigo(), codigoActividad);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Inscripcion> inscripcionDisponible(String correoAutenticado) {
+        Asistente asistente = asistenteAutenticado(correoAutenticado);
+        return inscripcionDAO.findByAsistente(asistente).stream()
+                .filter(i -> i.getEstado() == EstadoInscripcion.CONFIRMADA && i.isConfirmacion())
+                .filter(this::pagoCompleto)
+                .max(Comparator.comparing(Inscripcion::getCodigo));
+    }
+
+    private Asistente asistenteAutenticado(String correoAutenticado) {
         Asistente asistente = asistenteDAO.findByCorreo(correoAutenticado)
                 .orElseThrow(() -> new AccessDeniedException("Asistente no disponible"));
         if (!asistente.estaActivo() || asistente.getRol() != RolUsuario.ASISTENTE) {
             throw new AccessDeniedException("Asistente no disponible");
         }
-        Inscripcion inscripcion = inscripcionDAO.findById(codigoInscripcion)
-                .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada"));
-        if (!inscripcion.getAsistente().getCodigo().equals(asistente.getCodigo())) {
-            throw new AccessDeniedException("Inscripción ajena al asistente autenticado");
-        }
+        return asistente;
+    }
+
+    private boolean pagoCompleto(Inscripcion inscripcion) {
+        return pagoDAO.findByInscripcion(inscripcion)
+                .filter(p -> p.getEstado() == EstadoPago.PAGADO && p.getSaldo() == 0
+                        && p.getAsistente().getCodigo().equals(inscripcion.getAsistente().getCodigo()))
+                .isPresent();
+    }
+
+    private boolean agregarActividadConfirmada(Inscripcion inscripcion, Long codigoActividad) {
         if (inscripcion.getEstado() != EstadoInscripcion.CONFIRMADA || !inscripcion.isConfirmacion()) {
             throw new IllegalStateException("La inscripción debe estar confirmada antes de elegir actividades");
         }
+        if (!pagoCompleto(inscripcion)) {
+            throw new IllegalStateException("Debes completar el pago simulado antes de elegir actividades");
+        }
+        if (inscripcion.getActividades().stream().anyMatch(a -> a.getCodigo().equals(codigoActividad))) {
+            throw new IllegalStateException("Ya tienes esta actividad en tu inscripción");
+        }
+        actividadDAO.bloquearCodigo(codigoActividad)
+                .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
         Actividad actividad = actividadDAO.findById(codigoActividad)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
 

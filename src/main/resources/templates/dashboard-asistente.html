@@ -198,7 +198,8 @@
                     </svg>
                 </span>
                 <h3>Tu agenda comienza aquí</h3>
-                <p>Aún no tienes actividades en tu agenda. Puedes explorar el programa; la selección de actividades estará disponible próximamente.</p>
+                <p th:if="${pasoSiguiente == 'VER_AGENDA'}">Aún no has elegido actividades. Explora el programa para inscribirte en las sesiones con cupo disponible.</p>
+                <p th:unless="${pasoSiguiente == 'VER_AGENDA'}">Aún no tienes actividades en tu agenda. Completa tu inscripción y el pago simulado antes de elegirlas.</p>
                 <a th:href="@{/actividades}" href="/actividades" class="btn btn-primary">Explorar actividades <span aria-hidden="true">→</span></a>
             </div>
         </section>

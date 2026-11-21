@@ -25,8 +25,8 @@ CORRECCIONES DE LA PRIMERA REVISIÓN
 - Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
   al bloqueo de la política CSP.
 Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
-Estado al 20 de noviembre de 2026: 6 completados (C01, C02, C03, A05, M04 y M08),
-28 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
+Estado al 21 de noviembre de 2026: 7 completados (C01-C03, A01, A05, M04 y M08),
+27 pendientes; C04 y C05 quedaron mitigados parcialmente y conservan tareas pendientes.
 
 ESTADO QUE YA EXISTE
 Existen las plantillas solicitadas por los controladores, el portal público, registro,
@@ -110,27 +110,28 @@ modificar la inscripción de otro ni aumentar sus cupos; el propietario de una
 inscripción confirmada sí puede agregar una ponencia y se persiste el cambio.
 La suite completa ejecutó 98 pruebas y mantiene 1 fallo preexistente de
 ConfiguracionSecretoTest por application.properties; no se modificó esa configuración.
-El botón «Inscribirme» del catálogo sigue sin funcionar (A01) y el control de cupos
-concurrentes/duplicados sigue pendiente (C04). El alta administrativa sin pago
-completo sigue pendiente (A02).
+El botón «Inscribirme» ya se implementó en A01; C04 mantiene pendiente la unicidad
+en base de datos. El alta administrativa sin pago completo sigue pendiente (A02).
 
-C04. Cupos y selección susceptibles a duplicados y carreras entre usuarios.
-Evidencia: InscripcionServicio.inscribirActividad hace findById, comprueba cupo,
-inscripcion.agregarActividad y save sin bloqueo/versión. Inscripcion.agregarActividad
-no rechaza explícitamente que la misma actividad ya esté en la lista. Dos
-transacciones concurrentes podrían superar cupo o perder incrementos; un reenvío
-no tiene una respuesta de negocio explícita para la selección ya existente.
-El efecto final dependerá de las restricciones reales y del rollback transaccional.
-No se inspeccionó el esquema generado: NO se afirma que falte una restricción única.
-Modificar: bloqueo pesimista u optimista de Actividad, validación de duplicados,
-verificación de unicidad de (inscripción, actividad) EN EL ESQUEMA REAL, actualización
-coherente del contador y pruebas simultáneas con último cupo, reenvío y rollback.
+C04. Unicidad de selección en base de datos todavía no garantizada.
+Mitigación con A01 (21 de noviembre de 2026): el servicio bloquea primero la fila
+de inscripción y luego la de actividad en PostgreSQL; rechaza duplicados, cruces y
+cupo agotado antes de guardar. Pruebas reales con dos usuarios por el último cupo y
+dos reenvíos simultáneos de un mismo asistente: una selección exitosa, una rechazada,
+contador y detalle persistidos una sola vez. Las filas ficticias se eliminaron.
+Pendiente: se consultó pg_constraint de detalle_inscripcion y solo figuran claves
+foráneas y NOT NULL; no hay restricción UNIQUE ni PK sobre el par
+(codigo_inscripcion, codigo_actividad). Verificar datos existentes y añadir unicidad
+mediante migración controlada, sin descartar filas ajenas. Los bloqueos protegen las
+rutas actuales de la aplicación, pero no garantizan integridad frente a otros
+escritores en BD. C04 permanece abierto.
 
 C05. Abonos admiten importes inválidos y pueden producir éxito o saldo incorrecto.
 Mitigación aplicada con C02: se retiró POST /pagos/admin/registrar-cuota/{pagoId} y
 PagoServicio.registrarAbono/registrarCuota; el flujo simulado solo admite la segunda
-cuota fija de S/ 25, derivada en servidor y una sola vez. Quedan pendientes la prueba
-con PostgreSQL, un historial individual de cuotas y una revisión del método genérico
+cuota fija de S/ 25, derivada en servidor y una sola vez. La segunda cuota simulada
+se probó con PostgreSQL en C02. Quedan pendientes un historial individual de cuotas
+y una revisión del método genérico
 Pago.registrarPago(double) antes de reutilizarlo. No se declara C05 completado.
 
 C06. Configuración sensible y modo de desarrollo en configuración principal.
@@ -146,13 +147,22 @@ para entornos compartidos. Respetar la edición previa de este archivo al aborda
 SEVERIDAD ALTA - procesos esenciales incorrectos o incompletos
 ============================================================
 
-A01. «Inscribirme» no ejecuta operación real y un endpoint anuncia éxito ficticio.
-Evidencia: actividades.html contiene botón sin form ni enlace; ActividadServlet POST
-/actividades/inscribir/{actividadId} conserva TODO y añade «Inscripción exitosa» sin
-persistir. No debe reutilizarse sin reemplazar por la operación real.
-Modificar: conectar el botón a POST con CSRF; validar sesión, rol, inscripción propia,
-actividad activa, cupo y cruce de horario; confirmar SOLO tras commit y devolver error
-claro ante fallos.
+A01. [COMPLETADO - 21 de noviembre de 2026] «Inscribirme» ejecuta operación real.
+El catálogo muestra un formulario POST con CSRF solo a asistentes con inscripción
+propia CONFIRMADA y pago simulado completo. El servidor identifica la cuenta por la
+autenticación y elige la inscripción elegible más reciente; no acepta un código de
+inscripción arbitrario desde ese botón. La ruta anterior que anunciaba éxito ficticio
+ahora llama al servicio: valida actividad ACTIVA, cupo, cruces y duplicados; realiza
+el cambio en transacción y anuncia éxito solo tras guardar. Si falta pago o hay un
+error, muestra el motivo sin éxito. La vista indica «Ya inscrito» para seleccionadas
+y orienta a visitantes/asistentes sin inscripción elegible.
+Verificación: pruebas de vista/CSRF/roles; integración con PostgreSQL de la ruta
+real del catálogo y del detalle persistido (rollback), más dos pruebas concurrentes
+con filas ficticias eliminadas (último cupo y reenvío simultáneo). La suite general
+ejecutó 105 pruebas con un único fallo previo en ConfiguracionSecretoTest por el
+valor alternativo de DB_PASSWORD en application.properties. No se hizo una prueba
+manual adicional en Chrome de este botón. La unicidad en BD sigue pendiente (C04)
+y la confirmación administrativa sin verificar pago sigue pendiente (A02).
 
 A02. La creación y confirmación de inscripción no siguen aún las reglas del documento.
 Evidencia: InscripcionServlet /inscripciones/nueva crea una inscripción con cualquier
@@ -165,12 +175,11 @@ validar pago o condición definida, distinguir solicitud recibida de confirmaci�
 probar transiciones válidas e inválidas.
 
 A03. Agenda personal excluye actividades de inscripciones pendientes.
-Evidencia: InscripcionServicio.obtenerAgendaPersonalizada usa exclusivamente
-buscarConfirmadasPorAsistente. La selección podría guardarse en PENDIENTE pero no
-verse hasta confirmar, contradiciendo la expectativa de «agregada a tu agenda».
-Modificar: acordar regla de negocio; mostrar selecciones pendientes diferenciadas de
-confirmadas o impedir su elección antes del pago según la política definida. Reflejar
-en panel del asistente, agenda y mensajes.
+Mitigación provisional en A01: la selección solo permite inscripción CONFIRMADA con
+pago simulado completo; por tanto, no se guardan nuevas actividades en PENDIENTE.
+La agenda sigue mostrando únicamente confirmadas. Falta acordar formalmente D04 y
+resolver posibles datos históricos seleccionados antes de este control. Si se cambia
+la política para permitir selección en PENDIENTE, diferenciarla en panel y agenda.
 
 A04. Eliminación de inscripciones deja cupos/contadores sin reconciliar.
 Evidencia: InscripcionServicio.eliminarInscripcion solo hace deleteById; Inscripcion
@@ -303,7 +312,9 @@ ofrece el siguiente paso según la inscripción actual y SU pago asociado: crear
 inscripción, simular pago, completar segunda cuota, ver agenda tras pago completo o
 revisar un estado inconsistente. Las pantallas de confirmación enlazan al paso real;
 el formulario de pago evita invitar a crear otra inscripción si ya hay una cuota
-parcial. No se promete selección de actividades ni fotocheck: A01 y A11 pendientes.
+parcial. Al 19 de noviembre aún no se prometía selección ni fotocheck; A01 ya
+habilitó después la selección para asistentes con inscripción pagada y confirmada.
+El fotocheck sigue pendiente (A11).
 Verificación: 9 pruebas nuevas de servicio/vistas, una prueba de integración con
 PostgreSQL real (rollback, dos inscripciones y pago anterior) y dos recorridos
 completos en Chrome headless con cuentas Estudiante y Externo. El recorrido final
@@ -353,8 +364,8 @@ SEVERIDAD BAJA - mantenimiento, presentación y documentación
 
 B01. Enlaces y textos pueden llevar a expectativas incorrectas.
 La vista de inscripción ahora dirige al pago simulado y solo invita a consultar
-agenda al completar el pago; sigue sin poder seleccionarse actividades. «Descargar
-Excel» genera archivo vacío y algunas vistas aún anuncian pasos pendientes. Ajustar
+agenda al completar el pago; A01 habilitó la selección para inscripciones elegibles.
+«Descargar Excel» genera archivo vacío y algunas vistas anuncian pasos pendientes. Ajustar
 los demás textos/acciones según estados verdaderos y
 ocultar o deshabilitar funciones inconclusas hasta resolver A01-A08.
 

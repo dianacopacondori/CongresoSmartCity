@@ -79,6 +79,7 @@ public class Inscripcion {
      * Agrega una actividad a la inscripción validando cupos y cruces.
      */
     public boolean agregarActividad(Actividad actividad) {
+        if (actividades.stream().anyMatch(a -> a.getCodigo().equals(actividad.getCodigo()))) return false;
         if (!actividad.hayCupoDisponible()) return false;
         if (validarCrucesHorario(actividad)) return false;
 

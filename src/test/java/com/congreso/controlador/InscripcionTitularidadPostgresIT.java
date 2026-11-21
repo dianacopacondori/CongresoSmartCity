@@ -4,7 +4,10 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Colaborador;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Ponencia;
+import com.congreso.modelo.Pago;
 import com.congreso.modelo.Sala;
+import com.congreso.modelo.enums.EstadoPago;
+import com.congreso.modelo.enums.ModalidadPago;
 import com.congreso.modelo.enums.RolUsuario;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +25,12 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,6 +63,15 @@ class InscripcionTitularidadPostgresIT {
         ajena = new Inscripcion(otra, "Externo");
         ajena.confirmar();
         em.persist(ajena);
+        for (Inscripcion inscripcion : new Inscripcion[]{propia, ajena}) {
+            Pago pago = new Pago(inscripcion.getAsistente(),
+                    "Estudiante".equals(inscripcion.getTipo()) ? 50 : 100,
+                    ModalidadPago.COMPLETO, 1);
+            pago.setInscripcion(inscripcion);
+            pago.setSaldo(0);
+            pago.setEstado(EstadoPago.PAGADO);
+            em.persist(pago);
+        }
 
         Colaborador ponente = new Colaborador();
         String clave = UUID.randomUUID().toString().replace("-", "").substring(0, 14);
@@ -114,6 +129,25 @@ class InscripcionTitularidadPostgresIT {
         em.clear();
         assertEquals(1, em.find(Inscripcion.class, propia.getCodigo()).getActividades().size());
         assertEquals(0, em.find(Inscripcion.class, ajena.getCodigo()).getActividades().size());
+        assertEquals(1, em.find(Ponencia.class, ponencia.getCodigo()).getInscritos());
+    }
+
+    @Test
+    void catalogoConectaBotonConAgendaPersistida() throws Exception {
+        mvc.perform(get("/actividades").with(user(titular.getCorreo()).roles("ASISTENTE")))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "action=\"/actividades/inscribir/" + ponencia.getCodigo() + "\"")));
+
+        mvc.perform(post("/actividades/inscribir/{id}", ponencia.getCodigo())
+                        .with(user(titular.getCorreo()).roles("ASISTENTE")).with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/actividades"))
+                .andExpect(flash().attributeExists("mensaje"));
+
+        em.flush();
+        em.clear();
+        assertEquals(1, em.find(Inscripcion.class, propia.getCodigo()).getActividades().size());
         assertEquals(1, em.find(Ponencia.class, ponencia.getCodigo()).getInscritos());
     }
 
