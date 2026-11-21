@@ -25,8 +25,8 @@ CORRECCIONES DE LA PRIMERA REVISIÓN
 - Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
   al bloqueo de la política CSP.
 Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
-Estado al 19 de noviembre de 2026: 5 completados (C01, C02, A05, M04 y M08),
-29 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
+Estado al 20 de noviembre de 2026: 6 completados (C01, C02, C03, A05, M04 y M08),
+28 pendientes; C05 quedó mitigado parcialmente y conserva tareas pendientes.
 
 ESTADO QUE YA EXISTE
 Existen las plantillas solicitadas por los controladores, el portal público, registro,
@@ -95,14 +95,24 @@ la prueba; consulta posterior: cero cuentas de prueba restantes. La navegación
 entre inscripción y pago requirió abrir /pagos/nuevo directamente: falta un enlace
 guiado desde la confirmación de inscripción (M08). No se probó una pasarela real.
 
-C03. Agregar actividad permite indicar el código de inscripción de otra persona.
-Evidencia: InscripcionServlet POST /inscripciones/agregar-actividad recibe
-codigoInscripcion del cliente; verifica solo que exista un usuario en sesión.
-InscripcionServicio.inscribirActividad busca la inscripción por ID sin verificar dueño.
-Riesgo: modificar la agenda y consumir cupos de otros participantes.
-Modificar: resolver inscripción del asistente autenticado o validar su propiedad en
-servicio; restringir a rol ASISTENTE, comprobar estado de inscripción y ofrecer prueba
-de acceso cruzado con dos cuentas.
+C03. [COMPLETADO - 20 de noviembre de 2026] Titularidad al agregar actividades.
+La ruta POST /inscripciones/agregar-actividad todavía recibe el código de inscripción
+como referencia, pero exige rol ASISTENTE y el servicio obtiene la identidad del
+correo autenticado: rechaza cuentas suspendidas y códigos de inscripciones ajenas
+con 403 ANTES de consultar la actividad o consumir cupo. Como medida conservadora,
+solo acepta inscripciones CONFIRMADAS y actividades ACTIVAS; la política definitiva
+de selección durante PENDIENTE sigue por definir (D04). Errores de estado no
+anuncian éxito; éxito solo tras guardar. Se eliminó la firma pública de servicio
+que admitía solo IDs sin identidad autenticada.
+Verificación: 10 pruebas específicas de servicio/controlador y 2 pruebas de
+integración con PostgreSQL real en transacciones revertidas: un usuario no puede
+modificar la inscripción de otro ni aumentar sus cupos; el propietario de una
+inscripción confirmada sí puede agregar una ponencia y se persiste el cambio.
+La suite completa ejecutó 98 pruebas y mantiene 1 fallo preexistente de
+ConfiguracionSecretoTest por application.properties; no se modificó esa configuración.
+El botón «Inscribirme» del catálogo sigue sin funcionar (A01) y el control de cupos
+concurrentes/duplicados sigue pendiente (C04). El alta administrativa sin pago
+completo sigue pendiente (A02).
 
 C04. Cupos y selección susceptibles a duplicados y carreras entre usuarios.
 Evidencia: InscripcionServicio.inscribirActividad hace findById, comprueba cupo,
@@ -373,14 +383,16 @@ el total (no tras la primera cuota). Siguen pendientes las políticas de fotoche
 asistencia y acceso a agenda mientras la inscripción está PENDIENTE.
 D03. Fecha de apertura/cierre de inscripción y límite para modificar/cancelar agenda,
 actividades o inscripción; política de devolución y liberación de cupos.
-D04. Si se seleccionan actividades durante inscripción PENDIENTE o solo después de
-confirmar; qué debe ver el participante en ambos casos.
+D04. Sigue pendiente definir si se permitirán selecciones durante PENDIENTE. Por
+seguridad y coherencia con la agenda actual, la ruta de selección bloquea ese estado
+provisionalmente y solo permite CONFIRMADA; revisar la política antes de habilitar
+el botón «Inscribirme» (A01).
 D05. Fotocheck digital o descargable, identificación válida, mecanismo de verificación
 y autorización/corrección de asistencia.
 D06. Medio de correo de prueba y criterio de «enviado» frente a «simulado».
 
 ORDEN DE TRABAJO RECOMENDADO
-1. C01 y C02 completados; cerrar C03 y las tareas restantes de C05, y gestionar C06.
+1. C01-C03 completados; cerrar las tareas restantes de C05 y gestionar C06.
 2. Resolver integridad C04 + A04 con pruebas de concurrencia y de acceso cruzado.
 3. Definir D01-D04 y completar flujo de inscripción, catálogo, filtros y agenda
    (A01-A05, M01, M08, M11). Solo mostrar éxito después de persistir el cambio real.

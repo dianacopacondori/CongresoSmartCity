@@ -109,25 +109,17 @@ public class InscripcionServlet {
     }
 
     /**
-     * Agrega una actividad a la inscripción del asistente.
-     * Usa el método real: inscribirActividad(codigoInscripcion, codigoActividad)
+     * Agrega una actividad únicamente a una inscripción del asistente autenticado.
      */
     @PostMapping("/agregar-actividad")
     public String agregarActividad(@RequestParam Long codigoInscripcion,
-                                   @RequestParam Long codigoActividad,
-                                   HttpSession session,
-                                   RedirectAttributes redirectAttributes) {
+                                    @RequestParam Long codigoActividad,
+                                    Principal principal,
+                                    RedirectAttributes redirectAttributes) {
         try {
-            Usuario usuario = (Usuario) session.getAttribute("usuario");
-            if (usuario == null) {
-                redirectAttributes.addFlashAttribute("error", "Debe iniciar sesión");
-                return "redirect:/usuarios/login";
-            }
-
-            // Llamar al método real del servicio
-            inscripcionServicio.inscribirActividad(codigoInscripcion, codigoActividad);
+            inscripcionServicio.inscribirActividad(principal.getName(), codigoInscripcion, codigoActividad);
             redirectAttributes.addFlashAttribute("mensaje", "Actividad agregada a tu agenda");
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/inscripciones/mi-agenda";

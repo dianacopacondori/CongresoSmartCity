@@ -6,7 +6,11 @@ import com.congreso.dao.InscripcionDAO;
 import com.congreso.modelo.Actividad;
 import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
+import com.congreso.modelo.enums.EstadoActividad;
+import com.congreso.modelo.enums.EstadoInscripcion;
+import com.congreso.modelo.enums.RolUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +33,26 @@ public class InscripcionServicio {
         this.actividadDAO = actividadDAO;
     }
 
-    public boolean inscribirActividad(Long codigoInscripcion, Long codigoActividad) {
+    public boolean inscribirActividad(String correoAutenticado, Long codigoInscripcion, Long codigoActividad) {
+        Asistente asistente = asistenteDAO.findByCorreo(correoAutenticado)
+                .orElseThrow(() -> new AccessDeniedException("Asistente no disponible"));
+        if (!asistente.estaActivo() || asistente.getRol() != RolUsuario.ASISTENTE) {
+            throw new AccessDeniedException("Asistente no disponible");
+        }
         Inscripcion inscripcion = inscripcionDAO.findById(codigoInscripcion)
                 .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada"));
+        if (!inscripcion.getAsistente().getCodigo().equals(asistente.getCodigo())) {
+            throw new AccessDeniedException("Inscripción ajena al asistente autenticado");
+        }
+        if (inscripcion.getEstado() != EstadoInscripcion.CONFIRMADA || !inscripcion.isConfirmacion()) {
+            throw new IllegalStateException("La inscripción debe estar confirmada antes de elegir actividades");
+        }
         Actividad actividad = actividadDAO.findById(codigoActividad)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
+
+        if (actividad.getEstado() != EstadoActividad.ACTIVA) {
+            throw new IllegalStateException("La actividad no está activa");
+        }
 
         if (!actividad.hayCupoDisponible()) {
             throw new IllegalStateException("No hay cupo disponible para esta actividad");
@@ -43,8 +62,10 @@ public class InscripcionServicio {
             throw new IllegalStateException("La actividad se cruza con otra ya inscrita");
         }
 
-        inscripcion.agregarActividad(actividad);
-        inscripcionDAO.save(inscripcion);
+        if (!inscripcion.agregarActividad(actividad)) {
+            throw new IllegalStateException("No fue posible agregar esta actividad a la inscripción");
+        }
+        inscripcionDAO.saveAndFlush(inscripcion);
         return true;
     }
 
