@@ -8,5 +8,7 @@
     <label for="codigoAsistente" class="form-label">Código de asistente</label><input class="form-control mb-3" id="codigoAsistente" type="number" min="1" name="codigoAsistente" required>
     <label for="codigoActividad" class="form-label">Código de actividad</label><input class="form-control mb-3" id="codigoActividad" type="number" min="1" name="codigoActividad" required>
     <label for="mecanismoValidacion" class="form-label">Mecanismo de validación</label><select class="form-select mb-3" id="mecanismoValidacion" name="mecanismoValidacion" required><option value="MANUAL">Manual</option><option value="QR">QR</option><option value="CODIGO">Código</option></select>
+    <label for="codigoFotocheck" class="form-label">Código del fotocheck (obligatorio para QR o código)</label><input class="form-control mb-3" id="codigoFotocheck" type="number" min="1" name="codigoFotocheck">
+    <p class="text-muted">Solo se registra asistencia de asistentes con inscripción confirmada, pago completo y la actividad en su agenda. El registro manual queda asociado al administrador.</p>
     <button class="btn btn-primary" type="submit">Registrar asistencia</button>
   </form></div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>

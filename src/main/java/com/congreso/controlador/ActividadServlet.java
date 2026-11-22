@@ -4,12 +4,14 @@ import com.congreso.modelo.Actividad;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.servicio.ActividadServicio;
 import com.congreso.servicio.InscripcionServicio;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.security.Principal;
@@ -38,9 +40,29 @@ public class ActividadServlet {
      * Lista todas las actividades disponibles para el asistente.
      */
     @GetMapping
-    public String listarActividades(Model model, Authentication authentication) {
-        List<Actividad> actividades = actividadServicio.obtenerActividadesActivas();
+    public String listarActividades(
+            @RequestParam(name = "nombre", required = false) String nombre,
+            @RequestParam(name = "tipo", required = false) String tipo,
+            @RequestParam(name = "fecha", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha,
+            Model model, Authentication authentication) {
+        String nombreFiltro = nombre == null ? "" : nombre.trim();
+        String tipoFiltro = tipo == null ? "" : tipo.trim();
+        boolean sinFiltros = nombreFiltro.isEmpty() && tipoFiltro.isEmpty() && fecha == null;
+        List<Actividad> actividades;
+        try {
+            actividades = sinFiltros
+                    ? actividadServicio.obtenerActividadesActivas()
+                    : actividadServicio.obtenerActividadesFiltradas(nombreFiltro, tipoFiltro, fecha);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            actividades = List.of();
+        }
         model.addAttribute("actividades", actividades);
+        model.addAttribute("nombreFiltro", nombreFiltro);
+        model.addAttribute("tipoFiltro", tipoFiltro);
+        model.addAttribute("fechaFiltro", fecha);
+        model.addAttribute("hayFiltros", !nombreFiltro.isEmpty() || !tipoFiltro.isEmpty() || fecha != null);
         boolean asistente = authentication != null && authentication.isAuthenticated()
                 && authentication.getAuthorities().stream()
                 .anyMatch(rol -> "ROLE_ASISTENTE".equals(rol.getAuthority()));

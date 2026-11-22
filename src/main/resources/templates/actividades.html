@@ -33,29 +33,35 @@
     <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
     <p th:if="${!puedeInscribir and esAsistente}" class="alert alert-info">Para elegir actividades necesitas una inscripción confirmada con el pago simulado completo. <a th:href="@{/dashboard-asistente}">Consulta tu siguiente paso</a>.</p>
     <p th:if="${!esAsistente}" class="alert alert-info">Para elegir actividades, <a th:href="@{/usuarios/login}">inicia sesión como asistente</a> y completa tu inscripción.</p>
-    <div class="card activities-filter mb-4">
+    <form class="card activities-filter mb-4" th:action="@{/actividades}" method="get">
       <div class="row g-3 align-items-end">
         <div class="col-lg-4">
           <label class="form-label small" for="activitySearch">Buscar actividad</label>
-          <input id="activitySearch" type="text" class="form-control" placeholder="Nombre de la sesión">
+          <input id="activitySearch" name="nombre" type="text" class="form-control"
+                 placeholder="Nombre de la sesión" th:value="${nombreFiltro}">
         </div>
         <div class="col-sm-6 col-lg-3">
           <label class="form-label small" for="activityType">Tipo de actividad</label>
-          <select class="form-select" id="activityType">
-            <option>Todos los tipos</option>
-            <option>Ponencias</option>
-            <option>Talleres</option>
+          <select class="form-select" id="activityType" name="tipo">
+            <option value="TODOS" th:selected="${tipoFiltro == null or tipoFiltro == '' or tipoFiltro == 'TODOS'}">Todos los tipos</option>
+            <option value="PONENCIA" th:selected="${tipoFiltro == 'PONENCIA'}">Ponencias</option>
+            <option value="TALLER" th:selected="${tipoFiltro == 'TALLER'}">Talleres</option>
           </select>
         </div>
         <div class="col-sm-6 col-lg-3">
           <label class="form-label small" for="activityDate">Fecha</label>
-          <input id="activityDate" type="date" class="form-control">
+          <input id="activityDate" name="fecha" type="date" class="form-control" th:value="${fechaFiltro}">
         </div>
         <div class="col-lg-2">
-          <button class="btn btn-primary w-100">Buscar</button>
+          <button type="submit" class="btn btn-primary w-100">Buscar</button>
         </div>
       </div>
-    </div>
+      <div class="row mt-2" th:if="${hayFiltros}">
+        <div class="col-12">
+          <a th:href="@{/actividades}" href="/actividades" class="btn btn-link btn-sm p-0">Limpiar filtros</a>
+        </div>
+      </div>
+    </form>
 
     <div class="row g-4" th:if="${!actividades.empty}">
       <div class="col-md-6" th:each="act : ${actividades}">
@@ -122,8 +128,9 @@
           <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
       </span>
-      <h2>Estamos preparando el programa</h2>
-      <p>Las actividades del congreso estarán disponibles aquí próximamente.</p>
+      <h2 th:text="${hayFiltros} ? 'Sin resultados para estos filtros' : 'Estamos preparando el programa'">Estamos preparando el programa</h2>
+      <p th:text="${hayFiltros} ? 'Prueba con otro nombre, tipo o fecha, o limpia los filtros para ver todo el programa.'
+                                : 'Las actividades del congreso estarán disponibles aquí próximamente.'">Las actividades del congreso estarán disponibles aquí próximamente.</p>
       <a th:href="@{/}" href="index.html" class="btn btn-outline-primary">Volver al inicio</a>
     </div>
   </div>

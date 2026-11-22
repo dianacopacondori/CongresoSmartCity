@@ -41,6 +41,7 @@
         <table class="table table-hover">
           <thead>
           <tr>
+            <th>Código</th>
             <th>Tipo</th>
             <th>Nombre</th>
             <th>Fecha</th>
@@ -53,6 +54,7 @@
           </thead>
           <tbody>
           <tr th:each="act : ${actividades}">
+            <td th:text="${act.codigo}">1</td>
             <td><span class="activity-type" th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? 'PONENCIA' : 'TALLER'}">PONENCIA</span></td>
             <td th:text="${act.titulo}">Título</td>
             <td th:text="${act.fecha}">2026-10-26</td>
@@ -71,7 +73,7 @@
             </td>
           </tr>
           <tr th:if="${actividades.empty}">
-            <td colspan="8">
+            <td colspan="9">
               <div class="dashboard-empty-state">
                 <span class="empty-state-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">

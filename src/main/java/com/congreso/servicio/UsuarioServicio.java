@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -203,5 +205,16 @@ public class UsuarioServicio {
      */
     public List<Usuario> obtenerUsuariosActivos() {
         return usuarioDAO.findByEstado(EstadoUsuario.ACTIVO);
+    }
+
+    /** Total de asistentes activos (no incluye suspendidos ni eliminados). */
+    public long contarAsistentesActivos() {
+        return usuarioDAO.countByRolAndEstado(RolUsuario.ASISTENTE, EstadoUsuario.ACTIVO);
+    }
+
+    /** Asistentes creados durante el día actual. */
+    public long contarAsistentesRegistradosHoy() {
+        LocalDateTime inicio = LocalDate.now().atStartOfDay();
+        return usuarioDAO.countByRolAndFechaCreacionBetween(RolUsuario.ASISTENTE, inicio, inicio.plusDays(1));
     }
 }

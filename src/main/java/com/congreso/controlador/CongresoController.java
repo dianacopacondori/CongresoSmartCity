@@ -10,13 +10,14 @@ import com.congreso.servicio.AsistenciaServicio;
 import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.InscripcionServicio;
 import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.UsuarioServicio;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
 import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Controlador principal para las páginas públicas del congreso.
@@ -33,15 +34,17 @@ public class CongresoController {
     private final InscripcionServicio inscripcionServicio;
     private final AsistenciaServicio asistenciaServicio;
     private final PagoServicio pagoServicio;
+    private final UsuarioServicio usuarioServicio;
 
     public CongresoController(ActividadServicio actividadServicio, ColaboradorServicio colaboradorServicio,
                               InscripcionServicio inscripcionServicio, AsistenciaServicio asistenciaServicio,
-                              PagoServicio pagoServicio) {
+                              PagoServicio pagoServicio, UsuarioServicio usuarioServicio) {
         this.actividadServicio = actividadServicio;
         this.colaboradorServicio = colaboradorServicio;
         this.inscripcionServicio = inscripcionServicio;
         this.asistenciaServicio = asistenciaServicio;
         this.pagoServicio = pagoServicio;
+        this.usuarioServicio = usuarioServicio;
     }
 
     /**
@@ -103,13 +106,12 @@ public class CongresoController {
     @GetMapping("/admin/dashboard")
     public String dashboardAdmin(Model model, HttpSession session) {
         model.addAttribute("usuario", session.getAttribute("usuario"));
-        // TODO: Cargar estadísticas reales desde la base de datos
-        model.addAttribute("totalAsistentes", 1250);
-        model.addAttribute("registradosHoy", 85);
-        model.addAttribute("totalIngresos", "125,000");
-        model.addAttribute("pagosPendientes", 12);
-        model.addAttribute("actividades", new ArrayList<>());
-        model.addAttribute("pagos", new ArrayList<>());
+        model.addAttribute("totalAsistentes", usuarioServicio.contarAsistentesActivos());
+        model.addAttribute("registradosHoy", usuarioServicio.contarAsistentesRegistradosHoy());
+        model.addAttribute("totalIngresos", String.format(Locale.US, "%,.2f", pagoServicio.ingresosCubiertos()));
+        model.addAttribute("pagosPendientes", pagoServicio.contarPagosPendientes());
+        model.addAttribute("actividades", actividadServicio.obtenerActividadesActivas().stream().limit(5).toList());
+        model.addAttribute("pagos", pagoServicio.obtenerPagosRecientes(5));
         return "dashboard-admin";
     }
 }

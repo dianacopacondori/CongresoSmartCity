@@ -4,7 +4,16 @@
   <form th:action="@{/asistentes/admin/listar}" method="get" class="d-flex gap-2 mb-3"><label for="busqueda" class="visually-hidden">Buscar por nombre</label><input id="busqueda" class="form-control" name="busqueda" placeholder="Buscar por nombre" th:value="${param.busqueda}"><button class="btn btn-primary" type="submit">Buscar</button></form>
   <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
   <p th:if="${asistentes == null or #lists.isEmpty(asistentes)}">No se encontraron asistentes.</p>
-  <div class="table-responsive" th:if="${asistentes != null and not #lists.isEmpty(asistentes)}"><table class="table table-striped"><thead><tr><th>Código</th><th>Nombre</th><th>Correo</th><th>Identificación</th><th>Estado</th></tr></thead><tbody><tr th:each="asistente : ${asistentes}">
+  <div class="table-responsive" th:if="${asistentes != null and not #lists.isEmpty(asistentes)}"><table class="table table-striped"><thead><tr><th>Código</th><th>Nombre</th><th>Correo</th><th>Identificación</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr th:each="asistente : ${asistentes}">
     <td th:text="${asistente.codigo}">1</td><td th:text="|${asistente.nombres} ${asistente.apellidos}|">Nombre</td><td th:text="${asistente.correo}">Correo</td><td th:text="${asistente.identificacion}">Documento</td><td th:text="${asistente.estado}">Estado</td>
-  </tr></tbody></table></div><p class="text-muted">Suspensión y eliminación pendientes de migrar a acciones POST seguras.</p>
+    <td>
+      <form th:if="${asistente.estado.name() == 'ACTIVO'}" th:action="@{/asistentes/admin/suspender/{id}(id=${asistente.codigo})}" method="post" class="d-inline">
+        <button class="btn btn-sm btn-outline-warning" type="submit">Suspender</button>
+      </form>
+      <form th:if="${asistente.estado.name() != 'ELIMINADO'}" th:action="@{/asistentes/admin/eliminar/{id}(id=${asistente.codigo})}" method="post" class="d-inline">
+        <button class="btn btn-sm btn-outline-danger" type="submit" data-confirm="¿Dar de baja a este asistente?">Dar de baja</button>
+      </form>
+    </td>
+  </tr></tbody></table></div>
+  <p class="text-muted">La suspensión y la baja son lógicas: conservan pagos e inscripciones para auditoría.</p>
 </div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>

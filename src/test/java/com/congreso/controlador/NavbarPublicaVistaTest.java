@@ -7,6 +7,7 @@ import com.congreso.servicio.AsistenciaServicio;
 import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.InscripcionServicio;
 import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.UsuarioServicio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,6 +35,7 @@ class NavbarPublicaVistaTest {
     @MockBean private InscripcionServicio inscripcionServicio;
     @MockBean private AsistenciaServicio asistenciaServicio;
     @MockBean private PagoServicio pagoServicio;
+    @MockBean private UsuarioServicio usuarioServicio;
 
     @Test
     void portadaCargaBootstrapLocalAntesDelEstiloPropio() throws Exception {

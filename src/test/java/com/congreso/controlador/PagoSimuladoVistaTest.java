@@ -81,6 +81,27 @@ class PagoSimuladoVistaTest {
     }
 
     @Test
+    @WithMockUser(username = "ana@example.invalid", roles = "ASISTENTE")
+    void misPagosMuestraElHistorialIndividualDeCuotas() throws Exception {
+        Asistente asistente = new Asistente();
+        asistente.setCorreo("ana@example.invalid");
+        Inscripcion inscripcion = new Inscripcion(asistente, "Estudiante");
+        inscripcion.setCodigo(7L);
+        Pago pago = new Pago(asistente, 50, ModalidadPago.CUOTAS, 2);
+        pago.setCodigoPago(11L);
+        pago.setInscripcion(inscripcion);
+        pago.registrarPago(25);
+        pago.registrarPago(25);
+        when(pagoServicio.pagosPropios("ana@example.invalid")).thenReturn(List.of(pago));
+
+        mvc.perform(get("/pagos/mis-pagos"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Historial de cuotas")))
+                .andExpect(content().string(containsString("Cuota 1: S/ 25.0")))
+                .andExpect(content().string(containsString("Cuota 2: S/ 25.0")));
+    }
+
+    @Test
     @WithMockUser(roles = "ADMINISTRADOR")
     void adminNoPuedeSimularPagosDeAsistentes() throws Exception {
         mvc.perform(post("/pagos/nuevo").with(csrf()).param("codigoInscripcion", "7")

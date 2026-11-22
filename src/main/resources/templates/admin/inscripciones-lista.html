@@ -5,7 +5,10 @@
   <p th:if="${inscripciones == null or #lists.isEmpty(inscripciones)}">No hay inscripciones registradas.</p>
   <div class="table-responsive" th:if="${inscripciones != null and not #lists.isEmpty(inscripciones)}"><table class="table table-striped"><thead><tr><th>Código</th><th>Asistente</th><th>Fecha</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr th:each="ins : ${inscripciones}">
     <td th:text="${ins.codigo}">1</td><td th:text="${ins.asistente != null ? ins.asistente.nombres + ' ' + ins.asistente.apellidos : '—'}">Asistente</td><td th:text="${ins.fechaInscripcion}">Fecha</td><td th:text="${ins.tipo}">Tipo</td><td th:text="${ins.estado}">Estado</td>
-    <td><form th:if="${!ins.confirmacion}" th:action="@{/inscripciones/confirmar/{codigo}(codigo=${ins.codigo})}" method="post"><button class="btn btn-sm btn-primary" type="submit">Confirmar</button></form></td>
+    <td>
+      <form th:if="${!ins.confirmacion and ins.estado.name() != 'CANCELADA'}" th:action="@{/inscripciones/confirmar/{codigo}(codigo=${ins.codigo})}" method="post" class="d-inline"><button class="btn btn-sm btn-primary" type="submit">Confirmar</button></form>
+      <form th:if="${ins.estado.name() != 'CANCELADA'}" th:action="@{/inscripciones/admin/eliminar/{codigo}(codigo=${ins.codigo})}" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger" type="submit" data-confirm="¿Cancelar esta inscripción y liberar sus cupos?">Cancelar inscripción</button></form>
+    </td>
   </tr></tbody></table></div>
-  <p class="text-muted">La eliminación de inscripciones no se ofrece aquí porque el servidor la ejecuta mediante GET.</p>
+  <p class="text-muted">La cancelación libera los cupos de las actividades elegidas y conserva el historial. No se permite si ya hay importes cubiertos (requiere política de devolución).</p>
 </div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>

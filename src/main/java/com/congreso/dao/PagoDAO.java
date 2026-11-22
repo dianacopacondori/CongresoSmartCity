@@ -42,4 +42,14 @@ public interface PagoDAO extends JpaRepository<Pago, Long>{
                 .filter(p -> p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.PARCIAL)
                 .toList();
     }
+
+    /**
+     * Ingresos simulados efectivamente cubiertos: importe menos saldo pendiente.
+     * Solo cuentan pagos pagados o parciales; los anulados no generan ingresos.
+     */
+    @Query("SELECT COALESCE(SUM(p.importe - p.saldo), 0.0) FROM Pago p " +
+            "WHERE p.estado IN ('PAGADO', 'PARCIAL')")
+    Double calcularIngresosCubiertos();
+
+    long countByEstado(EstadoPago estado);
 }

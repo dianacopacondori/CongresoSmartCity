@@ -6,10 +6,15 @@
   <p class="text-muted">Importes ficticios en soles. No se realizó ningún cobro real.</p>
   <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
   <p th:if="${#lists.isEmpty(pagos)}">Aún no tienes pagos simulados.</p>
-  <div class="table-responsive" th:unless="${#lists.isEmpty(pagos)}"><table class="table table-striped"><thead><tr><th>Inscripción</th><th>Modalidad</th><th>Importe ficticio</th><th>Saldo ficticio</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+  <div class="table-responsive" th:unless="${#lists.isEmpty(pagos)}"><table class="table table-striped"><thead><tr><th>Inscripción</th><th>Modalidad</th><th>Importe ficticio</th><th>Saldo ficticio</th><th>Estado</th><th>Historial de cuotas</th><th>Acción</th></tr></thead><tbody>
     <tr th:each="pago : ${pagos}">
       <td th:text="${pago.inscripcion.codigo}">1</td><td th:text="${pago.modalidad}">CUOTAS</td>
       <td th:text="|S/ ${pago.importe}|">S/ 50</td><td th:text="|S/ ${pago.saldo}|">S/ 25</td><td th:text="${pago.estado}">PARCIAL</td>
+      <td>
+        <span th:if="${#lists.isEmpty(pago.historialCuotas)}" class="text-muted">Sin registro</span>
+        <span th:each="cuota : ${pago.historialCuotas}" class="d-block"
+              th:text="|Cuota ${cuota.numeroCuota}: S/ ${cuota.importe} (${cuota.fechaRegistro})|">Cuota 1: S/ 25</span>
+      </td>
       <td><form th:if="${pago.estado.name() == 'PARCIAL' and pago.modalidad.name() == 'CUOTAS' and pago.inscripcion.tipo == 'Estudiante'}" th:action="@{/pagos/abonar/{id}(id=${pago.codigoPago})}" method="post"><button class="btn btn-sm btn-primary" type="submit">Simular segunda cuota S/ 25</button></form></td>
     </tr>
   </tbody></table></div>

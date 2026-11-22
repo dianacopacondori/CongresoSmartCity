@@ -37,7 +37,10 @@ public class Inscripcion {
     @JoinTable(
             name = "detalle_inscripcion",
             joinColumns = @JoinColumn(name = "codigo_inscripcion"),
-            inverseJoinColumns = @JoinColumn(name = "codigo_actividad")
+            inverseJoinColumns = @JoinColumn(name = "codigo_actividad"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "uk_detalle_inscripcion_par",
+                    columnNames = {"codigo_inscripcion", "codigo_actividad"})
     )
     private List<Actividad> actividades = new ArrayList<>();
 

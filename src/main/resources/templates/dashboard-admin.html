@@ -107,6 +107,7 @@
           <table class="table table-hover">
             <thead>
             <tr>
+              <th>Código</th>
               <th>Nombre</th>
               <th>Fecha</th>
               <th>Hora</th>
@@ -117,6 +118,7 @@
             </thead>
             <tbody>
             <tr th:each="act : ${actividades}">
+              <td th:text="${act.codigo}">1</td>
               <td th:text="${act.titulo}">Opening Ceremony</td>
               <td th:text="${act.fecha}">Oct 26, 2026</td>
               <td th:text="${act.horarioInicio}">09:00 AM</td>
@@ -137,7 +139,7 @@
               </td>
             </tr>
             <tr th:if="${actividades.empty}">
-              <td colspan="6">
+              <td colspan="7">
                 <div class="dashboard-empty-state">
                   <span class="empty-state-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">

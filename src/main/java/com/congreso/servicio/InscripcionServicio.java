@@ -12,13 +12,16 @@ import com.congreso.modelo.enums.EstadoActividad;
 import com.congreso.modelo.enums.EstadoInscripcion;
 import com.congreso.modelo.enums.RolUsuario;
 import com.congreso.modelo.enums.EstadoPago;
+import com.congreso.seguridad.RegistroAuditoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -150,8 +153,50 @@ public class InscripcionServicio {
                 .toList();
     }
 
-    public void eliminarInscripcion(Long codigo) {
-        inscripcionDAO.deleteById(codigo);
+    /**
+     * Cancela una inscripción de forma transaccional: bloquea la fila, libera un cupo
+     * por actividad distinta, limpia la tabla intermedia y conserva el historial.
+     * No se cancelan inscripciones con importes ya cubiertos: la política de
+     * devoluciones sigue pendiente (D03).
+     */
+    public Inscripcion cancelarInscripcion(Long codigo, String actor) {
+        Inscripcion inscripcion = inscripcionDAO.bloquearPorCodigo(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada"));
+        if (inscripcion.getEstado() == EstadoInscripcion.CANCELADA) {
+            throw new IllegalStateException("La inscripción ya está cancelada");
+        }
+
+        pagoDAO.findByInscripcion(inscripcion).ifPresent(pago -> {
+            boolean conImporteCubierto = pago.getEstado() == EstadoPago.PAGADO
+                    || pago.getEstado() == EstadoPago.PARCIAL
+                    || pago.getImporte() - pago.getSaldo() > 0;
+            if (conImporteCubierto) {
+                throw new IllegalStateException(
+                        "No se puede cancelar una inscripción con pagos cubiertos; requiere política de devolución");
+            }
+        });
+
+        Map<Long, Actividad> actividadesUnicas = new LinkedHashMap<>();
+        for (Actividad actividad : inscripcion.getActividades()) {
+            actividadesUnicas.putIfAbsent(actividad.getCodigo(), actividad);
+        }
+
+        for (Long codigoActividad : actividadesUnicas.keySet()) {
+            actividadDAO.bloquearCodigo(codigoActividad);
+            Actividad actividad = actividadDAO.findById(codigoActividad).orElse(null);
+            if (actividad == null) continue;
+            int inscritos = actividad.getInscritos() == null ? 0 : actividad.getInscritos();
+            actividad.setInscritos(Math.max(0, inscritos - 1));
+            actividadDAO.save(actividad);
+        }
+
+        inscripcion.getActividades().clear();
+        inscripcion.setEstado(EstadoInscripcion.CANCELADA);
+        inscripcionDAO.saveAndFlush(inscripcion);
+
+        RegistroAuditoria.registrar("CANCELAR", "INSCRIPCION", codigo, actor,
+                "cupos-liberados=" + actividadesUnicas.size() + "; sin importes cubiertos");
+        return inscripcion;
     }
 
     /**

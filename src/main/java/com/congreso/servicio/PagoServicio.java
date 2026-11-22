@@ -55,12 +55,9 @@ public class PagoServicio {
         Pago pago = new Pago(asistente, importe, modalidad, modalidad == ModalidadPago.CUOTAS ? 2 : 1);
         pago.setInscripcion(inscripcion);
         pago.setObservaciones("SIMULACIÓN ACADÉMICA: no se realizó ningún cobro real");
-        if (modalidad == ModalidadPago.CUOTAS) {
-            pago.setSaldo(CUOTA_ESTUDIANTE);
-            pago.setEstado(EstadoPago.PARCIAL);
-        } else {
-            pago.setSaldo(0);
-            pago.setEstado(EstadoPago.PAGADO);
+        double primerAbono = modalidad == ModalidadPago.CUOTAS ? CUOTA_ESTUDIANTE : importe;
+        pago.registrarPago(primerAbono);
+        if (modalidad != ModalidadPago.CUOTAS) {
             inscripcion.confirmar();
         }
         Pago guardado = pagoDAO.saveAndFlush(pago);
@@ -84,8 +81,7 @@ public class PagoServicio {
                 || pago.getImporte() != TARIFA_ESTUDIANTE || pago.getCuotas() != 2) {
             throw new IllegalStateException("Este pago no tiene una segunda cuota disponible");
         }
-        pago.setSaldo(0);
-        pago.setEstado(EstadoPago.PAGADO);
+        pago.registrarPago(CUOTA_ESTUDIANTE);
         inscripcion.confirmar();
         pagoDAO.saveAndFlush(pago);
         inscripcionDAO.saveAndFlush(inscripcion);
@@ -201,5 +197,27 @@ public class PagoServicio {
 
     public List<Pago> obtenerTodosLosPagos() {
         return pagoDAO.findAll();
+    }
+
+    /** Importe cubierto por pagos pagados y parciales (simulación académica). */
+    public double ingresosCubiertos() {
+        Double total = pagoDAO.calcularIngresosCubiertos();
+        return total == null ? 0.0 : total;
+    }
+
+    /** Pagos pendientes o parciales, es decir, con saldo por cubrir. */
+    public long contarPagosPendientes() {
+        return pagoDAO.countByEstado(EstadoPago.PENDIENTE) + pagoDAO.countByEstado(EstadoPago.PARCIAL);
+    }
+
+    /** Últimos pagos para el panel de administración, sin depender del orden de inserción. */
+    public List<Pago> obtenerPagosRecientes(int limite) {
+        Comparator<Pago> masRecientePrimero = Comparator
+                .comparing(Pago::getFechaPago, Comparator.reverseOrder())
+                .thenComparing(Pago::getCodigoPago, Comparator.nullsLast(Comparator.reverseOrder()));
+        return pagoDAO.findAll().stream()
+                .sorted(masRecientePrimero)
+                .limit(limite)
+                .toList();
     }
 }

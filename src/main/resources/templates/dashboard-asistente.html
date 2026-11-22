@@ -23,6 +23,7 @@
             <a th:if="${pasoSiguiente == 'SIMULAR_PAGO'}" th:href="@{/pagos/nuevo}" class="dashboard-hero-action">Simular pago <span aria-hidden="true">→</span></a>
             <a th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}" th:href="@{/pagos/mis-pagos}" class="dashboard-hero-action">Completar segunda cuota <span aria-hidden="true">→</span></a>
             <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/inscripciones/mi-agenda}" class="dashboard-hero-action">Ver mi agenda <span aria-hidden="true">→</span></a>
+            <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/fotocheck/mi-fotocheck}" class="dashboard-hero-action">Ver mi fotocheck <span aria-hidden="true">→</span></a>
             <div class="hero-orbit hero-orbit-one" aria-hidden="true"></div>
             <div class="hero-orbit hero-orbit-two" aria-hidden="true"></div>
         </header>
@@ -106,6 +107,7 @@
             <a th:if="${pasoSiguiente == 'SIMULAR_PAGO'}" th:href="@{/pagos/nuevo}" class="btn btn-primary align-self-start">Simular pago</a>
             <a th:if="${pasoSiguiente == 'COMPLETAR_CUOTA'}" th:href="@{/pagos/mis-pagos}" class="btn btn-primary align-self-start">Ir a mis pagos y completar cuota</a>
             <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/inscripciones/mi-agenda}" class="btn btn-primary align-self-start">Ver mi agenda</a>
+            <a th:if="${pasoSiguiente == 'VER_AGENDA'}" th:href="@{/fotocheck/mi-fotocheck}" class="btn btn-outline-primary align-self-start">Ver mi fotocheck</a>
             <a th:if="${pasoSiguiente == 'REVISAR_ESTADO'}" th:href="@{/pagos/mis-pagos}" class="btn btn-outline-primary align-self-start">Consultar mis pagos</a>
         </section>
 

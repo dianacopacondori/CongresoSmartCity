@@ -11,6 +11,7 @@ import com.congreso.servicio.AsistenciaServicio;
 import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.InscripcionServicio;
 import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.UsuarioServicio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -40,6 +41,7 @@ class NavegacionAsistenteVistaTest {
     @MockBean private AsistenciaServicio asistencias;
     @MockBean private InscripcionServicio inscripciones;
     @MockBean private PagoServicio pagos;
+    @MockBean private UsuarioServicio usuariosServicio;
 
     @Test
     @WithMockUser(username = "ana@example.invalid", roles = "ASISTENTE")

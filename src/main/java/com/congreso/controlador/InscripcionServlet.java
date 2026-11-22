@@ -152,14 +152,14 @@ public class InscripcionServlet {
     }
 
     /**
-     * Elimina una inscripción (admin).
+     * Cancela una inscripción (admin), con POST y CSRF. Libera cupos y conserva el historial.
      */
-    @GetMapping("/admin/eliminar/{codigo}")
-    public String eliminarInscripcion(@PathVariable Long codigo,
+    @PostMapping("/admin/eliminar/{codigo}")
+    public String cancelarInscripcion(@PathVariable Long codigo, Principal principal,
                                       RedirectAttributes redirectAttributes) {
         try {
-            inscripcionServicio.eliminarInscripcion(codigo);
-            redirectAttributes.addFlashAttribute("mensaje", "Inscripción eliminada");
+            inscripcionServicio.cancelarInscripcion(codigo, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Inscripción cancelada y cupos liberados");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

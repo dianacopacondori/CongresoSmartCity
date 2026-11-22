@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -132,6 +133,41 @@ public class ActividadServicio {
     public List<Actividad> obtenerActividadesActivas() {
         return actividadDAO.findByEstado(EstadoActividad.ACTIVA).stream()
                 .filter(Actividad::hayCupoDisponible).toList();
+    }
+
+    /**
+     * Catálogo público filtrado. Parte siempre de actividades ACTIVAS con cupo,
+     * de modo que ningún filtro pueda mostrar sesiones no disponibles.
+     *
+     * @param nombre texto a buscar en el título (opcional)
+     * @param tipo   PONENCIA o TALLER (opcional)
+     * @param fecha  fecha exacta de la sesión (opcional)
+     */
+    public List<Actividad> obtenerActividadesFiltradas(String nombre, String tipo, LocalDate fecha) {
+        String texto = nombre == null ? "" : nombre.trim().toLowerCase(Locale.ROOT);
+        String tipoNormalizado = normalizarTipo(tipo);
+
+        return obtenerActividadesActivas().stream()
+                .filter(actividad -> texto.isEmpty() || (actividad.getTitulo() != null
+                        && actividad.getTitulo().toLowerCase(Locale.ROOT).contains(texto)))
+                .filter(actividad -> tipoNormalizado.isEmpty()
+                        || tipoNormalizado.equals(tipoDeActividad(actividad)))
+                .filter(actividad -> fecha == null || fecha.equals(actividad.getFecha()))
+                .toList();
+    }
+
+    private String normalizarTipo(String tipo) {
+        if (tipo == null) return "";
+        String valor = tipo.trim().toUpperCase(Locale.ROOT);
+        if (valor.isEmpty() || valor.equals("TODOS") || valor.equals("TODO")
+                || valor.equals("TODOS LOS TIPOS")) return "";
+        if (valor.startsWith("PONEN")) return "PONENCIA";
+        if (valor.startsWith("TALLER")) return "TALLER";
+        throw new IllegalArgumentException("Tipo de actividad no válido");
+    }
+
+    private String tipoDeActividad(Actividad actividad) {
+        return actividad instanceof Ponencia ? "PONENCIA" : "TALLER";
     }
 
     /**

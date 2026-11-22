@@ -9,6 +9,7 @@ import com.congreso.servicio.AsistenciaServicio;
 import com.congreso.servicio.ColaboradorServicio;
 import com.congreso.servicio.InscripcionServicio;
 import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.UsuarioServicio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,8 @@ class CabecerasSeguridadTest {
     private AsistenciaServicio asistenciaServicio;
     @MockBean
     private PagoServicio pagoServicio;
+    @MockBean
+    private UsuarioServicio usuarioServicio;
 
     @BeforeEach
     void prepararDatosPublicos() {

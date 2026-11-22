@@ -93,11 +93,12 @@ public class AsistenteServlet {
     /**
      * Suspende un asistente (admin).
      */
-    @GetMapping("/admin/suspender/{id}")
-    public String suspenderAsistente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/suspender/{id}")
+    public String suspenderAsistente(@PathVariable Long id, Principal principal,
+                                     RedirectAttributes redirectAttributes) {
         try {
-            asistenteServicio.suspenderAsistente(id);
-            redirectAttributes.addFlashAttribute("mensaje", "Asistente suspendido exitosamente");
+            asistenteServicio.suspenderAsistente(id, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Asistente suspendido (baja lógica)");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -105,13 +106,14 @@ public class AsistenteServlet {
     }
 
     /**
-     * Elimina lógicamente un asistente (admin).
+     * Da de baja lógicamente a un asistente (admin), con POST y CSRF.
      */
-    @GetMapping("/admin/eliminar/{id}")
-    public String eliminarAsistente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/eliminar/{id}")
+    public String eliminarAsistente(@PathVariable Long id, Principal principal,
+                                    RedirectAttributes redirectAttributes) {
         try {
-            asistenteServicio.eliminarAsistente(id);
-            redirectAttributes.addFlashAttribute("mensaje", "Asistente eliminado exitosamente");
+            asistenteServicio.eliminarAsistente(id, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Asistente dado de baja (baja lógica)");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

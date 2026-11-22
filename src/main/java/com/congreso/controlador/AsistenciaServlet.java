@@ -2,6 +2,7 @@ package com.congreso.controlador;
 
 import com.congreso.modelo.Asistencia;
 import com.congreso.modelo.Usuario;
+import java.security.Principal;
 import com.congreso.servicio.AsistenciaServicio;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,13 @@ public class AsistenciaServlet {
     public String registrarAsistencia(@RequestParam Long codigoAsistente,
                                       @RequestParam Long codigoActividad,
                                       @RequestParam String mecanismoValidacion,
+                                      @RequestParam(required = false) Long codigoFotocheck,
+                                      Principal principal,
                                       RedirectAttributes redirectAttributes) {
         try {
-            asistenciaServicio.registrarAsistencia(codigoAsistente, codigoActividad, mecanismoValidacion);
-            redirectAttributes.addFlashAttribute("mensaje", "Asistencia registrada exitosamente");
+            asistenciaServicio.registrarAsistencia(codigoAsistente, codigoActividad,
+                    mecanismoValidacion, codigoFotocheck, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Asistencia registrada y verificada");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -94,6 +98,7 @@ public class AsistenciaServlet {
     public String corregirAsistencia(@PathVariable Long id,
                                      @RequestParam String justificacion,
                                      HttpSession session,
+                                     Principal principal,
                                      RedirectAttributes redirectAttributes) {
         try {
             Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -101,8 +106,8 @@ public class AsistenciaServlet {
                 return "redirect:/usuarios/login";
             }
 
-            // Llama al método que acabamos de agregar al servicio
-            asistenciaServicio.corregirAsistencia(id, justificacion);
+            asistenciaServicio.corregirAsistencia(id, justificacion,
+                    principal == null ? null : principal.getName());
             redirectAttributes.addFlashAttribute("mensaje", "Asistencia corregida exitosamente");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());

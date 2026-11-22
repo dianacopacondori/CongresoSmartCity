@@ -54,6 +54,9 @@ class PagoSimuladoServicioTest {
         assertEquals(EstadoPago.PARCIAL, pago.getEstado());
         assertEquals(EstadoInscripcion.PENDIENTE, inscripcion.getEstado());
         assertSame(inscripcion, pago.getInscripcion());
+        assertEquals(1, pago.getHistorialCuotas().size());
+        assertEquals(25, pago.getHistorialCuotas().get(0).getImporte());
+        assertEquals(1, pago.getHistorialCuotas().get(0).getNumeroCuota());
         verify(pagos).saveAndFlush(pago);
     }
 
@@ -64,6 +67,8 @@ class PagoSimuladoServicioTest {
         assertEquals(0, pago.getSaldo());
         assertEquals(EstadoPago.PAGADO, pago.getEstado());
         assertTrue(inscripcion.isConfirmacion());
+        assertEquals(1, pago.getHistorialCuotas().size());
+        assertEquals(50, pago.getHistorialCuotas().get(0).getImporte());
         verify(inscripciones).saveAndFlush(inscripcion);
     }
 
@@ -98,8 +103,7 @@ class PagoSimuladoServicioTest {
         Pago pago = new Pago(asistente, 50, ModalidadPago.CUOTAS, 2);
         pago.setCodigoPago(11L);
         pago.setInscripcion(inscripcion);
-        pago.setSaldo(25);
-        pago.setEstado(EstadoPago.PARCIAL);
+        pago.registrarPago(25);
         when(pagos.findById(11L)).thenReturn(Optional.of(pago));
         when(pagos.findByInscripcion(inscripcion)).thenReturn(Optional.of(pago));
 
@@ -107,6 +111,9 @@ class PagoSimuladoServicioTest {
         assertEquals(0, pago.getSaldo());
         assertEquals(EstadoPago.PAGADO, pago.getEstado());
         assertEquals(EstadoInscripcion.CONFIRMADA, inscripcion.getEstado());
+        assertEquals(2, pago.getHistorialCuotas().size());
+        assertEquals(25, pago.getHistorialCuotas().get(1).getImporte());
+        assertEquals(2, pago.getHistorialCuotas().get(1).getNumeroCuota());
         assertThrows(IllegalStateException.class, () -> servicio.simularSegundaCuota(asistente.getCorreo(), 11L));
         verify(pagos, times(1)).saveAndFlush(pago);
     }
@@ -120,8 +127,7 @@ class PagoSimuladoServicioTest {
         Pago pago = new Pago(otra, 50, ModalidadPago.CUOTAS, 2);
         pago.setInscripcion(ajena);
         pago.setCodigoPago(22L);
-        pago.setSaldo(25);
-        pago.setEstado(EstadoPago.PARCIAL);
+        pago.registrarPago(25);
         when(pagos.findById(22L)).thenReturn(Optional.of(pago));
         when(inscripciones.bloquearPorCodigo(20L)).thenReturn(Optional.of(ajena));
         assertThrows(AccessDeniedException.class,

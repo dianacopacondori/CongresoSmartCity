@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -28,9 +29,34 @@ class ConfiguracionSecretoTest {
     void laContrasenaDeBaseDeDatosNoEstaEscritaEnElRepositorio() throws IOException {
         Properties properties = propiedades();
 
+        assertEquals("${DB_USERNAME}", properties.getProperty("spring.datasource.username"));
         assertEquals("${DB_PASSWORD}", properties.getProperty("spring.datasource.password"));
         assertFalse(properties.stringPropertyNames().stream()
                 .anyMatch(clave -> properties.getProperty(clave).contains("6006")));
+    }
+
+    @Test
+    void lasCredencialesLocalesSeImportanSinNecesidadDePerfil() throws IOException {
+        Properties properties = propiedades();
+        assertTrue(properties.getProperty("spring.config.import").contains("application-local.properties"));
+
+        ClassPathResource local = new ClassPathResource("application-local.properties");
+        if (local.exists()) {
+            Properties locales = new Properties();
+            try (InputStream entrada = local.getInputStream()) {
+                locales.load(entrada);
+            }
+            assertTrue(locales.getProperty("spring.datasource.username").contains("DB_USERNAME"));
+            assertTrue(locales.getProperty("spring.datasource.password").contains("DB_PASSWORD"));
+        }
+    }
+
+    @Test
+    void noHayPerfilesActivosPorDefectoNiActualizacionAutomaticaDelEsquema() throws IOException {
+        Properties properties = propiedades();
+
+        assertNull(properties.getProperty("spring.profiles.active"));
+        assertEquals("validate", properties.getProperty("spring.jpa.hibernate.ddl-auto"));
     }
 
     @Test

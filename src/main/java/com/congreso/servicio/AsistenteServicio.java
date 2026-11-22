@@ -6,6 +6,7 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.enums.EstadoUsuario;
 import com.congreso.modelo.enums.ModalidadPago;
 import com.congreso.modelo.enums.RolUsuario;
+import com.congreso.seguridad.RegistroAuditoria;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,18 +83,35 @@ public class AsistenteServicio {
         return asistenteDAO.findByUniversidad(universidad);
     }
 
-    public void eliminarAsistente(Long codigo) {
-        asistenteDAO.deleteById(codigo);
+    /**
+     * Suspensión lógica: conserva la fila y sus relaciones para mantener trazabilidad.
+     */
+    public Asistente suspenderAsistente(Long codigo, String actor) {
+        Asistente asistente = asistenteDAO.findById(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Asistente no encontrado"));
+        if (asistente.getEstado() == EstadoUsuario.ELIMINADO) {
+            throw new IllegalStateException("No se puede suspender un asistente dado de baja");
+        }
+
+        asistente.setEstado(EstadoUsuario.SUSPENDIDO);
+        Asistente guardado = asistenteDAO.save(asistente);
+        RegistroAuditoria.registrar("SUSPENDER", "ASISTENTE", codigo, actor,
+                "estado=SUSPENDIDO; pagos e inscripciones conservados");
+        return guardado;
     }
 
     /**
-     * NUEVO: Suspensión lógica del asistente (cambia estado a SUSPENDIDO).
+     * Baja lógica: no elimina la fila ni sus pagos/inscripciones. La política de
+     * devoluciones o liberación de cupos por baja de asistente sigue pendiente (D03).
      */
-    public Asistente suspenderAsistente(Long codigo) {
+    public Asistente eliminarAsistente(Long codigo, String actor) {
         Asistente asistente = asistenteDAO.findById(codigo)
                 .orElseThrow(() -> new IllegalArgumentException("Asistente no encontrado"));
 
-        asistente.setEstado(EstadoUsuario.SUSPENDIDO);
-        return asistenteDAO.save(asistente);
+        asistente.setEstado(EstadoUsuario.ELIMINADO);
+        Asistente guardado = asistenteDAO.save(asistente);
+        RegistroAuditoria.registrar("ELIMINAR", "ASISTENTE", codigo, actor,
+                "baja-logica; pagos e inscripciones conservados sin modificacion");
+        return guardado;
     }
 }
