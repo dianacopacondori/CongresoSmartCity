@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "ponencias")
 @PrimaryKeyJoinColumn(name = "codigo_actividad")
+@DiscriminatorValue("PONENCIA")
 public class Ponencia extends Actividad {
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -79,4 +79,8 @@ public interface UsuarioDAO extends JpaRepository<Usuario, Long>{
     boolean existsByIdentificacion(String identificacion);
 
     List<Usuario> findByRolAndFechaCreacionBetween(RolUsuario rol, LocalDateTime inicio, LocalDateTime fin);
+
+    long countByRolAndEstado(RolUsuario rol, EstadoUsuario estado);
+
+    long countByRolAndFechaCreacionBetween(RolUsuario rol, LocalDateTime inicio, LocalDateTime fin);
 }

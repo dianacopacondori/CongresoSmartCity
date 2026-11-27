@@ -1,0 +1,344 @@
+2026-11-08 18:13:09.763 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1d4h21m27s479ms399Âµs300ns).
+2026-11-14 12:38:33.720 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 12:38:33.766 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 17.0.19 with PID 26348 (C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 12:38:33.768 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 12:38:34.616 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 12:38:34.728 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 98 ms. Found 10 JPA repository interfaces.
+2026-11-14 12:38:35.446 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 12:38:35.458 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:38:35.461 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 12:38:35.461 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 12:38:35.551 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 12:38:35.551 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1728 ms
+2026-11-14 12:38:35.803 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 12:38:35.918 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 12:38:35.948 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 12:38:36.151 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 12:38:36.170 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 12:38:36.310 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@58b8f9e3
+2026-11-14 12:38:36.311 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 12:38:36.337 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 12:38:37.402 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 12:38:37.565 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 12:38:37.966 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 12:38:39.411 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 12:38:39.761 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 12:38:40.288 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@71ca6a60, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1898593, org.springframework.security.web.context.SecurityContextHolderFilter@54f3fd30, org.springframework.security.web.header.HeaderWriterFilter@3c45c5cd, org.springframework.web.filter.CorsFilter@2d38e275, org.springframework.security.web.csrf.CsrfFilter@1714fe69, org.springframework.security.web.authentication.logout.LogoutFilter@797ec046, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@2c127caf, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@311d2611, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@10c0d39d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@77e03d01, org.springframework.security.web.access.ExceptionTranslationFilter@4bedd2d8, org.springframework.security.web.access.intercept.AuthorizationFilter@26b01384]
+2026-11-14 12:38:40.788 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:38:40.829 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 12:38:40.840 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 7.464 seconds (process running for 7.96)
+2026-11-14 12:38:56.058 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 12:38:56.060 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 12:38:56.062 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-11-14 12:38:56.070 [http-nio-8080-exec-2] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:38:56.087 [http-nio-8080-exec-2] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:41:18.328 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 12:41:18.376 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 17.0.19 with PID 32484 (C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 12:41:18.377 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 12:41:19.225 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 12:41:19.358 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 122 ms. Found 10 JPA repository interfaces.
+2026-11-14 12:41:20.303 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 12:41:20.319 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:41:20.326 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 12:41:20.326 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 12:41:20.494 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 12:41:20.494 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2057 ms
+2026-11-14 12:41:21.008 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 12:41:21.124 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 12:41:21.189 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 12:41:21.619 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 12:41:21.662 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 12:41:21.943 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@32d0d7eb
+2026-11-14 12:41:21.947 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 12:41:22.040 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 12:41:24.021 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 12:41:24.297 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 12:41:24.694 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 12:41:26.217 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 12:41:26.587 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 12:41:27.116 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@37d05d32, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@38f4c6af, org.springframework.security.web.context.SecurityContextHolderFilter@797ec046, org.springframework.security.web.header.HeaderWriterFilter@49ce2726, org.springframework.web.filter.CorsFilter@19c47103, org.springframework.security.web.csrf.CsrfFilter@460a31ce, org.springframework.security.web.authentication.logout.LogoutFilter@55dbd0f7, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5ed0d352, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@129b75c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7b054614, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@64356fe1, org.springframework.security.web.access.ExceptionTranslationFilter@3f67d229, org.springframework.security.web.access.intercept.AuthorizationFilter@2c956132]
+2026-11-14 12:41:27.735 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:41:27.792 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 12:41:27.804 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 9.873 seconds (process running for 10.448)
+2026-11-14 12:41:32.087 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 12:41:32.088 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 12:41:32.089 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-11-14 12:41:32.105 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:41:32.118 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:47:07.366 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 12:47:07.423 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 17.0.19 with PID 24432 (C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 12:47:07.424 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 12:47:08.205 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 12:47:08.311 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 97 ms. Found 10 JPA repository interfaces.
+2026-11-14 12:47:09.020 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 12:47:09.035 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:47:09.039 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 12:47:09.040 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 12:47:09.150 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 12:47:09.151 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1673 ms
+2026-11-14 12:47:09.430 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 12:47:09.513 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 12:47:09.543 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 12:47:09.774 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 12:47:09.799 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 12:47:09.999 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2a667f44
+2026-11-14 12:47:10.002 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 12:47:10.034 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 12:47:11.181 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 12:47:11.359 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 12:47:11.758 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 12:47:13.339 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 12:47:13.697 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 12:47:14.194 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@50ad030a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c825108, org.springframework.security.web.context.SecurityContextHolderFilter@60cc749d, org.springframework.security.web.header.HeaderWriterFilter@719a208f, org.springframework.web.filter.CorsFilter@2c956132, org.springframework.security.web.csrf.CsrfFilter@2e13c72b, org.springframework.security.web.authentication.logout.LogoutFilter@6c238208, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5c2fd20c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3f67d229, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4a25da63, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5ed0d352, org.springframework.security.web.access.ExceptionTranslationFilter@4ef69c53, org.springframework.security.web.access.intercept.AuthorizationFilter@b9f4b1f]
+2026-11-14 12:47:14.603 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:47:14.652 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 12:47:14.668 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 7.693 seconds (process running for 8.196)
+2026-11-14 12:47:21.079 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 12:47:21.081 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 12:47:21.084 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-11-14 12:47:21.104 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:47:21.123 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:47:22.191 [http-nio-8080-exec-4] WARN  o.a.c.util.SessionIdGeneratorBase - Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [151] milliseconds.
+2026-11-14 12:54:38.730 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 12:54:38.774 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 17.0.19 with PID 22824 (C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 12:54:38.775 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 12:54:39.518 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 12:54:39.612 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 85 ms. Found 10 JPA repository interfaces.
+2026-11-14 12:54:40.246 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 12:54:40.259 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:54:40.263 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 12:54:40.264 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 12:54:40.386 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 12:54:40.386 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1571 ms
+2026-11-14 12:54:40.614 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 12:54:40.734 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 12:54:40.778 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 12:54:40.976 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 12:54:40.995 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 12:54:41.125 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@34cb0e49
+2026-11-14 12:54:41.127 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 12:54:41.151 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 12:54:42.366 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 12:54:42.553 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 12:54:43.046 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 12:54:44.727 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 12:54:45.159 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 12:54:45.790 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2c956132, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5ed0d352, org.springframework.security.web.context.SecurityContextHolderFilter@3f67d229, org.springframework.security.web.header.HeaderWriterFilter@4b77d80e, org.springframework.web.filter.CorsFilter@66dd3ed1, org.springframework.security.web.csrf.CsrfFilter@14cd3858, org.springframework.security.web.authentication.logout.LogoutFilter@4e02800b, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@386643e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@49ce2726, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1c9b887a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@68d93913, org.springframework.security.web.access.ExceptionTranslationFilter@719a208f, org.springframework.security.web.access.intercept.AuthorizationFilter@3ebe4bbc]
+2026-11-14 12:54:46.689 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 12:54:46.740 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 12:54:46.757 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 8.371 seconds (process running for 8.908)
+2026-11-14 12:55:02.238 [http-nio-8080-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 12:55:02.239 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 12:55:02.241 [http-nio-8080-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-11-14 12:55:02.261 [http-nio-8080-exec-2] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 12:55:02.283 [http-nio-8080-exec-2] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:01:12.235 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 13:01:12.265 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 24.0.2 with PID 31496 (C:\Users\sanes\OneDrive\ImÃ¡genes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\ImÃ¡genes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:01:12.266 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 13:01:12.782 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 13:01:12.841 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 54 ms. Found 10 JPA repository interfaces.
+2026-11-14 13:01:13.261 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 13:01:13.266 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 13:01:13.268 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 13:01:13.268 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 13:01:13.311 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 13:01:13.311 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1003 ms
+2026-11-14 13:01:13.410 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 13:01:13.440 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 13:01:13.461 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 13:01:13.654 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 13:01:13.672 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 13:01:13.799 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@d62472f
+2026-11-14 13:01:13.801 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 13:01:13.823 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 13:01:14.621 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 13:01:14.775 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 13:01:15.012 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 13:01:15.753 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 13:01:15.814 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:01:15.926 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@36ebd261, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@70fd1f5c, org.springframework.security.web.context.SecurityContextHolderFilter@7144cd51, org.springframework.security.web.header.HeaderWriterFilter@2a6e710e, org.springframework.web.filter.CorsFilter@7b7eb8c, org.springframework.security.web.csrf.CsrfFilter@7ede896d, org.springframework.security.web.authentication.logout.LogoutFilter@12329d37, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5f58ff4f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@228ec493, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5592464a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@26d443e3, org.springframework.security.web.access.ExceptionTranslationFilter@7f1c1df5, org.springframework.security.web.access.intercept.AuthorizationFilter@bff5b50]
+2026-11-14 13:01:16.082 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 13:01:16.094 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 13:01:16.098 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 4.326 seconds (process running for 4.808)
+2026-11-14 13:01:23.874 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 13:01:23.875 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 13:01:23.877 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:01:23.891 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:01:23.906 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:17:26.366 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 28148 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:17:26.368 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:17:27.654 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:17:27.973 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@9c5d76b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7a14ab66, org.springframework.security.web.context.SecurityContextHolderFilter@703a2bc9, org.springframework.security.web.header.HeaderWriterFilter@31b7112d, org.springframework.web.filter.CorsFilter@54780c40, org.springframework.security.web.csrf.CsrfFilter@5adc71e7, org.springframework.security.web.authentication.logout.LogoutFilter@29d29657, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3b590f6a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@346e5cc, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2cd2c764, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6ac83e67, org.springframework.security.web.access.ExceptionTranslationFilter@8b1bfdf, org.springframework.security.web.access.intercept.AuthorizationFilter@282240]
+2026-11-14 13:17:28.281 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:28.281 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:28.283 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-14 13:17:28.324 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 2.666 seconds (process running for 8.087)
+2026-11-14 13:17:28.377 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:17:29.690 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:29.692 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:29.693 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:17:29.719 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:29.720 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:29.721 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:17:52.185 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 4572 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:17:52.191 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:17:55.133 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:17:55.548 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@282240, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3b590f6a, org.springframework.security.web.context.SecurityContextHolderFilter@95f1422, org.springframework.security.web.header.HeaderWriterFilter@6f7c4e0, org.springframework.web.filter.CorsFilter@1e160a9e, org.springframework.security.web.csrf.CsrfFilter@6b6606d1, org.springframework.security.web.authentication.logout.LogoutFilter@3bbdf835, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1a7437d8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@47fc9ce, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1b5d1d9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@483ed60e, org.springframework.security.web.access.ExceptionTranslationFilter@4b8cde43, org.springframework.security.web.access.intercept.AuthorizationFilter@48126a17]
+2026-11-14 13:17:56.036 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:56.037 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:56.039 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:17:56.096 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 4.903 seconds (process running for 9.838)
+2026-11-14 13:17:56.168 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:17:57.724 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:57.725 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:57.727 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-14 13:17:57.753 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:17:57.753 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:17:57.753 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:18:26.067 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 28304 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:18:26.071 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:18:27.947 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:18:28.384 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5b31a9e3, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@282240, org.springframework.security.web.context.SecurityContextHolderFilter@8b1bfdf, org.springframework.security.web.header.HeaderWriterFilter@34c6b52e, org.springframework.web.filter.CorsFilter@3b590f6a, org.springframework.security.web.csrf.CsrfFilter@3a44993c, org.springframework.security.web.authentication.logout.LogoutFilter@779448b8, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@48126a17, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@31b7112d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@47fc9ce, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1e160a9e, org.springframework.security.web.access.ExceptionTranslationFilter@7efba9b9, org.springframework.security.web.access.intercept.AuthorizationFilter@6c6b00f1]
+2026-11-14 13:18:28.753 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:28.754 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:28.756 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:18:28.849 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 3.63 seconds (process running for 9.868)
+2026-11-14 13:18:28.943 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:18:30.465 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:30.465 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:30.466 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:18:30.482 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:30.483 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:30.484 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:18:47.896 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 12008 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:18:47.900 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:18:49.369 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:18:49.739 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2d1f3639, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6e5b3642, org.springframework.security.web.context.SecurityContextHolderFilter@11939a9f, org.springframework.security.web.header.HeaderWriterFilter@d17d554, org.springframework.web.filter.CorsFilter@74bcf1ab, org.springframework.security.web.csrf.CsrfFilter@11cdf948, org.springframework.security.web.authentication.logout.LogoutFilter@7a75183d, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@4d91d2da, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5e83298e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7167d81b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@a11efe6, org.springframework.security.web.access.ExceptionTranslationFilter@346e5cc, org.springframework.security.web.access.intercept.AuthorizationFilter@6ac83e67]
+2026-11-14 13:18:50.107 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:50.109 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:50.111 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:18:50.159 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 2.97 seconds (process running for 7.555)
+2026-11-14 13:18:50.236 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:18:51.577 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:51.577 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:51.577 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:18:51.594 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:18:51.594 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:18:51.595 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:20:27.713 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 13:20:27.715 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-11-14 13:20:27.718 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-11-14 13:20:32.326 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-14 13:20:32.358 [main] INFO  c.c.CongresoSmartCityApplication - Starting CongresoSmartCityApplication using Java 24.0.2 with PID 26012 (C:\Users\sanes\OneDrive\ImÃ¡genes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity\target\classes started by sanes in C:\Users\sanes\OneDrive\ImÃ¡genes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:20:32.359 [main] INFO  c.c.CongresoSmartCityApplication - The following 1 profile is active: "dev"
+2026-11-14 13:20:32.955 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-14 13:20:33.022 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 62 ms. Found 10 JPA repository interfaces.
+2026-11-14 13:20:33.492 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-11-14 13:20:33.498 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-11-14 13:20:33.500 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-11-14 13:20:33.500 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-11-14 13:20:33.549 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-11-14 13:20:33.549 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1147 ms
+2026-11-14 13:20:33.712 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-14 13:20:33.751 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-14 13:20:33.776 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-14 13:20:33.953 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-14 13:20:33.971 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-14 13:20:34.095 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@3df77dfa
+2026-11-14 13:20:34.096 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-14 13:20:34.118 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-11-14 13:20:35.581 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-14 13:20:35.763 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 13:20:36.137 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-14 13:20:37.660 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-14 13:20:37.781 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:20:37.998 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@332cf8ba, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3a848bb1, org.springframework.security.web.context.SecurityContextHolderFilter@234635cc, org.springframework.security.web.header.HeaderWriterFilter@4f1dd46b, org.springframework.web.filter.CorsFilter@12ad2a0b, org.springframework.security.web.csrf.CsrfFilter@27bc13f4, org.springframework.security.web.authentication.logout.LogoutFilter@d34c3be, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@4d760ddb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@50309820, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6b907eec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1500c6e7, org.springframework.security.web.access.ExceptionTranslationFilter@12329d37, org.springframework.security.web.access.intercept.AuthorizationFilter@2db2b708]
+2026-11-14 13:20:38.287 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-11-14 13:20:38.309 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2026-11-14 13:20:38.316 [main] INFO  c.c.CongresoSmartCityApplication - Started CongresoSmartCityApplication in 6.427 seconds (process running for 6.793)
+2026-11-14 13:21:23.702 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-11-14 13:21:23.702 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-11-14 13:21:23.703 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-11-14 13:21:23.715 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:21:23.726 [http-nio-8080-exec-1] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:27:37.365 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 29324 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:27:37.369 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:27:38.851 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:27:39.199 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7ffc4195, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7ce760af, org.springframework.security.web.context.SecurityContextHolderFilter@3c9cfcde, org.springframework.security.web.header.HeaderWriterFilter@7cadf3ca, org.springframework.web.filter.CorsFilter@3e4636c3, org.springframework.security.web.csrf.CsrfFilter@2352c21f, org.springframework.security.web.authentication.logout.LogoutFilter@282240, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5e6bbe63, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7dbd70fd, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2cb53bfc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7b6b466a, org.springframework.security.web.access.ExceptionTranslationFilter@5e83298e, org.springframework.security.web.access.intercept.AuthorizationFilter@a11efe6]
+2026-11-14 13:27:39.431 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:27:39.431 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:27:39.432 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-14 13:27:39.465 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 2.594 seconds (process running for 5.918)
+2026-11-14 13:27:39.525 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:27:40.532 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.PlantillasPendientesVistaTest]: PlantillasPendientesVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-14 13:27:40.543 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.PlantillasPendientesVistaTest
+2026-11-14 13:27:40.586 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Starting PlantillasPendientesVistaTest using Java 17.0.19 with PID 29324 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:27:40.587 [main] INFO  c.c.c.PlantillasPendientesVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:27:41.039 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:27:41.131 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@403ba39f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@520e6089, org.springframework.security.web.context.SecurityContextHolderFilter@5295a774, org.springframework.security.web.header.HeaderWriterFilter@7f59f4e4, org.springframework.web.filter.CorsFilter@2ff2a096, org.springframework.security.web.csrf.CsrfFilter@36a59d8, org.springframework.security.web.authentication.logout.LogoutFilter@35e0d91e, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@7320bccc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3e09067, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7a7f5c44, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@59c2bf78, org.springframework.security.web.access.ExceptionTranslationFilter@51751265, org.springframework.security.web.access.intercept.AuthorizationFilter@3299e315]
+2026-11-14 13:27:41.178 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:27:41.178 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:27:41.179 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:27:41.188 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Started PlantillasPendientesVistaTest in 0.641 seconds (process running for 7.642)
+2026-11-14 13:27:41.201 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/nueva' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:27:41.573 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:27:41.573 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:27:41.573 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:27:41.585 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:27:41.585 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:27:41.585 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:28:19.127 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 25528 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:28:19.129 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:28:20.498 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:28:20.758 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2aac87ab, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@c14bbab, org.springframework.security.web.context.SecurityContextHolderFilter@e0d9e3f, org.springframework.security.web.header.HeaderWriterFilter@28fef9a2, org.springframework.web.filter.CorsFilter@72c5064f, org.springframework.security.web.csrf.CsrfFilter@31b7112d, org.springframework.security.web.authentication.logout.LogoutFilter@68f1b89, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@f252762, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@799fc4c9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@44428583, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a0c04ab, org.springframework.security.web.access.ExceptionTranslationFilter@3bbdf835, org.springframework.security.web.access.intercept.AuthorizationFilter@2e5c7cd5]
+2026-11-14 13:28:21.100 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:21.100 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:21.102 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:28:21.140 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 2.601 seconds (process running for 6.737)
+2026-11-14 13:28:21.216 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:28:22.478 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.PlantillasPendientesVistaTest]: PlantillasPendientesVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-14 13:28:22.503 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.PlantillasPendientesVistaTest
+2026-11-14 13:28:22.605 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Starting PlantillasPendientesVistaTest using Java 17.0.19 with PID 25528 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:28:22.606 [main] INFO  c.c.c.PlantillasPendientesVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:28:23.883 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:28:24.088 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4c140b12, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@d140627, org.springframework.security.web.context.SecurityContextHolderFilter@2ff2a096, org.springframework.security.web.header.HeaderWriterFilter@520e6089, org.springframework.web.filter.CorsFilter@386ec37d, org.springframework.security.web.csrf.CsrfFilter@7320bccc, org.springframework.security.web.authentication.logout.LogoutFilter@5f9f1886, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@6be865c1, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@59c2bf78, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@44f8d884, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@10007fdc, org.springframework.security.web.access.ExceptionTranslationFilter@403ba39f, org.springframework.security.web.access.intercept.AuthorizationFilter@11548363]
+2026-11-14 13:28:24.212 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:24.212 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:24.215 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:28:24.237 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Started PlantillasPendientesVistaTest in 1.72 seconds (process running for 9.834)
+2026-11-14 13:28:24.267 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/nueva' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:28:25.252 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:25.252 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:25.252 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:28:25.274 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:25.275 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:25.275 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:28:42.049 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 23476 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:28:42.052 [main] INFO  c.c.c.AdminActividadVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:28:43.584 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:28:43.964 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@69356aca, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7a17ffee, org.springframework.security.web.context.SecurityContextHolderFilter@34fcc5e3, org.springframework.security.web.header.HeaderWriterFilter@5e83298e, org.springframework.web.filter.CorsFilter@7ffc4195, org.springframework.security.web.csrf.CsrfFilter@7aef8000, org.springframework.security.web.authentication.logout.LogoutFilter@6f695077, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@74bcf1ab, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3c9cfcde, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2f3c7b24, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7ce760af, org.springframework.security.web.access.ExceptionTranslationFilter@11939a9f, org.springframework.security.web.access.intercept.AuthorizationFilter@6e5b3642]
+2026-11-14 13:28:44.208 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:44.209 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:44.211 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-14 13:28:44.240 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 2.744 seconds (process running for 6.929)
+2026-11-14 13:28:44.308 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:28:45.294 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.PlantillasPendientesVistaTest]: PlantillasPendientesVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-14 13:28:45.303 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.PlantillasPendientesVistaTest
+2026-11-14 13:28:45.339 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Starting PlantillasPendientesVistaTest using Java 17.0.19 with PID 23476 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-14 13:28:45.340 [main] INFO  c.c.c.PlantillasPendientesVistaTest - The following 1 profile is active: "dev"
+2026-11-14 13:28:45.961 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-14 13:28:46.073 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7320bccc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@403ba39f, org.springframework.security.web.context.SecurityContextHolderFilter@7f59f4e4, org.springframework.security.web.header.HeaderWriterFilter@51751265, org.springframework.web.filter.CorsFilter@520e6089, org.springframework.security.web.csrf.CsrfFilter@718b9d56, org.springframework.security.web.authentication.logout.LogoutFilter@4ab1693b, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3299e315, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5295a774, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3e09067, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2ff2a096, org.springframework.security.web.access.ExceptionTranslationFilter@36a59d8, org.springframework.security.web.access.intercept.AuthorizationFilter@3204146d]
+2026-11-14 13:28:46.129 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:46.130 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:46.131 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-14 13:28:46.141 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Started PlantillasPendientesVistaTest in 0.833 seconds (process running for 8.83)
+2026-11-14 13:28:46.158 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/nueva' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-14 13:28:46.652 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:46.652 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:46.652 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:28:46.667 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-14 13:28:46.668 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-14 13:28:46.668 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-14 13:47:39.805 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-14 13:47:39.807 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-11-14 13:47:39.810 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

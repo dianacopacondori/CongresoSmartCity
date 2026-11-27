@@ -1,0 +1,28 @@
+Comando ejecutado (Nmap 7.92 portable, modo connect por ausencia de Npcap):
+
+  nmap.exe -sV -sT -Pn --version-light -p 80,443,5432,5433,8080 127.0.0.1
+
+Resultado (17/11/2026):
+
+  Host is up (0.00088s latency).
+
+  PORT     STATE    SERVICE     VERSION
+  80/tcp   filtered http
+  443/tcp  filtered https
+  5432/tcp open     postgresql  PostgreSQL DB (Spanish)
+  5433/tcp open     pyrrho?     (instancia PostgreSQL usada por la aplicacion)
+  8080/tcp open     http-proxy? (Apache Tomcat / Spring Boot)
+
+Cabeceras HTTP observadas por Nmap en el puerto 8080:
+
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 0
+  Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  X-Frame-Options: DENY
+  Content-Type: text/html;charset=UTF-8
+
+Nota: el puerto 5432 corresponde a una instalacion antigua de PostgreSQL 9.4.1
+confirmada con psql; la aplicacion usa el puerto 5433. Recomendacion: deshabilitar
+o restringir la instancia 5432 si no es necesaria.

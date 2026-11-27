@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Historial de reportes | Administración</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="dashboard-page dashboard-admin-page"><header th:replace="~{fragments/navbar-admin :: topbar}"></header><aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside><div th:replace="~{fragments/navbar-admin :: overlay}"></div><main class="admin-main"><div class="admin-main-inner"><h1>Historial de reportes</h1><a class="btn btn-primary mb-3" th:href="@{/reportes/admin/menu}">Generar reporte</a>
+  <p th:if="${reportes == null or #lists.isEmpty(reportes)}">Aún no hay reportes generados.</p>
+  <div class="table-responsive" th:if="${reportes != null and not #lists.isEmpty(reportes)}"><table class="table table-striped"><thead><tr><th>Código</th><th>Tipo</th><th>Período</th><th>Generado</th><th>Resultados</th></tr></thead><tbody><tr th:each="reporte : ${reportes}">
+    <td th:text="${reporte.codigo}">1</td><td th:text="${reporte.tipo}">Tipo</td><td th:text="${reporte.periodo}">Período</td><td th:text="${reporte.fechaGeneracion}">Fecha</td><td th:text="${reporte.resultados != null ? #lists.size(reporte.resultados) : 0}">0</td>
+  </tr></tbody></table></div>
+</div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>

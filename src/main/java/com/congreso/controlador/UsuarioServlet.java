@@ -1,8 +1,8 @@
 package com.congreso.controlador;
 
+import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.RolUsuario;
-import com.congreso.seguridad.Autenticador;
 import com.congreso.servicio.UsuarioServicio;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Optional;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 
 /**
  * Controlador para la gestión de usuarios.
@@ -25,12 +26,16 @@ import java.util.Optional;
 public class UsuarioServlet {
 
     private final UsuarioServicio usuarioServicio;
-    private final Autenticador autenticador;
-
     @Autowired
-    public UsuarioServlet(UsuarioServicio usuarioServicio, Autenticador autenticador) {
+    public UsuarioServlet(UsuarioServicio usuarioServicio) {
         this.usuarioServicio = usuarioServicio;
-        this.autenticador = autenticador;
+    }
+
+    @InitBinder("usuario")
+    public void configurarRegistro(WebDataBinder binder) {
+        binder.setAllowedFields("nombres", "apellidos", "identificacion", "edad", "correo",
+                "telefono", "contrasena", "procedencia", "ocupacion", "universidad",
+                "empresa", "modalidadPagoPreferida");
     }
 
     /**
@@ -41,15 +46,7 @@ public class UsuarioServlet {
      */
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
-        model.addAttribute("usuario", new Usuario() {
-            @Override
-            public String getNombres() { return ""; }
-            @Override
-            public String getApellidos() { return ""; }
-            @Override
-            public String getCorreo() { return ""; }
-            // Implementar otros getters según sea necesario
-        });
+        model.addAttribute("usuario", new Asistente());
         return "registro";
     }
 
@@ -61,9 +58,16 @@ public class UsuarioServlet {
      * @return redirección a la página de login
      */
     @PostMapping("/registro")
-    public String procesarRegistro(@ModelAttribute Usuario usuario,
+    public String procesarRegistro(@Valid @ModelAttribute("usuario") Asistente usuario,
+                                   BindingResult errores,
                                    RedirectAttributes redirectAttributes) {
+        if (errores.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", "Revisa los datos del formulario");
+            return "redirect:/usuarios/registro";
+        }
         try {
+            usuario.setCodigo(null);
+            usuario.setRol(RolUsuario.ASISTENTE);
             usuarioServicio.registrarUsuario(usuario);
             redirectAttributes.addFlashAttribute("mensaje", "Registro exitoso. Por favor inicie sesión.");
             return "redirect:/usuarios/login";
@@ -79,47 +83,11 @@ public class UsuarioServlet {
      * @return el nombre de la vista de login
      */
     @GetMapping("/login")
-    public String mostrarLogin() {
+    public String mostrarLogin(@RequestParam(required = false) String error,
+                               @RequestParam(required = false) String logout, Model model) {
+        if (error != null) model.addAttribute("error", "Credenciales incorrectas o cuenta suspendida");
+        if (logout != null) model.addAttribute("mensaje", "Sesión cerrada correctamente");
         return "login";
-    }
-
-    /**
-     * Procesa el login de un usuario.
-     *
-     * @param correo el correo electrónico del usuario
-     * @param contrasena la contraseña del usuario
-     * @param session la sesión HTTP
-     * @param redirectAttributes atributos para redirección
-     * @return redirección al dashboard o de vuelta al login
-     */
-    @PostMapping("/login")
-    public String procesarLogin(@RequestParam String correo,
-                                @RequestParam String contrasena,
-                                HttpSession session,
-                                RedirectAttributes redirectAttributes) {
-        Optional<Usuario> usuarioOpt = autenticador.autenticar(correo, contrasena);
-
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            session.setAttribute("usuario", usuario);
-            session.setAttribute("rol", usuario.getRol());
-            return "redirect:/dashboard";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Credenciales incorrectas o cuenta suspendida");
-            return "redirect:/usuarios/login";
-        }
-    }
-
-    /**
-     * Procesa el logout de un usuario.
-     *
-     * @param session la sesión HTTP
-     * @return redirección a la página de login
-     */
-    @GetMapping("/logout")
-    public String procesarLogout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/usuarios/login";
     }
 
     /**
@@ -137,8 +105,8 @@ public class UsuarioServlet {
             return "redirect:/usuarios/login";
         }
 
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("rol", usuario.getRol());
-        return "dashboard";
+        return usuario.getRol() == RolUsuario.ADMINISTRADOR
+                ? "redirect:/admin/dashboard" : usuario.getRol() == RolUsuario.ASISTENTE
+                ? "redirect:/dashboard-asistente" : "redirect:/";
     }
 }

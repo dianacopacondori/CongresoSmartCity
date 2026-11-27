@@ -34,5 +34,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### Secretos y evidencia de auditoria ###
+src/main/resources/application-local.properties
+security/*.log
+
 ### Mac OS ###
 .DS_Store

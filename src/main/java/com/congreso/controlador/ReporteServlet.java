@@ -1,11 +1,15 @@
 package com.congreso.controlador;
 
+import com.congreso.modelo.Administrador;
 import com.congreso.modelo.Reporte;
 import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.RolUsuario;
 import com.congreso.servicio.ReporteServicio;
 import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
@@ -28,6 +33,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/reportes")
 public class ReporteServlet {
+
+    private static final Logger log = LoggerFactory.getLogger(ReporteServlet.class);
 
     private final ReporteServicio reporteServicio;
 
@@ -78,12 +85,46 @@ public class ReporteServlet {
 
         try {
             Reporte reporte = reporteServicio.generarReporte(tipo, fechaInicio, fechaFin, actividadId);
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario instanceof Administrador administrador) {
+                reporte.setGeneradoPor(administrador);
+            }
+            reporteServicio.guardarReporte(reporte);
+
             model.addAttribute("reporte", reporte);
+            model.addAttribute("fechaInicio", fechaInicio);
+            model.addAttribute("fechaFin", fechaFin);
+            model.addAttribute("actividadId", actividadId);
             return "admin/reporte-resultado";
+        } catch (IllegalArgumentException e) {
+            devolverMenuConFiltros(model, tipo, fechaInicio, fechaFin, actividadId, e.getMessage());
+            return "admin/reportes-menu";
         } catch (Exception e) {
-            model.addAttribute("error", "Error al generar el reporte: " + e.getMessage());
+            log.error("Error al generar el reporte solicitado", e);
+            devolverMenuConFiltros(model, tipo, fechaInicio, fechaFin, actividadId,
+                    "No se pudo generar el reporte. Intente nuevamente.");
             return "admin/reportes-menu";
         }
+    }
+
+    /** Conserva tipo, fechas y actividad al volver al menú tras un error. */
+    private void devolverMenuConFiltros(Model model, String tipo, LocalDate fechaInicio,
+                                        LocalDate fechaFin, Long actividadId, String error) {
+        model.addAttribute("tiposReporte", List.of(
+                "ASISTENTES", "PONENTES", "COLABORADORES", "PAGOS", "ACTIVIDADES", "ASISTENCIAS"));
+        model.addAttribute("tipoSeleccionado", tipo);
+        model.addAttribute("fechaInicio", fechaInicio);
+        model.addAttribute("fechaFin", fechaFin);
+        model.addAttribute("actividadId", actividadId);
+        model.addAttribute("error", error);
+    }
+
+    /** Fechas mal formadas no deben producir un 400 sin opciones para corregirlas. */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public String fechasInvalidas(MethodArgumentTypeMismatchException ex, HttpSession session, Model model) {
+        if (!esAdministrador(session)) return "redirect:/usuarios/login";
+        devolverMenuConFiltros(model, null, null, null, null, "Revisa el formato de los filtros e inténtalo nuevamente.");
+        return "admin/reportes-menu";
     }
 
     /**
@@ -115,7 +156,8 @@ public class ReporteServlet {
 
             // Nombre del archivo descargable
             String nombreArchivo = "reporte_" + tipo.toLowerCase() + "_" + LocalDate.now() + ".xlsx";
-            headers.setContentDispositionFormData("attachment", nombreArchivo);
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename(nombreArchivo).build());
 
             // Requisito de seguridad: evitar que el navegador guarde en caché datos sensibles
             headers.setCacheControl("no-store, no-cache, must-revalidate, proxy-revalidate");
@@ -150,7 +192,8 @@ public class ReporteServlet {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "reporte_" + tipo.toLowerCase() + ".pdf");
+            headers.setContentDisposition(ContentDisposition.attachment()
+                    .filename("reporte_" + tipo.toLowerCase() + ".pdf").build());
             headers.setCacheControl("no-store");
 
             return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);

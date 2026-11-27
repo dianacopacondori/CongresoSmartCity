@@ -1,8 +1,9 @@
 package com.congreso.controlador;
 
 import com.congreso.modelo.Pago;
+import com.congreso.modelo.enums.ModalidadPago;
 import com.congreso.servicio.PagoServicio;
-import jakarta.servlet.http.HttpSession;
+import com.congreso.dto.EstadoParticipacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.security.Principal;
 
 /**
  * Controlador para la gestión de pagos.
@@ -29,34 +31,52 @@ public class PagoServlet {
     }
 
     @GetMapping("/nuevo")
-    public String mostrarFormularioPago(Model model) {
-        model.addAttribute("pago", new Pago());
+    public String mostrarFormularioPago(Principal principal, Model model) {
+        model.addAttribute("inscripciones", pagoServicio.inscripcionesPendientesPropias(principal.getName()));
+        model.addAttribute("pasoSiguiente", pagoServicio.estadoParticipacion(principal.getName()).paso().name());
         return "pago-formulario";
     }
 
     @PostMapping("/nuevo")
-    public String registrarPago(@ModelAttribute Pago pago,
-                                HttpSession session,
-                                RedirectAttributes redirectAttributes) {
+    public String registrarPago(@RequestParam Long codigoInscripcion,
+                                @RequestParam ModalidadPago modalidad,
+                                Principal principal, RedirectAttributes redirectAttributes) {
         try {
-            // Ahora el servicio tiene el método sobrecargado que acepta el objeto Pago
-            pagoServicio.registrarPago(pago);
-            redirectAttributes.addFlashAttribute("mensaje", "Pago registrado exitosamente");
+            Pago pago = pagoServicio.simularPago(principal.getName(), codigoInscripcion, modalidad);
+            redirectAttributes.addFlashAttribute("mensaje", pago.estaPagado()
+                    ? "Pago simulado completado. Inscripción confirmada automáticamente (sin cobro real)."
+                    : "Primera cuota simulada registrada. Inscripción pendiente hasta completar la segunda cuota (sin cobro real).");
             return "redirect:/pagos/confirmacion";
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/pagos/nuevo";
         }
     }
 
+    @PostMapping("/abonar/{pagoId}")
+    public String simularSegundaCuota(@PathVariable Long pagoId, Principal principal,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            pagoServicio.simularSegundaCuota(principal.getName(), pagoId);
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Segunda cuota simulada registrada. Inscripción confirmada automáticamente (sin cobro real).");
+            return "redirect:/pagos/confirmacion";
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/pagos/mis-pagos";
+        }
+    }
+
     @GetMapping("/confirmacion")
-    public String mostrarConfirmacionPago(Model model) {
+    public String mostrarConfirmacionPago(Principal principal, Model model) {
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
         return "pago-confirmacion";
     }
 
     @GetMapping("/mis-pagos")
-    public String consultarMisPagos(HttpSession session, Model model) {
-        // TODO: Implementar lógica para obtener pagos del usuario en sesión
+    public String consultarMisPagos(Principal principal, Model model) {
+        model.addAttribute("pagos", pagoServicio.pagosPropios(principal.getName()));
         return "mis-pagos";
     }
 
@@ -73,17 +93,4 @@ public class PagoServlet {
         return "admin/pagos-lista";
     }
 
-    @PostMapping("/admin/registrar-cuota/{pagoId}")
-    public String registrarCuota(@PathVariable Long pagoId,
-                                 @RequestParam double monto,
-                                 RedirectAttributes redirectAttributes) {
-        try {
-            // Llama al alias que internamente ejecuta registrarAbono
-            pagoServicio.registrarCuota(pagoId, monto);
-            redirectAttributes.addFlashAttribute("mensaje", "Cuota registrada exitosamente");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/pagos/admin/listar";
-    }
 }

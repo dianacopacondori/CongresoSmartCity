@@ -1,0 +1,94 @@
+2026-11-22 15:07:01.966 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:07:01.977 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:07:01.982 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:07:39.533 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:07:39.539 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:07:39.544 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:10:15.564 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:10:15.569 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:10:15.572 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:18:21.173 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:18:21.177 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:18:21.180 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:20:30.645 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:20:30.648 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:20:30.651 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:22:06.119 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:22:06.121 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:22:06.123 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:28:38.678 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:28:38.682 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:28:38.683 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:30:27.729 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:30:27.737 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:30:27.741 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:39:37.029 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:39:37.031 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:39:37.034 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:40:33.264 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:40:33.268 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:40:33.270 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:45:25.614 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:45:25.616 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:45:25.618 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 15:52:35.980 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 15:52:35.982 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 15:52:35.983 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:00:15.854 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 16:00:15.857 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 16:00:15.859 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:08:33.399 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=5 actor=ana@example.invalid detalle=baja de credencial
+2026-11-22 16:08:33.403 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=9 actor=ana@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:08:33.405 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=null actor=ana@example.invalid detalle=primera emision
+2026-11-22 16:08:54.563 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 16:08:54.565 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 16:08:54.568 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:08:54.631 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=5 actor=ana@example.invalid detalle=baja de credencial
+2026-11-22 16:08:54.633 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=9 actor=ana@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:08:54.635 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=null actor=ana@example.invalid detalle=primera emision
+2026-11-22 16:09:42.644 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=1 actor=fotocheck-9f82a5863fcd43@example.invalid detalle=primera emision
+2026-11-22 16:09:42.653 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=1 actor=fotocheck-9f82a5863fcd43@example.invalid detalle=baja de credencial
+2026-11-22 16:09:42.668 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=1 actor=fotocheck-9f82a5863fcd43@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:18:10.492 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:18:10.503 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:18:10.524 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:18:42.761 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:18:42.779 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:19:03.813 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:19:03.831 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:19:03.951 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 16:19:03.954 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 16:19:03.956 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:19:04.040 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=5 actor=ana@example.invalid detalle=baja de credencial
+2026-11-22 16:19:04.041 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=9 actor=ana@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:19:04.041 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=null actor=ana@example.invalid detalle=primera emision
+2026-11-22 16:22:07.789 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=1 actor=admin-2c529596b96d4f@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:27:43.084 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:27:43.100 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=21 actor=admin@example.invalid detalle=justificacion=corta
+2026-11-22 16:27:43.106 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:27:43.122 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=20 actor=admin@example.invalid detalle=justificacion=Se validó fotocheck manualmente
+2026-11-22 16:28:32.832 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:28:32.855 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:28:32.863 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=20 actor=admin@example.invalid detalle=justificacion=Se validó fotocheck manualmente
+2026-11-22 16:28:54.744 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:28:54.758 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:28:54.762 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=20 actor=admin@example.invalid detalle=justificacion=Se validó fotocheck manualmente
+2026-11-22 16:28:54.860 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 16:28:54.861 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 16:28:54.864 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:28:54.921 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=5 actor=ana@example.invalid detalle=baja de credencial
+2026-11-22 16:28:54.922 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=9 actor=ana@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:28:54.922 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=null actor=ana@example.invalid detalle=primera emision
+2026-11-22 16:29:45.261 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=2 actor=admin-2a9a6096c6ab4b@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:29:45.274 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=2 actor=admin-2a9a6096c6ab4b@example.invalid detalle=justificacion=Fotocheck verificado en recepcion
+2026-11-22 16:41:33.854 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=MANUAL
+2026-11-22 16:41:33.870 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=null actor=admin@example.invalid detalle=mecanismo=CODIGO
+2026-11-22 16:41:33.874 | ANONIMO | accion=CORREGIR entidad=ASISTENCIA id=20 actor=admin@example.invalid detalle=justificacion=Se validó fotocheck manualmente
+2026-11-22 16:41:33.969 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=14 actor=admin@example.invalid detalle=cupos-liberados=0; sin importes cubiertos
+2026-11-22 16:41:33.970 | ANONIMO | accion=CANCELAR entidad=INSCRIPCION id=11 actor=admin@example.invalid detalle=cupos-liberados=2; sin importes cubiertos
+2026-11-22 16:41:33.972 | ANONIMO | accion=ELIMINAR entidad=ASISTENTE id=7 actor=admin@example.invalid detalle=baja-logica; pagos e inscripciones conservados sin modificacion
+2026-11-22 16:41:34.030 | ANONIMO | accion=ANULAR entidad=FOTOCHECK id=5 actor=ana@example.invalid detalle=baja de credencial
+2026-11-22 16:41:34.031 | ANONIMO | accion=RENOVAR entidad=FOTOCHECK id=9 actor=ana@example.invalid detalle=mismo registro rehabilitado
+2026-11-22 16:41:34.033 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=null actor=ana@example.invalid detalle=primera emision
+2026-11-22 16:48:21.947 | ANONIMO | accion=EMITIR entidad=FOTOCHECK id=4 actor=prueba22@log.com detalle=primera emision
+2026-11-22 16:50:42.898 | ANONIMO | accion=REGISTRAR entidad=ASISTENCIA id=3 actor=admin@test.com detalle=mecanismo=QR

@@ -9,9 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AsistenteDAO extends JpaRepository<Asistente, Long> {
+
+    Optional<Asistente> findByCorreo(String correo);
 
     List<Asistente> findByModalidadPagoPreferida(ModalidadPago modalidad);
 

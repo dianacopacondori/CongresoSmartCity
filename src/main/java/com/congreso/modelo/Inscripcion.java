@@ -37,7 +37,10 @@ public class Inscripcion {
     @JoinTable(
             name = "detalle_inscripcion",
             joinColumns = @JoinColumn(name = "codigo_inscripcion"),
-            inverseJoinColumns = @JoinColumn(name = "codigo_actividad")
+            inverseJoinColumns = @JoinColumn(name = "codigo_actividad"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "uk_detalle_inscripcion_par",
+                    columnNames = {"codigo_inscripcion", "codigo_actividad"})
     )
     private List<Actividad> actividades = new ArrayList<>();
 
@@ -79,6 +82,7 @@ public class Inscripcion {
      * Agrega una actividad a la inscripción validando cupos y cruces.
      */
     public boolean agregarActividad(Actividad actividad) {
+        if (actividades.stream().anyMatch(a -> a.getCodigo().equals(actividad.getCodigo()))) return false;
         if (!actividad.hayCupoDisponible()) return false;
         if (validarCrucesHorario(actividad)) return false;
 

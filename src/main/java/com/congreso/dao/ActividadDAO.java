@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repositorio para la entidad Actividad (Padre de Ponencia y Taller).
@@ -21,6 +22,10 @@ import java.util.List;
  */
 @Repository
 public interface ActividadDAO extends JpaRepository<Actividad, Long>  {
+
+    // Bloquear únicamente la fila base evita un FOR UPDATE sobre JOINs de herencia.
+    @Query(value = "SELECT codigo FROM actividades WHERE codigo = :codigo FOR UPDATE", nativeQuery = true)
+    Optional<Long> bloquearCodigo(@Param("codigo") Long codigo);
 
     /**
      * Obtiene solo las actividades que están activas y tienen cupo disponible.

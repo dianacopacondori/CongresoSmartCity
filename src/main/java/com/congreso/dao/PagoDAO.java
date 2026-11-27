@@ -2,6 +2,7 @@ package com.congreso.dao;
 
 import com.congreso.interfaces.DAO;
 import com.congreso.modelo.Asistente;
+import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Pago;
 import com.congreso.modelo.enums.EstadoPago;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,8 @@ import java.util.Optional;
 
 @Repository
 public interface PagoDAO extends JpaRepository<Pago, Long>{
+
+    Optional<Pago> findByInscripcion(Inscripcion inscripcion);
 
     List<Pago> findByAsistenteOrderByFechaPagoDesc(Asistente asistente);
 
@@ -39,4 +42,14 @@ public interface PagoDAO extends JpaRepository<Pago, Long>{
                 .filter(p -> p.getEstado() == EstadoPago.PENDIENTE || p.getEstado() == EstadoPago.PARCIAL)
                 .toList();
     }
+
+    /**
+     * Ingresos simulados efectivamente cubiertos: importe menos saldo pendiente.
+     * Solo cuentan pagos pagados o parciales; los anulados no generan ingresos.
+     */
+    @Query("SELECT COALESCE(SUM(p.importe - p.saldo), 0.0) FROM Pago p " +
+            "WHERE p.estado IN ('PAGADO', 'PARCIAL')")
+    Double calcularIngresosCubiertos();
+
+    long countByEstado(EstadoPago estado);
 }

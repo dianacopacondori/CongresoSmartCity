@@ -1,0 +1,8 @@
+# Copiar a application-local.properties (ignorado por Git) y ajustar valores.
+# Tambien se pueden definir como variables de entorno: DB_URL, DB_USERNAME, DB_PASSWORD,
+# MAIL_USERNAME y MAIL_PASSWORD.
+spring.datasource.password=CAMBIAR_PASSWORD_LOCAL
+# spring.datasource.url=CAMBIAR_URL_LOCAL
+# spring.datasource.username=CAMBIAR_USUARIO_LOCAL
+# spring.mail.username=CAMBIAR_USUARIO_SMTP
+# spring.mail.password=CAMBIAR_PASSWORD_SMTP

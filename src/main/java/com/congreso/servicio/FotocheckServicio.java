@@ -4,6 +4,7 @@ import com.congreso.dao.FotocheckDAO;
 import com.congreso.modelo.Fotocheck;
 import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.EstadoFotocheck;
+import com.congreso.seguridad.RegistroAuditoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,15 +41,28 @@ public class FotocheckServicio {
         Optional<Fotocheck> existente = fotocheckDAO.findByUsuario(usuario);
 
         if (existente.isPresent()) {
-            // Si existe y está emitido, retornarlo
-            if (existente.get().getEstado() == EstadoFotocheck.EMITIDO) {
-                return existente.get();
+            Fotocheck actual = existente.get();
+            if (actual.getEstado() == EstadoFotocheck.EMITIDO) {
+                return actual;
             }
-            // Si existe pero está anulado, crear uno nuevo
+            // La relación con el usuario es única: se rehabilita la misma fila en vez
+            // de crear otra, para no chocar con la restricción UNIQUE.
+            actual.setEstado(EstadoFotocheck.EMITIDO);
+            actual.setFechaEmision(java.time.LocalDate.now());
+            actual.setNombres(usuario.getNombres());
+            actual.setApellidos(usuario.getApellidos());
+            actual.setTipoUsuario(usuario.getRol());
+            Fotocheck renovado = fotocheckDAO.save(actual);
+            RegistroAuditoria.registrar("RENOVAR", "FOTOCHECK", renovado.getCodigo(),
+                    usuario.getCorreo(), "mismo registro rehabilitado");
+            return renovado;
         }
 
         Fotocheck fotocheck = new Fotocheck(usuario);
-        return fotocheckDAO.save(fotocheck);
+        Fotocheck guardado = fotocheckDAO.save(fotocheck);
+        RegistroAuditoria.registrar("EMITIR", "FOTOCHECK", guardado.getCodigo(),
+                usuario.getCorreo(), "primera emision");
+        return guardado;
     }
 
     /**
@@ -83,7 +97,11 @@ public class FotocheckServicio {
                 .orElseThrow(() -> new IllegalArgumentException("Fotocheck no encontrado"));
 
         fotocheck.setEstado(EstadoFotocheck.ANULADO);
-        return fotocheckDAO.save(fotocheck);
+        Fotocheck guardado = fotocheckDAO.save(fotocheck);
+        RegistroAuditoria.registrar("ANULAR", "FOTOCHECK", guardado.getCodigo(),
+                guardado.getUsuario() == null ? null : guardado.getUsuario().getCorreo(),
+                "baja de credencial");
+        return guardado;
     }
 
     /**

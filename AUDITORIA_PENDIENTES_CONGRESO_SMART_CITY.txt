@@ -1,0 +1,541 @@
+AUDITORÍA DE PENDIENTES - CONGRESO INTERNACIONAL SMART CITY
+Fecha de revisión: 16 de noviembre de 2026
+Segunda revisión: 16 de noviembre de 2026; se precisaron hallazgos no demostrados.
+Última actualización: 22 de noviembre de 2026; se cierran A09, M01, C06, A04, A10, A08,
+C04, C05, A11, A06 y A07 y se actualiza el estado. Las menciones al fallo de
+ConfiguracionSecretoTest en verificaciones anteriores son históricas: quedó resuelto con C06.
+Proyecto: CongresoSmartCity (Java 17, Spring Boot, Thymeleaf, Spring Security, JPA y PostgreSQL)
+
+OBJETO Y LÍMITES
+Se comparó el código actual con el caso de estudio de ocho páginas aportado por el usuario.
+Se mantiene Spring Boot; la referencia a PHP del documento no se adopta. Se ignora el
+párrafo sobre inmuebles, ajeno al congreso. El informe es una revisión estática de
+controladores, servicios, entidades, plantillas, seguridad, configuración y pruebas.
+No se ejecutaron pruebas nuevas, no se modificó código ni se comprobó la base de datos
+o un recorrido completo autenticado en estas revisiones. Los riesgos de concurrencia se
+deducen del código y deben verificarse con pruebas reales. Hay modificaciones previas
+en application.properties y en un archivo de log; no se tocaron. No se reproducen
+valores de credenciales en este informe.
+
+CORRECCIONES DE LA PRIMERA REVISIÓN
+- Se retiró un hallazgo falso sobre enlaces a Google Fonts: las plantillas actuales
+  ya no incluyen esos recursos externos. No debe tratarse como pendiente.
+- Se matizaron C04 y A07: sin consultar el esquema real no se puede asegurar que
+  falten restricciones únicas en PostgreSQL; sí faltan defensas explícitas en código
+  y pruebas de concurrencia.
+- Se corrigió M03: la ausencia de @DateTimeFormat no prueba que las fechas ISO fallen.
+  El defecto comprobable es la pérdida de opciones al volver al menú tras un error.
+- Se precisó M07: existe un listener JavaScript externo, no un handler inline sujeto
+  al bloqueo de la política CSP.
+Total tras revisión: 34 hallazgos (6 críticos, 12 altos, 13 medios y 3 bajos).
+Estado al 22 de noviembre de 2026: 18 completados (C01-C06, A01, A04-A08, A09-A11,
+M01, M04 y M08), 16 pendientes. El total de hallazgos sigue siendo 34 (6 críticos,
+12 altos, 13 medios, 3 bajos). La suite general quedó en verde: 197 pruebas, 0 fallos.
+
+ESTADO QUE YA EXISTE
+Existen las plantillas solicitadas por los controladores, el portal público, registro,
+login, paneles, CRUD básico de actividades, formularios y listados de varios módulos,
+Spring Security con roles y CSRF, BCrypt, recursos Bootstrap locales y algunas pruebas
+de vistas, controladores y servicios. Tener una vista o endpoint no equivale a que el
+proceso de negocio funcione. Los hallazgos se ordenan por impacto, de mayor a menor.
+
+============================================================
+SEVERIDAD CRÍTICA - posible acceso indebido, manipulación o datos financieros falsos
+============================================================
+
+C01. [COMPLETADO - 18 de noviembre de 2026] Edición del perfil sin comprobar titularidad
+ni limitar campos.
+Situación original: el POST /asistentes/mi-perfil aceptaba un Asistente completo y lo
+guardaba sin verificar al propietario; la pantalla era de solo lectura.
+Solución: el POST ahora recibe un DTO validado con campos editables expresamente
+permitidos. El servicio busca al asistente activo por el correo de la autenticación,
+modifica solo sus datos de perfil y conserva ID, identificación, correo, rol, estado y
+contraseña. La ruta exige rol ASISTENTE, conserva la protección CSRF y la vista permite
+editar los campos autorizados. Solo comunica éxito después de guardar; ante errores
+de validación o persistencia no anuncia éxito. Se añadieron pruebas de peticiones
+manipuladas, usuario ajeno en sesión, rol indebido, CSRF, validación y fallo de guardado.
+Verificación inicial: suite Maven `test` satisfactoria.
+Verificación adicional (18 de noviembre de 2026): 3 pruebas de integración con la
+base PostgreSQL local configurada, todas satisfactorias. Se confirmó el motor
+PostgreSQL mediante metadatos JDBC. Con Hibernate en modo
+validate y transacciones revertidas, se insertaron asistentes ficticios y se comprobó
+que un POST manipulado solo actualiza campos permitidos de la cuenta autenticada,
+sin alterar a otro asistente ni su correo, identificación, rol, estado o contraseña;
+también se comprobó que una solicitud inválida no persiste cambios. Comando:
+`mvn -Dtest=AsistentePerfilPostgresIT test`. No se ejecutó un recorrido de navegador
+con inicio de sesión y datos de usuarios reales.
+
+C02. [COMPLETADO - 18 de noviembre de 2026] Registro de pagos aceptaba entidad
+enviada por el cliente sin autorización de negocio.
+Situación original: POST /pagos/nuevo recibía un Pago completo y lo guardaba sin
+validar titular, inscripción, importe, saldo ni estado.
+Solución implementada: pagos académicos simulados, sin tarjetas ni cobro real. El POST
+solo recibe inscripción y modalidad; la cuenta se toma de la autenticación y se
+comprueba titularidad/estado. Tarifas ficticias fijadas en el servidor: Estudiante S/ 50
+(completo o 2 cuotas de S/ 25); Externo S/ 100 (solo completo). Se guarda un Pago por
+inscripción; en cuotas, la primera deja estado PARCIAL y saldo S/ 25; la segunda lleva
+saldo a cero y confirma automáticamente la inscripción. El pago completo confirma de
+inmediato. Se usa transacción y bloqueo sobre la inscripción; el listado personal se
+filtra por cuenta. Se eliminó el guardado libre y el abono administrativo de importe
+arbitrario. Pasan 11 pruebas específicas de servicio y acceso web
+(`mvn -Dtest=PagoSimuladoServicioTest,PagoSimuladoVistaTest test`). La suite general
+actual falla en ConfiguracionSecretoTest porque application.properties contiene
+un valor alternativo para DB_PASSWORD, cambio ajeno a este desarrollo.
+Verificación adicional: las 3 pruebas de PagoSimuladoPostgresIT pasaron contra
+PostgreSQL local con Hibernate en modo validate y rollback de datos ficticios.
+Confirmaron el motor por metadatos JDBC, importe y estado persistidos, confirmación
+tras pago completo/segunda cuota, rechazo de cuotas externas, duplicados, CSRF y
+acceso a inscripción ajena. No se comprobó concurrencia real de dos procesos.
+La suite general (79 pruebas)
+tiene un fallo en ConfiguracionSecretoTest por un valor alternativo en DB_PASSWORD
+de application.properties; no se cambió ese archivo durante este desarrollo.
+Prueba adicional en Chrome headless (18 de noviembre de 2026): registro e inicio de
+sesión reales de dos cuentas ficticias, inscripción Estudiante y Externo, primera
+cuota estudiantil PARCIAL sin confirmar, segunda cuota PAGADO con confirmación
+automática, y pago completo de Externo con confirmación. Se consultaron las filas
+resultantes en PostgreSQL (S/ 50 y S/ 100, saldo cero, ambas confirmadas) y se
+eliminaron exclusivamente los 2 pagos, 2 inscripciones y 2 cuentas creadas para
+la prueba; consulta posterior: cero cuentas de prueba restantes. La navegación
+entre inscripción y pago requirió abrir /pagos/nuevo directamente: falta un enlace
+guiado desde la confirmación de inscripción (M08). No se probó una pasarela real.
+
+C03. [COMPLETADO - 20 de noviembre de 2026] Titularidad al agregar actividades.
+La ruta POST /inscripciones/agregar-actividad todavía recibe el código de inscripción
+como referencia, pero exige rol ASISTENTE y el servicio obtiene la identidad del
+correo autenticado: rechaza cuentas suspendidas y códigos de inscripciones ajenas
+con 403 ANTES de consultar la actividad o consumir cupo. Como medida conservadora,
+solo acepta inscripciones CONFIRMADAS y actividades ACTIVAS; la política definitiva
+de selección durante PENDIENTE sigue por definir (D04). Errores de estado no
+anuncian éxito; éxito solo tras guardar. Se eliminó la firma pública de servicio
+que admitía solo IDs sin identidad autenticada.
+Verificación: 10 pruebas específicas de servicio/controlador y 2 pruebas de
+integración con PostgreSQL real en transacciones revertidas: un usuario no puede
+modificar la inscripción de otro ni aumentar sus cupos; el propietario de una
+inscripción confirmada sí puede agregar una ponencia y se persiste el cambio.
+La suite completa ejecutó 98 pruebas y mantiene 1 fallo preexistente de
+ConfiguracionSecretoTest por application.properties; no se modificó esa configuración.
+El botón «Inscribirme» ya se implementó en A01; C04 mantiene pendiente la unicidad
+en base de datos. El alta administrativa sin pago completo sigue pendiente (A02).
+
+C04. [COMPLETADO - 22 de noviembre de 2026] Unicidad de selección en base de datos.
+Mitigación previa con A01: el servicio bloquea inscripción y actividad, y rechaza
+duplicados, cruces y cupo agotado antes de guardar.
+Solución: la entidad Inscripcion declara @UniqueConstraint en @JoinTable y se añadió
+una migración controlada e idempotente (MigracionUnicidadDetalleInscripcion) que al
+arrancar registra su ejecución en migraciones_aplicadas, comprueba si la restricción
+ya existe, busca pares duplicados y solo entonces crea
+uk_detalle_inscripcion_par UNIQUE (codigo_inscripcion, codigo_actividad). Si hay
+duplicados previos, no borra nada: deja constancia del número de pares y omite la
+restricción para que un operador regularice los datos. El SQL equivalente quedó
+versionado en db/migracion/V1__uk_detalle_inscripcion.sql para ejecución manual por DBA.
+Ahora la integridad también vale para escritores externos a la aplicación.
+Verificación: 5 pruebas unitarias (aplica, omite por duplicados, idempotente, tolera
+fallo de BD y anotación de la entidad) y 1 prueba de integración con PostgreSQL real
+que confirmó en pg_constraint la existencia de la restricción y su registro en
+migraciones_aplicadas. Suite general: 157 pruebas, 0 fallos.
+
+C05. [COMPLETADO - 22 de noviembre de 2026] Abonos validados con historial de cuotas.
+Mitigación previa con C02: se retiró la ruta administrativa de abono arbitrario y la
+segunda cuota quedó fijada en S/ 25 en servidor.
+Solución: Pago.registrarPago(double) se endureció y ahora se reutiliza en el flujo
+simulado. Rechaza importes cero, negativos, NaN, infinito y superiores al saldo; no
+permite abonos sobre pagos PAGADO o ANULADO; descuenta exactamente el saldo y registra
+una entrada numerada en el historial. La nueva entidad CuotaPago guarda número, importe,
+fecha y observaciones. PagoServicio usa este método tanto para la primera cuota/completo
+como para la segunda cuota, de modo que ya no se manipulan saldo y estado a mano.
+El historial se muestra en «Mis pagos simulados» y la tabla cuotas_pago se crea antes de
+Hibernate mediante schema.sql (con SQL versionado en db/migracion/V2__cuotas_pago.sql)
+para no romper ddl-auto=validate.
+Verificación: 6 pruebas del modelo, 3 aserciones nuevas en el servicio y 1 prueba de
+vista; suite general 164 pruebas, 0 fallos. Además se ejecutaron contra PostgreSQL real
+MigracionUnicidadPostgresIT (arranque con validate y schema.sql) y PagoSimuladoPostgresIT
+(flujo de cuotas con el nuevo historial), ambos satisfactorios.
+
+C06. [COMPLETADO - 22 de noviembre de 2026] Configuración sensible y perfiles.
+Situación original: application.properties activaba dev/local por defecto, mantenía
+valores alternativos literales para usuario/contraseña de BD y usaba ddl-auto=update
+de forma global. Riesgo de exposición, ajustes de desarrollo en producción y cambios
+de esquema no controlados.
+Solución: no hay perfil activo por defecto; debe elegirse con SPRING_PROFILES_ACTIVE.
+DB_URL, DB_USERNAME y DB_PASSWORD se resuelven sin valores por defecto, de modo que la
+aplicación falla en arranque si no se definieron variables de entorno o el archivo
+local no versionado. El valor por defecto de ddl-auto es validate; el perfil "dev"
+(application-dev.properties) habilita update solo para construir el esquema local.
+Se añadió application-local.properties.example como plantilla sin secretos; el
+archivo application-local.properties real sigue excluido por .gitignore. Las pruebas
+de integración con PostgreSQL activan explícitamente los perfiles dev y local para
+seguir usando ese archivo no versionado, manteniendo ddl-auto=validate por
+@TestPropertySource. Se conservó el puerto 5433 y el resto de la edición previa del
+usuario. No se rotaron credenciales:
+no se encontró ninguna real versionada, solo valores alternativos de desarrollo.
+Modificar (pendiente fuera de este alcance): migraciones SQL versionadas para
+entornos compartidos, según B02.
+Verificación: ConfiguracionSecretoTest ampliado (sin valores por defecto para
+usuario/contraseña, sin perfil activo por defecto y ddl-auto=validate). Suite general
+en verde: 119 pruebas, 0 fallos. No se comprobó el arranque con una BD real ni la
+resolución de variables de entorno en un despliegue. El 22 de noviembre se detectó una
+edición posterior que reintrodujo username/password literales en application.properties;
+se restauraron los placeholders y esos valores locales se dejaron solo en
+application-local.properties (no versionado), que ahora se importa con
+spring.config.import=optional:classpath:application-local.properties para que el
+desarrollo arranque sin fijar perfil ni variables. Comprobación real: mvn spring-boot:run
+ inició Tomcat y Hikari conectó a PostgreSQL con perfil "default"; la instancia de prueba
+se detuvo. Sigue sin comprobarse un despliegue con variables de entorno.
+
+============================================================
+SEVERIDAD ALTA - procesos esenciales incorrectos o incompletos
+============================================================
+
+A01. [COMPLETADO - 21 de noviembre de 2026] «Inscribirme» ejecuta operación real.
+El catálogo muestra un formulario POST con CSRF solo a asistentes con inscripción
+propia CONFIRMADA y pago simulado completo. El servidor identifica la cuenta por la
+autenticación y elige la inscripción elegible más reciente; no acepta un código de
+inscripción arbitrario desde ese botón. La ruta anterior que anunciaba éxito ficticio
+ahora llama al servicio: valida actividad ACTIVA, cupo, cruces y duplicados; realiza
+el cambio en transacción y anuncia éxito solo tras guardar. Si falta pago o hay un
+error, muestra el motivo sin éxito. La vista indica «Ya inscrito» para seleccionadas
+y orienta a visitantes/asistentes sin inscripción elegible.
+Verificación: pruebas de vista/CSRF/roles; integración con PostgreSQL de la ruta
+real del catálogo y del detalle persistido (rollback), más dos pruebas concurrentes
+con filas ficticias eliminadas (último cupo y reenvío simultáneo). La suite general
+ejecutó 105 pruebas con un único fallo previo en ConfiguracionSecretoTest por el
+valor alternativo de DB_PASSWORD en application.properties. No se hizo una prueba
+manual adicional en Chrome de este botón. La unicidad en BD sigue pendiente (C04)
+y la confirmación administrativa sin verificar pago sigue pendiente (A02).
+
+A02. La creación y confirmación de inscripción no siguen aún las reglas del documento.
+Evidencia: InscripcionServlet /inscripciones/nueva crea una inscripción con cualquier
+tipo String; InscripcionServicio.crearInscripcion no evita duplicados ni comprueba
+tarifa/pago. /inscripciones/confirmar/{codigo} marca CONFIRMADA sin verificar pago ni
+condiciones del organizador. La ruta /inscripciones/confirmacion aparece tras crear
+una solicitud PENDIENTE; su texto sí aclara que la confirmación final es posterior.
+Modificar: definir tipos admitidos, unicidad/evento y estados; calcular tarifa,
+validar pago o condición definida, distinguir solicitud recibida de confirmación y
+probar transiciones válidas e inválidas.
+
+A03. Agenda personal excluye actividades de inscripciones pendientes.
+Mitigación provisional en A01: la selección solo permite inscripción CONFIRMADA con
+pago simulado completo; por tanto, no se guardan nuevas actividades en PENDIENTE.
+La agenda sigue mostrando únicamente confirmadas. Falta acordar formalmente D04 y
+resolver posibles datos históricos seleccionados antes de este control. Si se cambia
+la política para permitir selección en PENDIENTE, diferenciarla en panel y agenda.
+
+A04. [COMPLETADO - 22 de noviembre de 2026] Cancelación de inscripciones y cupos.
+Situación original: InscripcionServicio.eliminarInscripcion hacía deleteById sin
+liberar cupos; además, /inscripciones/admin/eliminar/{codigo} era un GET sin CSRF.
+Solución: la ruta pasó a POST con token y el servicio cancela de forma transaccional:
+bloquea la inscripción, rechaza cancelar si hay importes cubiertos (PAGADO/PARCIAL o
+importe - saldo > 0) porque la devolución depende de D03, bloquea cada actividad,
+decrementa inscritos una sola vez por actividad distinta (con tope en cero), limpia
+la tabla intermedia, marca la inscripción CANCELADA y registra auditoría. No hay borrado
+físico, por lo que se conserva el historial. El listado admin ofrece el botón con
+formulario POST y el servidor devuelve el motivo cuando la cancelación no es posible.
+Verificación: 5 pruebas de servicio de cancelación (cupos, duplicados, pago cubierto,
+ya cancelada y sin actividades) y 8 pruebas de vista compartidas con A10 (GET 405, POST sin
+CSRF 403, POST con CSRF, renderizado de formularios y exigencia de rol). Suite general:
+133 pruebas, 0 fallos. No se ejecutó una prueba con PostgreSQL real: la base local no
+está disponible en este entorno (Hibernate no pudo determinar el dialecto por falta
+de metadatos JDBC). Queda pendiente la política de devolución (D03).
+
+A05. [COMPLETADO - 18 de noviembre de 2026] Flujo de pago simulado y consulta personal.
+El flujo anterior no vinculaba inscripción ni validaba datos. Ahora se vincula cada
+pago simulado a la inscripción propia, se presentan tarifa/saldo/estado y se consultan
+solo pagos propios; completar cuotas confirma la inscripción. La prueba de
+PostgreSQL local pasó (ver C02). No se cubren tarifas adicionales de talleres.
+
+A06. [COMPLETADO - 22 de noviembre de 2026] Registro de asistencia verificado.
+Situación original: solo se comprobaban existencia y duplicado; no se validaban
+inscripción, pago, fecha, credencial ni registrador.
+Solución: AsistenciaServicio exige inscripción confirmada con pago simulado completo y
+que la actividad esté en la agenda de esa inscripción; rechaza actividades canceladas o
+sin fecha y toma la fecha del registro desde la actividad, no del cliente. MANUAL requiere
+un administrador identificable; QR y CODIGO exigen un código de fotocheck existente,
+vigente y perteneciente al asistente. Se normaliza el mecanismo y se rechazan valores
+desconocidos. Se añadió Asistencia.registradoPor (columna nullable creada por schema.sql
+para no perder registros históricos) y se registra auditoría del alta. El formulario
+pide el código del fotocheck y el controlador pasa al servicio la identidad autenticada.
+Verificación: 8 pruebas de servicio, 5 de vista y 1 prueba con PostgreSQL real que creó
+asistente, actividad, inscripción pagada, fotocheck y administrador ficticios y confirmó
+que la asistencia se guarda con la fecha de la actividad y el registrador correcto.
+Suite general: 188 pruebas en su verificación; la corrección quedó cerrada con A07
+(suite final: 197 pruebas, 0 fallos).
+
+A07. [COMPLETADO - 22 de noviembre de 2026] Unicidad y auditoría de asistencias.
+Solución: la entidad Asistencia declara UNIQUE (codigo_asistente, codigo_actividad) y
+MigracionUnicidadAsistencias la aplica en BD de forma idempotente: detecta duplicados
+previos y, si los hay, no elimina filas, solo deja constancia y omite la restricción.
+El servicio usa saveAndFlush y traduce la violación de unicidad a un error comprensible,
+de modo que un segundo escritor (incluida una solicitud concurrente) no pueda duplicar.
+La corrección exige administrador autenticado y justificación de al menos 5 caracteres;
+guarda motivo, corrector y fecha, y escribe en el log de auditoría. La columna
+registradoPor (A06) completa la trazabilidad del alta. El SQL versionado está en
+db/migracion/V4__auditoria_correcciones_asistencias.sql y las columnas se crean en
+schema.sql antes de Hibernate.
+Verificación: 5 pruebas de migración, 3 de servicio (traducción de violación UNIQUE y
+corrección autorizada), 1 de vista y ampliación de AsistenciaRegistroPostgresIT, que
+confirmó en PostgreSQL la restricción en pg_constraint, su registro de migración y la
+persistencia de justificación, corrector y fecha. Suite general: 197 pruebas, 0 fallos.
+
+A08. [COMPLETADO - 22 de noviembre de 2026] Reportes filtrados, exportables e historial.
+Situación original: generarResultados ignoraba fechas y actividadId; ambas exportaciones
+devolvían byte[0]; obtenerTodosLosReportes devolvía lista vacía y «Descargar Excel» solo
+enviaba el tipo.
+Solución: generarReporte valida tipo, rango de fechas y existencia de la actividad, y
+aplica los filtros a todas las fuentes (fechaCreación de usuarios, fechaPago de pagos,
+fecha de actividades y asistencias; actividadId por código, actividad asociada o
+inscripción/ponente/instructor). Se añadió ReporteDAO: cada generación se guarda con
+filtros, período y resultados, y el historial consulta la BD ordenado por fecha. La
+exportación Excel usa Apache POI (cabecera + filtros + filas); la exportación PDF genera
+un documento válido multipágina sin añadir dependencias. La vista de resultado conserva
+los tres filtros en ambos enlaces de descarga, muestra los filtros aplicados y oculta
+las descargas cuando no hay filas. Los errores de validación y de formato de fecha
+devuelven al menú con las opciones y los valores introducidos.
+Verificación: 8 pruebas de servicio (filtros de fecha/actividad, validaciones, Excel con
+firma PK, PDF paginado con %PDF y %%EOF, exportación sin filas y delegación al DAO) y
+7 pruebas de vista (preservación de filtros, sin descargas vacías, recuperación ante
+error, cabeceras de descarga, historial y control de rol). Suite general: 148 pruebas,
+0 fallos. Sin verificación con PostgreSQL real ni apertura de los archivos en una
+aplicación externa; el generador PDF se validó por estructura, no con un visor.
+Corrección posterior del 22 de noviembre: el usuario informó que ambas descargas daban
+error de formato. Se encontraron y corrigieron tres defectos: Content-Disposition usaba
+form-data en lugar de attachment, el generador PDF repetía el número de objeto en
+documentos multipágina (xref incoherente) y el Excel sobrescribía sus tres primeras
+filas. Las pruebas ahora comprueban las cabeceras, la tabla xref y la lectura del XLSX
+con Apache POI. Mejora adicional: cada resultado se genera como fila CSV con columnas
+útiles por tipo de entidad (antes Object.toString), el Excel escribe cada coma en una
+celda distinta y el PDF parte las líneas largas en palabras de hasta 90 caracteres para
+que no se corten. Se añadieron 3 pruebas para esos tres comportamientos; total 151.
+
+A09. [COMPLETADO - 22 de noviembre de 2026] Estadísticas de administración reales.
+Situación original: CongresoController.dashboardAdmin fijaba 1250 asistentes, 85
+registros del día, "125,000" de ingresos, 12 pagos pendientes y listas vacías.
+Solución: el panel consulta servicios/repositorios. Total de asistentes activos y
+registrados hoy (UsuarioServicio/UsuarioDAO), ingresos cubiertos como SUM(importe -
+saldo) de pagos PAGADO y PARCIAL (PagoDAO.calcularIngresosCubiertos), pagos
+PENDIENTE o PARCIAL, últimas 5 actividades activas con cupo y últimos 5 pagos.
+Los importes se formatean con dos decimales; las plantillas ya tenían estados vacíos
+para actividades y pagos, que ahora se usan con datos reales. El panel ya no muestra
+las cifras de ejemplo.
+Verificación: 2 pruebas nuevas de controlador (con cifras reales y sin datos) y la
+suite general de 117 pruebas, con un único fallo preexistente de
+ConfiguracionSecretoTest por el valor alternativo de DB_PASSWORD (C06). No se
+modificó application.properties ni se comprobó un recorrido en navegador.
+
+A10. [COMPLETADO - 22 de noviembre de 2026] Baja lógica de asistentes con POST y CSRF.
+Situación original: GET /asistentes/admin/eliminar/{id} borraba la fila con deleteById
+y la suspensión también era GET; no había rastro de quién ejecutaba la acción.
+Solución: suspender y eliminar son POST con token CSRF. El servicio ya no borra filas:
+marca SUSPENDIDO o ELIMINADO, conserva pagos e inscripciones sin modificarlos (no se
+liberan cupos ni se anulan pagos; ese efecto queda sujeto a D03) y no permite suspender
+a quien ya está dado de baja. Se añadió RegistroAuditoria, un logger dedicado que deja
+acción, entidad, id, actor y detalle sin datos personales. El listado admin muestra
+ambas acciones como formularios POST; el modelo ya tiene estados para ambas.
+Verificación: 2 pruebas de servicio (baja lógica sin deleteById y rechazo de suspensión
+sobre baja) y las 8 pruebas de vista de A04/A10 (GET 405, POST sin CSRF 403, POST con
+CSRF, renderizado y rol). Suite general: 133 pruebas, 0 fallos. Sin verificación en BD
+real ni en navegador; la política de reversión de pagos sigue pendiente (D03).
+
+A11. [COMPLETADO - 22 de noviembre de 2026] Recorrido usable del fotocheck.
+Situación original: no había controlador ni plantillas, el servicio no se invocaba desde
+la web y renovaba creando otra fila pese a la relación única por usuario.
+Solución: FotocheckServicio rehabilita el mismo registro tras una anulación (actualiza
+estado, fecha y datos) en vez de insertar otro, y registra auditoría. Nuevo
+FotocheckController con: emisión automática para asistentes con inscripción confirmada y
+pago simulado completo, vista digital con código, descarga PDF protegida y verificación
+por código para administradores. El PDF usa el generador extraído de A08. El panel del
+asistente enlaza al fotocheck cuando ya puede ver su agenda. Formato y verificación son
+los adoptados para la demo digital; la identificación real y la autorización de corrección
+de asistencia siguen en D05/A06.
+Verificación: 4 pruebas de servicio, 7 de vista (emisión, sin elegibilidad, descarga,
+verificación válida/no válida y roles) y 1 prueba con PostgreSQL real que confirma que
+emitir, anular y renovar deja una sola fila. Suite general: 175 pruebas, 0 fallos.
+
+A12. Notificaciones por correo no completan confirmación ni agenda.
+Evidencia: NotificacionServicio tiene métodos, pero ningún flujo web de inscripción,
+confirmación o agenda los llama; el NotificadorMock solo registra en log y declara
+éxito simulado. La dependencia de correo no implica entrega real.
+Modificar: acordar entorno de pruebas SMTP o simulación explícita, registrar destinatario
+y estado, enviar solo después del evento de negocio y no prometer correo entregado
+cuando se ha usado mock.
+
+============================================================
+SEVERIDAD MEDIA - funcionalidad parcial, validación y experiencia deficientes
+============================================================
+
+M01. [COMPLETADO - 22 de noviembre de 2026] Filtros del catálogo conectados.
+Situación original: actividades.html mostraba texto/tipo/fecha sin names ni <form> y
+GET /actividades no recibía filtros.
+Solución: el formulario envía nombre/tipo/fecha por GET; ActividadServlet recibe los
+tres parámetros (fecha ISO) y ActividadServicio.obtenerActividadesFiltradas parte
+siempre de actividades ACTIVAS con cupo y aplica búsqueda por título (sin
+distinguir mayúsculas), tipo PONENCIA/TALLER y fecha exacta. Los valores elegidos se
+conservan en el formulario, hay enlace «Limpiar filtros» y estado vacío específico
+cuando los filtros no devuelven resultados. El contador sigue usando el tamaño real
+de la lista filtrada. Un tipo inválido muestra error en la vista sin devolver 500.
+Verificación: 6 pruebas de servicio (combinaciones, mayúsculas, tipo, fecha, sin
+cupo/canceladas y tipo inválido) y 4 pruebas de vista MockMvc (parámetros, valores
+conservados, estado vacío, acceso público y error). Las pruebas previas del catálogo
+siguieron pasando; la suite general quedó en 117 pruebas con el único fallo
+preexistente de ConfiguracionSecretoTest (C06).
+
+M02. Filtros del panel admin de pagos no afectan al listado.
+Evidencia: dashboard-admin.html presenta select, input y «Aplicar filtros» sin form;
+CongresoController.dashboardAdmin envía pagos=[]; el listado /pagos/admin/listar sí
+admite estado, pero no búsqueda por nombre ni se usa desde ese panel.
+Modificar: conectar al listado real o retirar los controles hasta implementarlos;
+validar parámetros y devolver estado de error cuando un filtro sea inválido (hoy
+PagoServicio.buscarPorEstado devuelve silenciosamente lista vacía).
+
+M03. Errores de filtros de reporte sin recuperación adecuada de la vista.
+Evidencia: al fallar reporteServicio.generarReporte, ReporteServlet retorna
+reportes-menu sin volver a cargar tiposReporte; la plantilla necesita ese atributo
+para llenar el select. Fechas o IDs mal formados pueden producir un error de binding
+antes de entrar al try del método. La falta de @DateTimeFormat explícito NO demuestra
+por sí sola un fallo: Spring Boot puede convertir fechas ISO correctamente.
+Modificar: validar fechas/actividad/tipo, manejar errores de binding, conservar
+filtros y opciones al devolver la vista; probar entradas inválidas y exportación.
+
+M04. [COMPLETADO - 18 de noviembre de 2026] Edición del perfil visible solo en lectura.
+La vista ahora ofrece un formulario para datos personales permitidos, con validación,
+mensajes de error y CSRF. Se activó solo después de resolver la titularidad y el
+guardado restringido de C01. Correo, identificación y contraseña siguen fuera de
+este formulario; sus eventuales cambios requieren un flujo separado.
+
+M05. Funciones admin de asistentes/colaboradores/ponentes incompletas.
+Evidencia: AsistenteServlet solo lista, suspende o borra; ColaboradorServicio y DAO
+existen, pero no hay controlador/vistas para gestionar colaboradores, instructores y
+ponentes, sus actividades asignadas y estados. Tampoco hay interfaz para salas.
+Modificar: CRUD con DTOs, permisos de admin, validaciones, protección de asignaciones
+existentes y búsquedas por institución/empresa/código según PDF.
+
+M06. Administración de actividades no impone ventana de cambios ni reglas completas.
+Evidencia: AdminActividadController permite editar/cancelar con POST sin comprobar
+inicio del periodo de inscripción; ActividadServicio.cancelarActividad no contempla
+personas inscritas. La validación de sala se hace por lectura previa, sin mecanismo
+de bloqueo/índice para reservas concurrentes. El formulario no ofrece costo de taller.
+Modificar: definir ventana, política de cancelación y costo, transacciones e integridad
+con inscripciones; validar estado/fecha/responsables y pruebas de choque de sala.
+
+M07. Formulario administrativo de actividad depende de JS para enviar el responsable
+correcto. Evidencia: actividad-form.html usa dos select para el responsable;
+admin-form.js alterna sus nombres y required; no hay cobertura end-to-end para crear
+un taller y editarlo con JS deshabilitado. El formulario actual carga un listener
+EXTERNO compatible con la CSP; no se observó un handler inline en las plantillas.
+Modificar: asegurar un único campo enviado por tipo, validar siempre en servidor,
+probar taller/edición y decidir si se requiere funcionamiento sin JavaScript.
+
+M08. [COMPLETADO - 19 de noviembre de 2026] Navegación del asistente hacia
+inscripción, pago simulado y agenda.
+Antes era necesario abrir /pagos/nuevo directamente tras inscribirse. Ahora el panel
+ofrece el siguiente paso según la inscripción actual y SU pago asociado: crear
+inscripción, simular pago, completar segunda cuota, ver agenda tras pago completo o
+revisar un estado inconsistente. Las pantallas de confirmación enlazan al paso real;
+el formulario de pago evita invitar a crear otra inscripción si ya hay una cuota
+parcial. Al 19 de noviembre aún no se prometía selección ni fotocheck; A01 ya
+habilitó después la selección para asistentes con inscripción pagada y confirmada.
+El fotocheck sigue pendiente (A11).
+Verificación: 9 pruebas nuevas de servicio/vistas, una prueba de integración con
+PostgreSQL real (rollback, dos inscripciones y pago anterior) y dos recorridos
+completos en Chrome headless con cuentas Estudiante y Externo. El recorrido final
+usó los enlaces visibles panel -> inscripción -> pago -> segunda cuota/confirmación
+-> agenda, sin escribir rutas manualmente. Se eliminaron las 5 cuentas ficticias,
+4 inscripciones y 4 pagos creados en las ejecuciones de navegador (incluida una
+ejecución inicial cuyo script tenía una aserción incorrecta); cero cuentas de prueba
+restantes. La suite general sigue con un único fallo preexistente en
+ConfiguracionSecretoTest, ajeno a M08.
+
+M09. Registro de usuarios: recuperación de cuenta inexistente y errores poco útiles.
+Evidencia: UsuarioServlet tiene registro/login pero no recuperación de cuenta;
+ante @Valid inválido redirige y pierde errores específicos del BindingResult y datos
+ingresados. Modificar: formulario/servicio de recuperación por token de un solo uso
+y expiración; conservar campos no secretos y errores por campo; proteger el envío.
+
+M10. Consultas/listados con posibles problemas de rendimiento y carga perezosa.
+Evidencia: vistas admin acceden a pago.asistente/inscripcion y asistencia.actividad,
+relaciones LAZY; listados usan findAll sin paginar. No se verificó ejecución con
+registros reales en BD ni fuera de sesión de persistencia.
+Modificar: DTO/proyecciones o consultas JOIN FETCH apropiadas, paginación, orden,
+pruebas de renderizado con JPA real y datos abundantes.
+
+M11. Fecha/estado/contadores de pagos e inscripciones requieren una fuente única.
+Mitigación parcial en M08: el panel ya asocia el pago con la inscripción mostrada,
+prioriza una pendiente y no toma pagos.get(0) de otra inscripción. Siguen pendientes
+una fuente única para Inscripcion.estado y confirmacion, política de cancelaciones y
+pruebas exhaustivas de múltiples inscripciones/estados históricos.
+
+M12. Tipos de usuario adicionales y autorización por rol aún no tienen recorrido web.
+Evidencia: el PDF prevé colaboradores, instructores y ponentes; la configuración de
+seguridad define reglas particulares para admin/asistente y deja el resto en
+anyRequest().authenticated(). No hay páginas privadas específicas para esas funciones.
+Modificar: definir casos de uso reales para cada rol y permisos explícitos antes de
+habilitar controladores o funciones sensibles.
+
+M13. Faltan pruebas del ciclo integral y de seguridad del negocio.
+Evidencia: InscripcionServicioTest está vacío. Hay pruebas de vistas y actividades,
+pero no una suite de registro -> inscripción -> pago -> agenda -> fotocheck ->
+asistencia -> reporte, ni pruebas de acceso cruzado, doble envío y concurrencia.
+Modificar: pruebas unitarias de reglas, MockMvc/CSRF/roles, integración con BD de
+prueba PostgreSQL y transacciones, y recorrido real con datos ficticios.
+
+============================================================
+SEVERIDAD BAJA - mantenimiento, presentación y documentación
+============================================================
+
+B01. Enlaces y textos pueden llevar a expectativas incorrectas.
+La vista de inscripción ahora dirige al pago simulado y solo invita a consultar
+agenda al completar el pago; A01 habilitó la selección para inscripciones elegibles.
+A08 ya corrige la descarga vacía, pero otras vistas siguen anunciando pasos pendientes.
+Ajustar los demás textos/acciones según estados verdaderos y
+ocultar o deshabilitar funciones inconclusas hasta resolver los pendientes A02-A08.
+
+B02. Documentación de operación y despliegue incompleta o dispersa.
+Evidencia: no se localizó manual general del portal ni migraciones SQL versionadas;
+el PDF solicita manual, instalación y evidencias. Modificar: guía Spring Boot/Java 17,
+variables de entorno, PostgreSQL, perfiles, datos ficticios, migraciones, pruebas y
+demostración paso a paso. No incorporar el párrafo ajeno de inmuebles.
+
+B03. Código auxiliar y mensajes heredados necesitan depuración técnica.
+Evidencia: FiltroSeguridad es clase vacía; hay métodos alias/placeholder y comentarios
+«NUEVO» de integración; algunas plantillas tienen fallback href de prototipado. No
+rompen necesariamente el flujo Thymeleaf, pero dificultan mantenimiento.
+Modificar: retirar solo después de verificar usos, unificar nombres de rutas y
+servicios y mantener un contrato claro entre modelo, controlador y vistas.
+
+============================================================
+DECISIONES DE NEGOCIO PENDIENTES (NO INVENTAR EN CÓDIGO)
+============================================================
+
+D01. Para la demostración académica se aprobaron: Estudiante S/ 50 (completo o 2 cuotas
+de S/ 25), Externo S/ 100 (solo completo). La condición de estudiante es declarativa,
+sin acreditación; queda pendiente definir cualquier costo adicional de talleres.
+D02. Se aprobó pago simulado, sin cobros reales; la inscripción se confirma al pagar
+el total (no tras la primera cuota). Siguen pendientes las políticas de fotocheck,
+asistencia y acceso a agenda mientras la inscripción está PENDIENTE.
+D03. Fecha de apertura/cierre de inscripción y límite para modificar/cancelar agenda,
+actividades o inscripción; política de devolución (A04 ya libera cupos al cancelar sin
+importes cubiertos, pero no define reembolsos ni baja de asistentes con pagos).
+D04. Sigue pendiente definir si se permitirán selecciones durante PENDIENTE. Por
+seguridad y coherencia con la agenda actual, la ruta de selección bloquea ese estado
+provisionalmente y solo permite CONFIRMADA; A01 ya habilitó «Inscribirme» para ese
+caso. Revisar la política antes de permitir selecciones durante PENDIENTE.
+D05. A11 adoptó fotocheck digital con descarga PDF y verificación por código; A06 usa
+ese código y exige inscripción pagada; A07 añadió corrección autorizada con justificación
+y auditoría. Sigue pendiente únicamente la identificación real: la credencial es ficticia.
+D06. Medio de correo de prueba y criterio de «enviado» frente a «simulado».
+
+ORDEN DE TRABAJO RECOMENDADO
+1. C01-C06 completados (integridad, configuración y abonos).
+2. C04 y A04 completados (unicidad en BD, cancelación con liberación de cupos y POST
+   con CSRF); mantener las pruebas de concurrencia y de acceso cruzado existentes.
+3. Definir D01-D04 y completar flujo de inscripción y agenda (A02-A05, M11);
+   A01, M01 y M08 ya están completados. Solo mostrar éxito después de persistir.
+4. Notificaciones (A12); A06, A07 y A11 completados.
+5. Funciones admin: M02-M06; A08, A09 y A10 completados.
+6. Pruebas integrales, rendimiento, documentación y ajustes visuales (M09-M13, B01-B03).
+
+CRITERIO DE CIERRE
+Con datos ficticios y cuentas separadas por rol, debe poder demostrarse sin promesas
+ficticias: registro, inscripción y pago bajo reglas definidas, selección de ponencia y
+taller sin cruces ni sobrecupo incluso con dos usuarios simultáneos, agenda visible,
+fotocheck verificable, asistencia sin duplicados y reporte filtrado/exportable real.
+Cada mensaje de éxito debe reflejar una operación completada y verificable en BD.

@@ -6,6 +6,8 @@ import com.congreso.modelo.Asistente;
 import com.congreso.modelo.Inscripcion;
 import com.congreso.modelo.Usuario;
 import com.congreso.servicio.InscripcionServicio;
+import com.congreso.servicio.PagoServicio;
+import com.congreso.dto.EstadoParticipacion;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.security.Principal;
 
 /**
  * Controlador para la gestión de inscripciones al congreso.
@@ -27,12 +30,14 @@ public class InscripcionServlet {
 
     private final InscripcionServicio inscripcionServicio;
     private final AsistenteDAO asistenteDAO;
+    private final PagoServicio pagoServicio;
 
     @Autowired
     public InscripcionServlet(InscripcionServicio inscripcionServicio,
-                              AsistenteDAO asistenteDAO) {
+                              AsistenteDAO asistenteDAO, PagoServicio pagoServicio) {
         this.inscripcionServicio = inscripcionServicio;
         this.asistenteDAO = asistenteDAO;
+        this.pagoServicio = pagoServicio;
     }
 
     /**
@@ -82,7 +87,9 @@ public class InscripcionServlet {
      * Muestra la confirmación de inscripción.
      */
     @GetMapping("/confirmacion")
-    public String mostrarConfirmacion(Model model) {
+    public String mostrarConfirmacion(Principal principal, Model model) {
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
         return "inscripcion-confirmacion";
     }
 
@@ -102,25 +109,17 @@ public class InscripcionServlet {
     }
 
     /**
-     * Agrega una actividad a la inscripción del asistente.
-     * Usa el método real: inscribirActividad(codigoInscripcion, codigoActividad)
+     * Agrega una actividad únicamente a una inscripción del asistente autenticado.
      */
     @PostMapping("/agregar-actividad")
     public String agregarActividad(@RequestParam Long codigoInscripcion,
-                                   @RequestParam Long codigoActividad,
-                                   HttpSession session,
-                                   RedirectAttributes redirectAttributes) {
+                                    @RequestParam Long codigoActividad,
+                                    Principal principal,
+                                    RedirectAttributes redirectAttributes) {
         try {
-            Usuario usuario = (Usuario) session.getAttribute("usuario");
-            if (usuario == null) {
-                redirectAttributes.addFlashAttribute("error", "Debe iniciar sesión");
-                return "redirect:/usuarios/login";
-            }
-
-            // Llamar al método real del servicio
-            inscripcionServicio.inscribirActividad(codigoInscripcion, codigoActividad);
+            inscripcionServicio.inscribirActividad(principal.getName(), codigoInscripcion, codigoActividad);
             redirectAttributes.addFlashAttribute("mensaje", "Actividad agregada a tu agenda");
-        } catch (Exception e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/inscripciones/mi-agenda";
@@ -153,14 +152,14 @@ public class InscripcionServlet {
     }
 
     /**
-     * Elimina una inscripción (admin).
+     * Cancela una inscripción (admin), con POST y CSRF. Libera cupos y conserva el historial.
      */
-    @GetMapping("/admin/eliminar/{codigo}")
-    public String eliminarInscripcion(@PathVariable Long codigo,
+    @PostMapping("/admin/eliminar/{codigo}")
+    public String cancelarInscripcion(@PathVariable Long codigo, Principal principal,
                                       RedirectAttributes redirectAttributes) {
         try {
-            inscripcionServicio.eliminarInscripcion(codigo);
-            redirectAttributes.addFlashAttribute("mensaje", "Inscripción eliminada");
+            inscripcionServicio.cancelarInscripcion(codigo, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Inscripción cancelada y cupos liberados");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

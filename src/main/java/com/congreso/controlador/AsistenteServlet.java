@@ -1,16 +1,20 @@
 package com.congreso.controlador;
 
+import com.congreso.dto.PerfilAsistenteFormulario;
 import com.congreso.modelo.Asistente;
-import com.congreso.modelo.Usuario;
-import com.congreso.modelo.enums.ModalidadPago;
 import com.congreso.servicio.AsistenteServicio;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -28,6 +32,12 @@ public class AsistenteServlet {
     @Autowired
     public AsistenteServlet(AsistenteServicio asistenteServicio) {
         this.asistenteServicio = asistenteServicio;
+    }
+
+    @InitBinder("perfil")
+    public void protegerPerfil(WebDataBinder binder) {
+        binder.setAllowedFields("nombres", "apellidos", "telefono", "procedencia",
+                "ocupacion", "universidad", "empresa", "edad", "modalidadPagoPreferida");
     }
 
     /**
@@ -50,14 +60,10 @@ public class AsistenteServlet {
      * Muestra el perfil del asistente logueado.
      */
     @GetMapping("/mi-perfil")
-    public String mostrarMiPerfil(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
-            return "redirect:/usuarios/login";
-        }
-
-        Asistente asistente = asistenteServicio.buscarPorCodigo(usuario.getCodigo());
+    public String mostrarMiPerfil(Principal principal, Model model) {
+        Asistente asistente = asistenteServicio.buscarPerfilPropio(principal.getName());
         model.addAttribute("asistente", asistente);
+        model.addAttribute("perfil", PerfilAsistenteFormulario.desde(asistente));
         return "asistente-perfil";
     }
 
@@ -65,14 +71,21 @@ public class AsistenteServlet {
      * Actualiza los datos del asistente logueado.
      */
     @PostMapping("/mi-perfil")
-    public String actualizarMiPerfil(@ModelAttribute Asistente asistente,
-                                     HttpSession session,
-                                     RedirectAttributes redirectAttributes) {
+    public String actualizarMiPerfil(@Valid @ModelAttribute("perfil") PerfilAsistenteFormulario perfil,
+                                     BindingResult errores, Principal principal, HttpSession session,
+                                     Model model, RedirectAttributes redirectAttributes) {
+        if (errores.hasErrors()) {
+            model.addAttribute("asistente", asistenteServicio.buscarPerfilPropio(principal.getName()));
+            return "asistente-perfil";
+        }
         try {
-            asistenteServicio.actualizarAsistente(asistente);
+            Asistente actualizado = asistenteServicio.actualizarPerfilPropio(principal.getName(), perfil);
+            session.setAttribute("usuario", actualizado);
             redirectAttributes.addFlashAttribute("mensaje", "Perfil actualizado exitosamente");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("asistente", asistenteServicio.buscarPerfilPropio(principal.getName()));
+            model.addAttribute("error", "No se pudo guardar el perfil. Revisa los datos e inténtalo nuevamente.");
+            return "asistente-perfil";
         }
         return "redirect:/asistentes/mi-perfil";
     }
@@ -80,11 +93,12 @@ public class AsistenteServlet {
     /**
      * Suspende un asistente (admin).
      */
-    @GetMapping("/admin/suspender/{id}")
-    public String suspenderAsistente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/suspender/{id}")
+    public String suspenderAsistente(@PathVariable Long id, Principal principal,
+                                     RedirectAttributes redirectAttributes) {
         try {
-            asistenteServicio.suspenderAsistente(id);
-            redirectAttributes.addFlashAttribute("mensaje", "Asistente suspendido exitosamente");
+            asistenteServicio.suspenderAsistente(id, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Asistente suspendido (baja lógica)");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
@@ -92,13 +106,14 @@ public class AsistenteServlet {
     }
 
     /**
-     * Elimina lógicamente un asistente (admin).
+     * Da de baja lógicamente a un asistente (admin), con POST y CSRF.
      */
-    @GetMapping("/admin/eliminar/{id}")
-    public String eliminarAsistente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/admin/eliminar/{id}")
+    public String eliminarAsistente(@PathVariable Long id, Principal principal,
+                                    RedirectAttributes redirectAttributes) {
         try {
-            asistenteServicio.eliminarAsistente(id);
-            redirectAttributes.addFlashAttribute("mensaje", "Asistente eliminado exitosamente");
+            asistenteServicio.eliminarAsistente(id, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Asistente dado de baja (baja lógica)");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
         }

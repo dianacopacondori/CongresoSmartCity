@@ -1,11 +1,23 @@
 package com.congreso.controlador;
 
+import com.congreso.modelo.Asistente;
+import com.congreso.modelo.Administrador;
+import com.congreso.modelo.Usuario;
+import com.congreso.modelo.enums.RolUsuario;
+import com.congreso.dto.EstadoParticipacion;
+import com.congreso.servicio.ActividadServicio;
+import com.congreso.servicio.AsistenciaServicio;
+import com.congreso.servicio.ColaboradorServicio;
+import com.congreso.servicio.InscripcionServicio;
+import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.UsuarioServicio;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.security.Principal;
+import java.util.Locale;
 
 /**
  * Controlador principal para las páginas públicas del congreso.
@@ -17,13 +29,31 @@ import java.util.List;
 @Controller
 public class CongresoController {
 
+    private final ActividadServicio actividadServicio;
+    private final ColaboradorServicio colaboradorServicio;
+    private final InscripcionServicio inscripcionServicio;
+    private final AsistenciaServicio asistenciaServicio;
+    private final PagoServicio pagoServicio;
+    private final UsuarioServicio usuarioServicio;
+
+    public CongresoController(ActividadServicio actividadServicio, ColaboradorServicio colaboradorServicio,
+                              InscripcionServicio inscripcionServicio, AsistenciaServicio asistenciaServicio,
+                              PagoServicio pagoServicio, UsuarioServicio usuarioServicio) {
+        this.actividadServicio = actividadServicio;
+        this.colaboradorServicio = colaboradorServicio;
+        this.inscripcionServicio = inscripcionServicio;
+        this.asistenciaServicio = asistenciaServicio;
+        this.pagoServicio = pagoServicio;
+        this.usuarioServicio = usuarioServicio;
+    }
+
     /**
      * Página de inicio (landing page pública).
      */
     @GetMapping("/")
     public String index(Model model) {
-        // TODO: Cargar ponentes reales desde la base de datos
-        model.addAttribute("ponentes", new ArrayList<>());
+        model.addAttribute("actividadesDestacadas", actividadServicio.obtenerActividadesActivas().stream().limit(3).toList());
+        model.addAttribute("ponentes", colaboradorServicio.listarPonentes());
         return "index";
     }
 
@@ -32,8 +62,7 @@ public class CongresoController {
      */
     @GetMapping("/ponentes")
     public String ponentes(Model model) {
-        // TODO: Cargar ponentes reales desde la base de datos
-        model.addAttribute("ponentes", new ArrayList<>());
+        model.addAttribute("ponentes", colaboradorServicio.listarPonentes());
         return "ponentes";
     }
 
@@ -49,10 +78,25 @@ public class CongresoController {
      * Dashboard del asistente (ruta exclusiva).
      */
     @GetMapping("/dashboard-asistente")
-    public String dashboardAsistente(Model model) {
-        // TODO: Cargar datos reales del asistente desde la sesión
-        model.addAttribute("actividades", new ArrayList<>());
-        model.addAttribute("asistencias", new ArrayList<>());
+    public String dashboardAsistente(Model model, HttpSession session, Principal principal) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/usuarios/login";
+        if (usuario instanceof Administrador && usuario.getRol() == RolUsuario.ADMINISTRADOR) {
+            return "redirect:/admin/dashboard";
+        }
+        if (!(usuario instanceof Asistente) || usuario.getRol() != RolUsuario.ASISTENTE) {
+            session.invalidate();
+            return "redirect:/usuarios/login";
+        }
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("actividades", inscripcionServicio.obtenerAgendaPersonalizada(usuario.getCodigo()));
+        model.addAttribute("asistencias", asistenciaServicio.listarAsistenciasPorAsistente(usuario.getCodigo()));
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("inscripcionEstado", estado.inscripcion());
+        model.addAttribute("pagoEstado", estado.pago());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
+        model.addAttribute("inscripcionCodigo", estado.codigoInscripcion());
         return "dashboard-asistente";
     }
 
@@ -60,14 +104,14 @@ public class CongresoController {
      * Dashboard del administrador (ruta exclusiva).
      */
     @GetMapping("/admin/dashboard")
-    public String dashboardAdmin(Model model) {
-        // TODO: Cargar estadísticas reales desde la base de datos
-        model.addAttribute("totalAsistentes", 1250);
-        model.addAttribute("registradosHoy", 85);
-        model.addAttribute("totalIngresos", "125,000");
-        model.addAttribute("pagosPendientes", 12);
-        model.addAttribute("actividades", new ArrayList<>());
-        model.addAttribute("pagos", new ArrayList<>());
+    public String dashboardAdmin(Model model, HttpSession session) {
+        model.addAttribute("usuario", session.getAttribute("usuario"));
+        model.addAttribute("totalAsistentes", usuarioServicio.contarAsistentesActivos());
+        model.addAttribute("registradosHoy", usuarioServicio.contarAsistentesRegistradosHoy());
+        model.addAttribute("totalIngresos", String.format(Locale.US, "%,.2f", pagoServicio.ingresosCubiertos()));
+        model.addAttribute("pagosPendientes", pagoServicio.contarPagosPendientes());
+        model.addAttribute("actividades", actividadServicio.obtenerActividadesActivas().stream().limit(5).toList());
+        model.addAttribute("pagos", pagoServicio.obtenerPagosRecientes(5));
         return "dashboard-admin";
     }
 }

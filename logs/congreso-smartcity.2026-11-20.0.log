@@ -1,0 +1,196 @@
+2026-11-20 23:12:27.147 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-20 23:12:27.197 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - Starting InscripcionTitularidadVistaTest using Java 17.0.19 with PID 34224 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:12:27.197 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:12:33.579 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:12:34.608 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@37c87fcc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@ca2be53, org.springframework.security.web.context.SecurityContextHolderFilter@5e8f0f98, org.springframework.security.web.header.HeaderWriterFilter@3e01796a, org.springframework.web.filter.CorsFilter@78f5cbc5, org.springframework.security.web.csrf.CsrfFilter@67e11bda, org.springframework.security.web.authentication.logout.LogoutFilter@1255de25, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@be616f0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5310e451, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@52d63b7e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@70697478, org.springframework.security.web.access.ExceptionTranslationFilter@7a62d697, org.springframework.security.web.access.intercept.AuthorizationFilter@498e41a4]
+2026-11-20 23:12:35.506 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:12:35.507 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:12:35.511 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+2026-11-20 23:12:35.625 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - Started InscripcionTitularidadVistaTest in 8.917 seconds (process running for 10.134)
+2026-11-20 23:12:35.980 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/agregar-actividad' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:13:21.930 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-11-20 23:13:21.978 [main] INFO  c.c.c.InscripcionTitularidadPostgresIT - Starting InscripcionTitularidadPostgresIT using Java 17.0.19 with PID 3396 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:13:21.979 [main] INFO  c.c.c.InscripcionTitularidadPostgresIT - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:13:23.046 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-11-20 23:13:23.179 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 121 ms. Found 10 JPA repository interfaces.
+2026-11-20 23:13:24.606 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-11-20 23:13:24.904 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.3.1.Final
+2026-11-20 23:13:25.017 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-11-20 23:13:25.585 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-11-20 23:13:25.626 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-20 23:13:26.006 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2c815fdc
+2026-11-20 23:13:26.009 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-20 23:13:26.338 [main] WARN  o.h.boot.model.internal.EntityBinder - HHH000457: Joined inheritance hierarchy [com.congreso.modelo.Actividad] defined explicit @DiscriminatorColumn.  Legacy Hibernate behavior was to ignore the @DiscriminatorColumn.  However, as part of issue HHH-6911 we now apply the explicit @DiscriminatorColumn.  If you would prefer the legacy behavior, enable the `hibernate.discriminator.ignore_explicit_for_joined` setting (hibernate.discriminator.ignore_explicit_for_joined=true)
+2026-11-20 23:13:27.930 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-11-20 23:13:27.980 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20 23:13:28.989 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-11-20 23:13:31.762 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-11-20 23:13:32.419 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:13:33.741 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6b1293a5, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@581bc85e, org.springframework.security.web.context.SecurityContextHolderFilter@1fc52b51, org.springframework.security.web.header.HeaderWriterFilter@21fca5d3, org.springframework.web.filter.CorsFilter@493d8aa7, org.springframework.security.web.csrf.CsrfFilter@12a57194, org.springframework.security.web.authentication.logout.LogoutFilter@38aca984, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1bfbbef5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4ba1ccaf, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2495bc30, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@20ebc899, org.springframework.security.web.access.ExceptionTranslationFilter@2be6103f, org.springframework.security.web.access.intercept.AuthorizationFilter@720a86ef]
+2026-11-20 23:13:35.282 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:13:35.283 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:13:35.285 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-20 23:13:35.336 [main] INFO  c.c.c.InscripcionTitularidadPostgresIT - Started InscripcionTitularidadPostgresIT in 13.794 seconds (process running for 15.139)
+2026-11-20 23:13:36.627 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/agregar-actividad' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:13:37.285 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-11-20 23:13:37.291 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-11-20 23:13:37.299 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-11-20 23:13:55.920 [main] INFO  c.c.c.AdminActividadVistaTest - Starting AdminActividadVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:13:55.925 [main] INFO  c.c.c.AdminActividadVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:13:57.702 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:13:58.086 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5f2ad3d5, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@703eead0, org.springframework.security.web.context.SecurityContextHolderFilter@2c51c756, org.springframework.security.web.header.HeaderWriterFilter@78a34c47, org.springframework.web.filter.CorsFilter@674fd531, org.springframework.security.web.csrf.CsrfFilter@1bcf2c64, org.springframework.security.web.authentication.logout.LogoutFilter@4f0cdd0f, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@29b0c169, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1ddc889b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5ec3689b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7f53b345, org.springframework.security.web.access.ExceptionTranslationFilter@3d213a2b, org.springframework.security.web.access.intercept.AuthorizationFilter@73417494]
+2026-11-20 23:13:58.485 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:13:58.487 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:13:58.489 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-20 23:13:58.530 [main] INFO  c.c.c.AdminActividadVistaTest - Started AdminActividadVistaTest in 3.655 seconds (process running for 9.923)
+2026-11-20 23:13:58.650 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/admin/actividades' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:13:59.906 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.AsistentePerfilVistaTest]: AsistentePerfilVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:13:59.924 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.AsistentePerfilVistaTest
+2026-11-20 23:13:59.978 [main] INFO  c.c.c.AsistentePerfilVistaTest - Starting AsistentePerfilVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:13:59.978 [main] INFO  c.c.c.AsistentePerfilVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:00.494 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:00.613 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@513fb873, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2a4a95c4, org.springframework.security.web.context.SecurityContextHolderFilter@3a72517e, org.springframework.security.web.header.HeaderWriterFilter@56c26b21, org.springframework.web.filter.CorsFilter@71ae1cb, org.springframework.security.web.csrf.CsrfFilter@71979130, org.springframework.security.web.authentication.logout.LogoutFilter@3993cecb, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@76fdd5f1, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@77a14911, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@541c76fd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1f50fe84, org.springframework.security.web.access.ExceptionTranslationFilter@3b2317b7, org.springframework.security.web.access.intercept.AuthorizationFilter@731bdcca]
+2026-11-20 23:14:00.722 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:00.723 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:00.724 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-20 23:14:00.739 [main] INFO  c.c.c.AsistentePerfilVistaTest - Started AsistentePerfilVistaTest in 0.81 seconds (process running for 12.132)
+2026-11-20 23:14:00.772 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/asistentes/mi-perfil' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:01.391 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.InscripcionTitularidadVistaTest]: InscripcionTitularidadVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:01.410 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.InscripcionTitularidadVistaTest
+2026-11-20 23:14:01.463 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - Starting InscripcionTitularidadVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:14:01.464 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:02.057 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:02.189 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@776d50d6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@43815bc, org.springframework.security.web.context.SecurityContextHolderFilter@71de943f, org.springframework.security.web.header.HeaderWriterFilter@68ad030d, org.springframework.web.filter.CorsFilter@122bfaac, org.springframework.security.web.csrf.CsrfFilter@57af157c, org.springframework.security.web.authentication.logout.LogoutFilter@4b158e16, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@10ef09e3, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5e756b8d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4eda5325, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7ae3591b, org.springframework.security.web.access.ExceptionTranslationFilter@765ccc7a, org.springframework.security.web.access.intercept.AuthorizationFilter@2296926d]
+2026-11-20 23:14:02.312 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:02.312 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:02.314 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-20 23:14:02.331 [main] INFO  c.c.c.InscripcionTitularidadVistaTest - Started InscripcionTitularidadVistaTest in 0.917 seconds (process running for 13.723)
+2026-11-20 23:14:02.354 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/agregar-actividad' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:02.475 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.NavbarPublicaVistaTest]: NavbarPublicaVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:02.493 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.NavbarPublicaVistaTest
+2026-11-20 23:14:02.556 [main] INFO  c.c.c.NavbarPublicaVistaTest - Starting NavbarPublicaVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:14:02.557 [main] INFO  c.c.c.NavbarPublicaVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:02.988 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:03.095 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1d9db780, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@759fe679, org.springframework.security.web.context.SecurityContextHolderFilter@5ac25491, org.springframework.security.web.header.HeaderWriterFilter@537979aa, org.springframework.web.filter.CorsFilter@7056cda8, org.springframework.security.web.csrf.CsrfFilter@9d10078, org.springframework.security.web.authentication.logout.LogoutFilter@50061d56, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@7d91e9c9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5b115d71, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4398d, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2fbbdca, org.springframework.security.web.access.ExceptionTranslationFilter@6587c92f, org.springframework.security.web.access.intercept.AuthorizationFilter@2044a11b]
+2026-11-20 23:14:03.171 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:03.172 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:03.174 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-20 23:14:03.183 [main] INFO  c.c.c.NavbarPublicaVistaTest - Started NavbarPublicaVistaTest in 0.683 seconds (process running for 14.575)
+2026-11-20 23:14:03.197 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/css/bootstrap.min.css' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:03.423 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.NavegacionAsistenteVistaTest]: NavegacionAsistenteVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:03.449 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.NavegacionAsistenteVistaTest
+2026-11-20 23:14:03.534 [main] INFO  c.c.c.NavegacionAsistenteVistaTest - Starting NavegacionAsistenteVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:14:03.535 [main] INFO  c.c.c.NavegacionAsistenteVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:04.116 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:04.289 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2f96e49f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@24e5a4e0, org.springframework.security.web.context.SecurityContextHolderFilter@39da0d43, org.springframework.security.web.header.HeaderWriterFilter@594ea722, org.springframework.web.filter.CorsFilter@4e2bed0f, org.springframework.security.web.csrf.CsrfFilter@26f29ee5, org.springframework.security.web.authentication.logout.LogoutFilter@445760e0, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@5039de18, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b6db92b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@15500a8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@507c33cc, org.springframework.security.web.access.ExceptionTranslationFilter@3e13a74, org.springframework.security.web.access.intercept.AuthorizationFilter@b6c290a]
+2026-11-20 23:14:04.383 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:04.383 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:04.384 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-20 23:14:04.400 [main] INFO  c.c.c.NavegacionAsistenteVistaTest - Started NavegacionAsistenteVistaTest in 0.944 seconds (process running for 15.792)
+2026-11-20 23:14:04.425 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/pagos/confirmacion' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:04.664 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.PagoSimuladoVistaTest]: PagoSimuladoVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:04.679 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.PagoSimuladoVistaTest
+2026-11-20 23:14:04.737 [main] INFO  c.c.c.PagoSimuladoVistaTest - Starting PagoSimuladoVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:14:04.737 [main] INFO  c.c.c.PagoSimuladoVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:05.110 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:05.166 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5a0379e2, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@50564f77, org.springframework.security.web.context.SecurityContextHolderFilter@798ca706, org.springframework.security.web.header.HeaderWriterFilter@39a7fff, org.springframework.web.filter.CorsFilter@6fb9179e, org.springframework.security.web.csrf.CsrfFilter@1d2cffea, org.springframework.security.web.authentication.logout.LogoutFilter@712106b5, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@236ec794, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3a5c472, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3dbcdd4a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3abe3f9a, org.springframework.security.web.access.ExceptionTranslationFilter@1b54ae72, org.springframework.security.web.access.intercept.AuthorizationFilter@7070ae1]
+2026-11-20 23:14:05.225 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:05.226 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:05.227 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-20 23:14:05.235 [main] INFO  c.c.c.PagoSimuladoVistaTest - Started PagoSimuladoVistaTest in 0.55 seconds (process running for 16.627)
+2026-11-20 23:14:05.245 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/pagos/nuevo' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:05.358 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.controlador.PlantillasPendientesVistaTest]: PlantillasPendientesVistaTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:05.373 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.controlador.PlantillasPendientesVistaTest
+2026-11-20 23:14:05.422 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Starting PlantillasPendientesVistaTest using Java 17.0.19 with PID 16480 (started by sanes in C:\Users\sanes\OneDrive\Imágenes\cursos del ciclo VI\Integrador de sistemas\Proyecto integrador\CongresoSmartCity)
+2026-11-20 23:14:05.423 [main] INFO  c.c.c.PlantillasPendientesVistaTest - The following 2 profiles are active: "dev", "local"
+2026-11-20 23:14:05.768 [main] INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page template: index
+2026-11-20 23:14:05.840 [main] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@997a59f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2250d39c, org.springframework.security.web.context.SecurityContextHolderFilter@5970734c, org.springframework.security.web.header.HeaderWriterFilter@7afaf602, org.springframework.web.filter.CorsFilter@40c0937f, org.springframework.security.web.csrf.CsrfFilter@4fc3bdb4, org.springframework.security.web.authentication.logout.LogoutFilter@6c8e0773, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@15be8dc4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@b8c4bcb, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1bd95764, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@21f1f60e, org.springframework.security.web.access.ExceptionTranslationFilter@3b057816, org.springframework.security.web.access.intercept.AuthorizationFilter@5406ce9f]
+2026-11-20 23:14:05.899 [main] INFO  o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:05.899 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:05.899 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-20 23:14:05.907 [main] INFO  c.c.c.PlantillasPendientesVistaTest - Started PlantillasPendientesVistaTest in 0.528 seconds (process running for 17.299)
+2026-11-20 23:14:05.917 [main] WARN  o.s.w.s.h.HandlerMappingIntrospector - Cache miss for REQUEST dispatch to '/inscripciones/nueva' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-11-20 23:14:06.437 [main] ERROR c.c.controlador.ReporteServlet - Error al generar el reporte solicitado
+java.lang.IllegalStateException: jdbc:postgresql://localhost:5433/congreso password=postgres
+	at com.congreso.servicio.ReporteServicio.generarReporte(ReporteServicio.java:41)
+	at com.congreso.controlador.ReporteServlet.generarReporte(ReporteServlet.java:84)
+	at com.congreso.controlador.ReporteServletSeguridadTest.elMensajeDeErrorNoRevelaDetallesInternos(ReporteServletSeguridadTest.java:35)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+2026-11-20 23:14:06.584 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:06.584 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:06.585 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-20 23:14:06.607 [main] INFO  o.s.mock.web.MockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-20 23:14:06.607 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-20 23:14:06.608 [main] INFO  o.s.t.w.s.TestDispatcherServlet - Completed initialization in 0 ms
+2026-11-20 23:14:06.756 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.congreso.seguridad.CabecerasSeguridadTest]: CabecerasSeguridadTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-20 23:14:06.789 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.congreso.CongresoSmartCityApplication for test class com.congreso.seguridad.CabecerasSeguridadTest
