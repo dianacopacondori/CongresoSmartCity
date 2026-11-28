@@ -6,6 +6,17 @@ C04, C05, A11, A06 y A07 y se actualiza el estado. Las menciones al fallo de
 ConfiguracionSecretoTest en verificaciones anteriores son históricas: quedó resuelto con C06.
 Proyecto: CongresoSmartCity (Java 17, Spring Boot, Thymeleaf, Spring Security, JPA y PostgreSQL)
 
+AVANCE DE LA RAMA HUSSEIN - 28 DE NOVIEMBRE DE 2026
+Se completaron M02, M03 y B02 y se implementaron mitigaciones parciales para
+A02, M06, M09, M13, B01 y B03. La suite Maven completa se ejecuto en Windows
+con Java 17 el 28 de noviembre de 2026: 213 pruebas, 0 fallos, 0 errores,
+0 omitidas (BUILD SUCCESS). Las pruebas nuevas cubren filtros de pagos,
+inscripciones, cancelacion de actividades, formularios y formatos de reportes.
+No se verificaron en esta ronda los flujos de navegador ni PostgreSQL real,
+ni se probaron las instrucciones del README en una instalacion limpia.
+Estado actualizado: 21 completados y 13 pendientes de 34 hallazgos.
+Las decisiones D03, D04 y D06 siguen sin aprobarse.
+
 OBJETO Y LÍMITES
 Se comparó el código actual con el caso de estudio de ocho páginas aportado por el usuario.
 Se mantiene Spring Boot; la referencia a PHP del documento no se adopta. Se ignora el
@@ -203,7 +214,8 @@ valor alternativo de DB_PASSWORD en application.properties. No se hizo una prueb
 manual adicional en Chrome de este botón. La unicidad en BD sigue pendiente (C04)
 y la confirmación administrativa sin verificar pago sigue pendiente (A02).
 
-A02. La creación y confirmación de inscripción no siguen aún las reglas del documento.
+A02. [PARCIAL - 28 de noviembre de 2026] La creación y confirmación de inscripción
+no siguen aún todas las reglas del documento.
 Evidencia: InscripcionServlet /inscripciones/nueva crea una inscripción con cualquier
 tipo String; InscripcionServicio.crearInscripcion no evita duplicados ni comprueba
 tarifa/pago. /inscripciones/confirmar/{codigo} marca CONFIRMADA sin verificar pago ni
@@ -212,6 +224,10 @@ una solicitud PENDIENTE; su texto sí aclara que la confirmación final es poste
 Modificar: definir tipos admitidos, unicidad/evento y estados; calcular tarifa,
 validar pago o condición definida, distinguir solicitud recibida de confirmación y
 probar transiciones válidas e inválidas.
+Avance Hussein: InscripcionServicio valida Estudiante/Externo y asistente activo,
+rechaza duplicados no cancelados y confirma solo con pago simulado completo propio;
+rechaza canceladas. Se agregaron seis pruebas en InscripcionServicioTest.
+Pendiente: concurrencia real, reglas finales del organizador y prueba con PostgreSQL.
 
 A03. Agenda personal excluye actividades de inscripciones pendientes.
 Mitigación provisional en A01: la selección solo permite inscripción CONFIRMADA con
@@ -378,15 +394,23 @@ conservados, estado vacío, acceso público y error). Las pruebas previas del ca
 siguieron pasando; la suite general quedó en 117 pruebas con el único fallo
 preexistente de ConfiguracionSecretoTest (C06).
 
-M02. Filtros del panel admin de pagos no afectan al listado.
+M02. [COMPLETADO - 28 de noviembre de 2026]
+Filtros del panel admin de pagos no afectaban al listado.
 Evidencia: dashboard-admin.html presenta select, input y «Aplicar filtros» sin form;
 CongresoController.dashboardAdmin envía pagos=[]; el listado /pagos/admin/listar sí
 admite estado, pero no búsqueda por nombre ni se usa desde ese panel.
 Modificar: conectar al listado real o retirar los controles hasta implementarlos;
 validar parámetros y devolver estado de error cuando un filtro sea inválido (hoy
 PagoServicio.buscarPorEstado devuelve silenciosamente lista vacía).
+Avance Hussein: el dashboard envía estado y nombre por GET al listado; conserva
+valores y muestra Limpiar. PagoServicio.filtrarPagos combina filtros de estado,
+nombre, apellido y correo sin distinguir mayusculas, y rechaza estado invalido.
+Se añadieron PagoFiltrosServicioTest y PagoFiltrosControllerTest. Las pruebas
+especificas y la suite general de 213 pruebas pasaron sin fallos. No se realizo
+una comprobacion adicional con grandes volumenes de pagos en PostgreSQL.
 
-M03. Errores de filtros de reporte sin recuperación adecuada de la vista.
+M03. [COMPLETADO - 28 de noviembre de 2026]
+Errores de filtros de reporte sin recuperación adecuada de la vista.
 Evidencia: al fallar reporteServicio.generarReporte, ReporteServlet retorna
 reportes-menu sin volver a cargar tiposReporte; la plantilla necesita ese atributo
 para llenar el select. Fechas o IDs mal formados pueden producir un error de binding
@@ -394,6 +418,11 @@ antes de entrar al try del método. La falta de @DateTimeFormat explícito NO de
 por sí sola un fallo: Spring Boot puede convertir fechas ISO correctamente.
 Modificar: validar fechas/actividad/tipo, manejar errores de binding, conservar
 filtros y opciones al devolver la vista; probar entradas inválidas y exportación.
+Revision Hussein: el codigo fusionado ya contenia devolverMenuConFiltros y un
+ExceptionHandler para formatos invalidos; el texto de auditoria era historico.
+Ahora se conserva el tipo de reporte tambien ante formato incorrecto y se agrega
+una prueba MockMvc. Suite general: 213 pruebas satisfactorias. No se realizo
+una verificacion manual adicional de la interfaz.
 
 M04. [COMPLETADO - 18 de noviembre de 2026] Edición del perfil visible solo en lectura.
 La vista ahora ofrece un formulario para datos personales permitidos, con validación,
@@ -408,13 +437,18 @@ ponentes, sus actividades asignadas y estados. Tampoco hay interfaz para salas.
 Modificar: CRUD con DTOs, permisos de admin, validaciones, protección de asignaciones
 existentes y búsquedas por institución/empresa/código según PDF.
 
-M06. Administración de actividades no impone ventana de cambios ni reglas completas.
+M06. [PARCIAL - 28 de noviembre de 2026] Administración de actividades no impone
+ventana de cambios ni reglas completas.
 Evidencia: AdminActividadController permite editar/cancelar con POST sin comprobar
 inicio del periodo de inscripción; ActividadServicio.cancelarActividad no contempla
 personas inscritas. La validación de sala se hace por lectura previa, sin mecanismo
 de bloqueo/índice para reservas concurrentes. El formulario no ofrece costo de taller.
 Modificar: definir ventana, política de cancelación y costo, transacciones e integridad
 con inscripciones; validar estado/fecha/responsables y pruebas de choque de sala.
+Mitigacion Hussein: se rechaza cancelar una actividad con inscritos, para evitar
+dejar agendas confirmadas con una actividad cancelada mientras no exista D03.
+El controlador informa el motivo. Dos pruebas cubren ambos escenarios.
+Permanecen pendientes las reglas de modificacion y reserva concurrente de sala.
 
 M07. Formulario administrativo de actividad depende de JS para enviar el responsable
 correcto. Evidencia: actividad-form.html usa dos select para el responsable;
@@ -444,11 +478,15 @@ ejecución inicial cuyo script tenía una aserción incorrecta); cero cuentas de
 restantes. La suite general sigue con un único fallo preexistente en
 ConfiguracionSecretoTest, ajeno a M08.
 
-M09. Registro de usuarios: recuperación de cuenta inexistente y errores poco útiles.
+M09. [PARCIAL - 28 de noviembre de 2026] Registro de usuarios: recuperación de cuenta inexistente y errores poco útiles.
 Evidencia: UsuarioServlet tiene registro/login pero no recuperación de cuenta;
 ante @Valid inválido redirige y pierde errores específicos del BindingResult y datos
 ingresados. Modificar: formulario/servicio de recuperación por token de un solo uso
 y expiración; conservar campos no secretos y errores por campo; proteger el envío.
+Avance en rama Hussein: el registro vuelve al formulario con BindingResult, muestra
+los errores por campo y conserva los datos no secretos; nunca rellena la contraseña
+después de una validación fallida. Se agregó prueba de formulario inválido. Sigue
+pendiente el restablecimiento de contraseña mediante token de un solo uso y expiración.
 
 M10. Consultas/listados con posibles problemas de rendimiento y carga perezosa.
 Evidencia: vistas admin acceden a pago.asistente/inscripcion y asistencia.actividad,
@@ -470,36 +508,50 @@ anyRequest().authenticated(). No hay páginas privadas específicas para esas fu
 Modificar: definir casos de uso reales para cada rol y permisos explícitos antes de
 habilitar controladores o funciones sensibles.
 
-M13. Faltan pruebas del ciclo integral y de seguridad del negocio.
+M13. [PARCIAL - 28 de noviembre de 2026] Faltan pruebas del ciclo integral y de seguridad del negocio.
 Evidencia: InscripcionServicioTest está vacío. Hay pruebas de vistas y actividades,
 pero no una suite de registro -> inscripción -> pago -> agenda -> fotocheck ->
 asistencia -> reporte, ni pruebas de acceso cruzado, doble envío y concurrencia.
 Modificar: pruebas unitarias de reglas, MockMvc/CSRF/roles, integración con BD de
 prueba PostgreSQL y transacciones, y recorrido real con datos ficticios.
+Avance en rama Hussein: InscripcionServicioTest ya incorpora pruebas unitarias de
+tipos, duplicados, cuenta activa y confirmación con pago. Se agregaron pruebas de
+filtros administrativos, formularios y cancelación de actividades con inscritos.
+Queda pendiente la suite integral, PostgreSQL y navegador; estas pruebas nuevas
+requieren ejecución y validación en el entorno del equipo.
 
 ============================================================
 SEVERIDAD BAJA - mantenimiento, presentación y documentación
 ============================================================
 
-B01. Enlaces y textos pueden llevar a expectativas incorrectas.
+B01. [PARCIAL - 28 de noviembre de 2026] Enlaces y textos pueden llevar a expectativas incorrectas.
 La vista de inscripción ahora dirige al pago simulado y solo invita a consultar
 agenda al completar el pago; A01 habilitó la selección para inscripciones elegibles.
 A08 ya corrige la descarga vacía, pero otras vistas siguen anunciando pasos pendientes.
 Ajustar los demás textos/acciones según estados verdaderos y
 ocultar o deshabilitar funciones inconclusas hasta resolver los pendientes A02-A08.
+Avance en rama Hussein: los filtros visibles del panel administrativo ahora conducen
+al listado real de pagos y se cambió el indicador monetario a S/. Continúa la revisión
+de los demás textos y botones en función de su comportamiento real.
 
-B02. Documentación de operación y despliegue incompleta o dispersa.
+B02. [COMPLETADO - 28 de noviembre de 2026] Documentación de operación y despliegue incompleta o dispersa.
 Evidencia: no se localizó manual general del portal ni migraciones SQL versionadas;
 el PDF solicita manual, instalación y evidencias. Modificar: guía Spring Boot/Java 17,
 variables de entorno, PostgreSQL, perfiles, datos ficticios, migraciones, pruebas y
 demostración paso a paso. No incorporar el párrafo ajeno de inmuebles.
+Avance en rama Hussein: se agregó README.md con instalación Windows, Java/Maven,
+PostgreSQL, configuración local sin credenciales versionadas, perfiles, migraciones,
+pruebas y recorrido académico. Documentacion incluida en el repositorio; la
+verificacion de una instalacion completamente limpia queda como mejora posterior.
 
-B03. Código auxiliar y mensajes heredados necesitan depuración técnica.
+B03. [PARCIAL - 28 de noviembre de 2026] Código auxiliar y mensajes heredados necesitan depuración técnica.
 Evidencia: FiltroSeguridad es clase vacía; hay métodos alias/placeholder y comentarios
 «NUEVO» de integración; algunas plantillas tienen fallback href de prototipado. No
 rompen necesariamente el flujo Thymeleaf, pero dificultan mantenimiento.
 Modificar: retirar solo después de verificar usos, unificar nombres de rutas y
 servicios y mantener un contrato claro entre modelo, controlador y vistas.
+Avance en rama Hussein: se eliminó FiltroSeguridad, clase vacía sin referencias
+localizadas. Queda pendiente examinar los alias, placeholders y enlaces de prototipo.
 
 ============================================================
 DECISIONES DE NEGOCIO PENDIENTES (NO INVENTAR EN CÓDIGO)

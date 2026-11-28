@@ -40,10 +40,12 @@
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Nombres *</label>
                   <input type="text" class="form-control" th:field="*{nombres}" required>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Apellidos *</label>
                   <input type="text" class="form-control" th:field="*{apellidos}" required>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
                 </div>
               </div>
 
@@ -51,16 +53,19 @@
                 <div class="col-md-6 mb-3">
                   <label class="form-label">DNI/RUC *</label>
                   <input type="text" class="form-control" th:field="*{identificacion}" required>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('identificacion')}" th:errors="*{identificacion}"></div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Edad</label>
                   <input type="number" class="form-control" th:field="*{edad}" min="16" max="100">
+                  <div class="text-danger small" th:if="${#fields.hasErrors('edad')}" th:errors="*{edad}"></div>
                 </div>
               </div>
 
               <div class="mb-3">
                 <label class="form-label">Correo electrónico *</label>
                 <input type="email" class="form-control" th:field="*{correo}" required>
+                <div class="text-danger small" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
               </div>
 
               <div class="row">
@@ -70,7 +75,9 @@
                 </div>
                 <div class="col-md-6 mb-3">
                   <label class="form-label">Contraseña *</label>
-                  <input type="password" class="form-control" th:field="*{contrasena}" minlength="8" required>
+                  <input type="password" class="form-control" name="contrasena"
+                         minlength="8" autocomplete="new-password" required>
+                  <div class="text-danger small" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
                 </div>
               </div>
 

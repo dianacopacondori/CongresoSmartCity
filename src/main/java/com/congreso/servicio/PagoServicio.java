@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional
@@ -193,6 +194,35 @@ public class PagoServicio {
         } catch (IllegalArgumentException e) {
             return Collections.emptyList();
         }
+    }
+
+    /** M02: filtros combinables del listado administrativo de pagos simulados. */
+    @Transactional(readOnly = true)
+    public List<Pago> filtrarPagos(String estado, String nombre) {
+        List<Pago> pagos;
+        if (estado == null || estado.isBlank()) {
+            pagos = pagoDAO.findAll();
+        } else {
+            EstadoPago estadoValido;
+            try {
+                estadoValido = EstadoPago.valueOf(estado.trim().toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException("El estado de pago seleccionado no es valido");
+            }
+            pagos = pagoDAO.findByEstadoIn(List.of(estadoValido));
+        }
+
+        if (nombre == null || nombre.isBlank()) return pagos;
+        String texto = nombre.trim().toLowerCase(Locale.ROOT);
+        return pagos.stream().filter(pago -> {
+            Asistente asistente = pago.getAsistente();
+            if (asistente == null) return false;
+            String nombres = asistente.getNombres() == null ? "" : asistente.getNombres();
+            String apellidos = asistente.getApellidos() == null ? "" : asistente.getApellidos();
+            String correo = asistente.getCorreo() == null ? "" : asistente.getCorreo();
+            return (nombres + " " + apellidos + " " + correo)
+                    .toLowerCase(Locale.ROOT).contains(texto);
+        }).toList();
     }
 
     public List<Pago> obtenerTodosLosPagos() {

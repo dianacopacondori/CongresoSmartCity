@@ -130,7 +130,8 @@ class PlantillasPendientesVistaTest {
         reporte.setResultados(List.of("Ana Pérez"));
         when(asistenteServicio.obtenerTodosLosAsistentes()).thenReturn(List.of(asistente));
         when(inscripcionServicio.listarTodasLasInscripciones()).thenReturn(List.of(inscripcion));
-        when(pagoServicio.obtenerTodosLosPagos()).thenReturn(List.of(pago));
+        // M02: el controlador usa los filtros, incluso cuando no se proporcionan parámetros.
+        when(pagoServicio.filtrarPagos(null, null)).thenReturn(List.of(pago));
         when(asistenciaServicio.obtenerTodasLasAsistencias()).thenReturn(List.of(asistencia));
         when(reporteServicio.obtenerTodosLosReportes()).thenReturn(List.of(reporte));
         when(reporteServicio.generarReporte("ASISTENTES", null, null, null)).thenReturn(reporte);

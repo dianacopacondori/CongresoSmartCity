@@ -112,6 +112,19 @@ class ReporteExportacionVistaTest {
     }
 
     @Test
+    void fechaMalFormadaRegresaAlMenuConTiposYErrorComprensible() throws Exception {
+        mvc.perform(get("/reportes/admin/generar")
+                        .session(sesionAdmin())
+                        .param("tipo", "PAGOS")
+                        .param("fechaInicio", "fecha-invalida"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Revisa el formato de los filtros")))
+                .andExpect(content().string(containsString("ASISTENCIAS")));
+
+        verify(reporteServicio, never()).guardarReporte(any());
+    }
+
+    @Test
     void exportacionExcelDevuelveArchivoYCacheDesactivada() throws Exception {
         byte[] archivo = new byte[]{'P', 'K', 3, 4, 0, 0};
         when(reporteServicio.generarReporte(eq("PAGOS"), isNull(), isNull(), isNull()))

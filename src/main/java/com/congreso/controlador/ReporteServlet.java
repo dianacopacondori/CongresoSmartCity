@@ -6,6 +6,7 @@ import com.congreso.modelo.Usuario;
 import com.congreso.modelo.enums.RolUsuario;
 import com.congreso.servicio.ReporteServicio;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,9 +122,11 @@ public class ReporteServlet {
 
     /** Fechas mal formadas no deben producir un 400 sin opciones para corregirlas. */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public String fechasInvalidas(MethodArgumentTypeMismatchException ex, HttpSession session, Model model) {
+    public String fechasInvalidas(MethodArgumentTypeMismatchException ex, HttpServletRequest request,
+                                 HttpSession session, Model model) {
         if (!esAdministrador(session)) return "redirect:/usuarios/login";
-        devolverMenuConFiltros(model, null, null, null, null, "Revisa el formato de los filtros e inténtalo nuevamente.");
+        devolverMenuConFiltros(model, request.getParameter("tipo"), null, null, null,
+                "Revisa el formato de los filtros e inténtalo nuevamente.");
         return "admin/reportes-menu";
     }
 

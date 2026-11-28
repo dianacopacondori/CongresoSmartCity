@@ -101,7 +101,7 @@ public class AdminActividadController {
         try {
             actividadServicio.cancelarActividad(id);
             redirect.addFlashAttribute("mensaje", "Actividad cancelada exitosamente");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException | IllegalStateException ex) {
             redirect.addFlashAttribute("error", ex.getMessage());
         }
         return "redirect:/admin/actividades";

@@ -12,6 +12,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,5 +63,24 @@ class UsuarioServletTest {
         assertInstanceOf(Asistente.class, captor.getValue());
         assertEquals(RolUsuario.ASISTENTE, captor.getValue().getRol());
         assertNull(captor.getValue().getCodigo());
+    }
+
+    @Test
+    void registroInvalidoConservaCamposNoSecretosYErrores() throws Exception {
+        mvc.perform(post("/usuarios/registro")
+                        .param("nombres", "")
+                        .param("apellidos", "Quispe")
+                        .param("identificacion", "87654321")
+                        .param("correo", "correo-invalido")
+                        .param("contrasena", "corta"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("registro"))
+                .andExpect(model().attributeHasFieldErrors("usuario", "nombres", "correo", "contrasena"))
+                .andExpect(model().attribute("usuario", org.hamcrest.Matchers.hasProperty(
+                        "apellidos", org.hamcrest.Matchers.is("Quispe"))))
+                .andExpect(model().attribute("usuario", org.hamcrest.Matchers.hasProperty(
+                        "contrasena", org.hamcrest.Matchers.nullValue())));
+
+        verify(usuarioServicio, never()).registrarUsuario(any());
     }
 }

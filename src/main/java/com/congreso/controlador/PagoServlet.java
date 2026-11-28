@@ -82,14 +82,16 @@ public class PagoServlet {
 
     @GetMapping("/admin/listar")
     public String listarPagos(@RequestParam(required = false) String estado,
+                              @RequestParam(required = false) String nombre,
                               Model model) {
-        List<Pago> pagos;
-        if (estado != null && !estado.isEmpty()) {
-            pagos = pagoServicio.buscarPorEstado(estado);
-        } else {
-            pagos = pagoServicio.obtenerTodosLosPagos();
+        try {
+            model.addAttribute("pagos", pagoServicio.filtrarPagos(estado, nombre));
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("pagos", List.of());
+            model.addAttribute("error", e.getMessage());
         }
-        model.addAttribute("pagos", pagos);
+        model.addAttribute("estado", estado == null ? "" : estado);
+        model.addAttribute("nombre", nombre == null ? "" : nombre);
         return "admin/pagos-lista";
     }
 

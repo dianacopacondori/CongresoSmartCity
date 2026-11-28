@@ -121,12 +121,29 @@ public class InscripcionServicio {
     public boolean confirmarInscripcion(Long codigoInscripcion) {
         Inscripcion inscripcion = inscripcionDAO.findById(codigoInscripcion)
                 .orElseThrow(() -> new IllegalArgumentException("Inscripción no encontrada"));
+        if (inscripcion.getEstado() == EstadoInscripcion.CANCELADA) {
+            throw new IllegalStateException("No se puede confirmar una inscripción cancelada");
+        }
+        if (!pagoCompleto(inscripcion)) {
+            throw new IllegalStateException("La inscripción requiere un pago simulado completo para confirmarse");
+        }
         inscripcion.confirmar();
         inscripcionDAO.save(inscripcion);
         return true;
     }
 
     public Inscripcion crearInscripcion(Asistente asistente, String tipo) {
+        if (asistente == null || !asistente.estaActivo() || asistente.getRol() != RolUsuario.ASISTENTE) {
+            throw new IllegalArgumentException("Solo un asistente activo puede inscribirse");
+        }
+        if (!"Estudiante".equals(tipo) && !"Externo".equals(tipo)) {
+            throw new IllegalArgumentException("Selecciona un tipo de inscripción válido");
+        }
+        boolean existente = inscripcionDAO.findByAsistente(asistente).stream()
+                .anyMatch(i -> i.getEstado() != EstadoInscripcion.CANCELADA);
+        if (existente) {
+            throw new IllegalStateException("Ya tienes una inscripción activa o pendiente en el congreso");
+        }
         Inscripcion inscripcion = new Inscripcion(asistente, tipo);
         return inscripcionDAO.save(inscripcion);
     }

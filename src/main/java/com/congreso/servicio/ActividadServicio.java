@@ -186,6 +186,12 @@ public class ActividadServicio {
         Actividad actividad = actividadDAO.findById(codigo)
                 .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
 
+        // M06: sin politica de devoluciones aprobada, no cancelar una actividad
+        // que ya aparece en las agendas de los asistentes.
+        if (actividad.getInscritos() != null && actividad.getInscritos() > 0) {
+            throw new IllegalStateException(
+                    "La actividad tiene asistentes inscritos; define primero una politica de cancelacion");
+        }
         actividad.setEstado(EstadoActividad.CANCELADA);
         actividadDAO.save(actividad);
     }

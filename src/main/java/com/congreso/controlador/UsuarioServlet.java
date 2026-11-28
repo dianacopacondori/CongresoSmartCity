@@ -46,7 +46,9 @@ public class UsuarioServlet {
      */
     @GetMapping("/registro")
     public String mostrarRegistro(Model model) {
-        model.addAttribute("usuario", new Asistente());
+        if (!model.containsAttribute("usuario")) {
+            model.addAttribute("usuario", new Asistente());
+        }
         return "registro";
     }
 
@@ -60,10 +62,13 @@ public class UsuarioServlet {
     @PostMapping("/registro")
     public String procesarRegistro(@Valid @ModelAttribute("usuario") Asistente usuario,
                                    BindingResult errores,
+                                   Model model,
                                    RedirectAttributes redirectAttributes) {
         if (errores.hasErrors()) {
-            redirectAttributes.addFlashAttribute("error", "Revisa los datos del formulario");
-            return "redirect:/usuarios/registro";
+            // M09: conservar campos no secretos y mostrar errores por campo.
+            usuario.setContrasena(null);
+            model.addAttribute("error", "Corrige los campos señalados para continuar");
+            return "registro";
         }
         try {
             usuario.setCodigo(null);
@@ -72,8 +77,9 @@ public class UsuarioServlet {
             redirectAttributes.addFlashAttribute("mensaje", "Registro exitoso. Por favor inicie sesión.");
             return "redirect:/usuarios/login";
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/usuarios/registro";
+            usuario.setContrasena(null);
+            model.addAttribute("error", e.getMessage());
+            return "registro";
         }
     }
 

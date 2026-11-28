@@ -5,6 +5,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,15 +42,11 @@ class ConfiguracionSecretoTest {
         Properties properties = propiedades();
         assertTrue(properties.getProperty("spring.config.import").contains("application-local.properties"));
 
-        ClassPathResource local = new ClassPathResource("application-local.properties");
-        if (local.exists()) {
-            Properties locales = new Properties();
-            try (InputStream entrada = local.getInputStream()) {
-                locales.load(entrada);
-            }
-            assertTrue(locales.getProperty("spring.datasource.username").contains("DB_USERNAME"));
-            assertTrue(locales.getProperty("spring.datasource.password").contains("DB_PASSWORD"));
-        }
+        // El archivo ignorado puede contener credenciales reales del desarrollador.
+        // La prueba protege lo versionado sin inspeccionar ni exponer secretos locales.
+        assertTrue(Files.readString(Path.of(".gitignore"))
+                .lines().map(String::trim)
+                .anyMatch("src/main/resources/application-local.properties"::equals));
     }
 
     @Test
