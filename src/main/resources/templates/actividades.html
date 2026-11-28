@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Actividades - Smart City Congress</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/style.css(v='20261027b')}" href="../static/css/style.css">
 </head>
 <body class="public-page">
@@ -32,29 +29,39 @@
   </section>
 
   <div class="container activities-content">
-    <div class="card activities-filter mb-4">
+    <div th:if="${mensaje}" class="alert alert-success" role="status" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+    <p th:if="${!puedeInscribir and esAsistente}" class="alert alert-info">Para elegir actividades necesitas una inscripción confirmada con el pago simulado completo. <a th:href="@{/dashboard-asistente}">Consulta tu siguiente paso</a>.</p>
+    <p th:if="${!esAsistente}" class="alert alert-info">Para elegir actividades, <a th:href="@{/usuarios/login}">inicia sesión como asistente</a> y completa tu inscripción.</p>
+    <form class="card activities-filter mb-4" th:action="@{/actividades}" method="get">
       <div class="row g-3 align-items-end">
         <div class="col-lg-4">
           <label class="form-label small" for="activitySearch">Buscar actividad</label>
-          <input id="activitySearch" type="text" class="form-control" placeholder="Nombre de la sesión">
+          <input id="activitySearch" name="nombre" type="text" class="form-control"
+                 placeholder="Nombre de la sesión" th:value="${nombreFiltro}">
         </div>
         <div class="col-sm-6 col-lg-3">
           <label class="form-label small" for="activityType">Tipo de actividad</label>
-          <select class="form-select" id="activityType">
-            <option>Todos los tipos</option>
-            <option>Ponencias</option>
-            <option>Talleres</option>
+          <select class="form-select" id="activityType" name="tipo">
+            <option value="TODOS" th:selected="${tipoFiltro == null or tipoFiltro == '' or tipoFiltro == 'TODOS'}">Todos los tipos</option>
+            <option value="PONENCIA" th:selected="${tipoFiltro == 'PONENCIA'}">Ponencias</option>
+            <option value="TALLER" th:selected="${tipoFiltro == 'TALLER'}">Talleres</option>
           </select>
         </div>
         <div class="col-sm-6 col-lg-3">
           <label class="form-label small" for="activityDate">Fecha</label>
-          <input id="activityDate" type="date" class="form-control">
+          <input id="activityDate" name="fecha" type="date" class="form-control" th:value="${fechaFiltro}">
         </div>
         <div class="col-lg-2">
-          <button class="btn btn-primary w-100">Buscar</button>
+          <button type="submit" class="btn btn-primary w-100">Buscar</button>
         </div>
       </div>
-    </div>
+      <div class="row mt-2" th:if="${hayFiltros}">
+        <div class="col-12">
+          <a th:href="@{/actividades}" href="/actividades" class="btn btn-link btn-sm p-0">Limpiar filtros</a>
+        </div>
+      </div>
+    </form>
 
     <div class="row g-4" th:if="${!actividades.empty}">
       <div class="col-md-6" th:each="act : ${actividades}">
@@ -62,7 +69,7 @@
           <div class="activity-card-accent" aria-hidden="true"></div>
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="activity-type" th:text="${act.tipo}">PONENCIA</span>
+              <span class="activity-type" th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? 'PONENCIA' : 'TALLER'}">PONENCIA</span>
               <span class="activity-status" th:text="${act.estado}">ACTIVA</span>
             </div>
             <h2 class="card-title" th:text="${act.titulo}">Título de la actividad</h2>
@@ -90,7 +97,7 @@
                     <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
                   </svg>
                 </span>
-                <span th:text="${act.responsableNombre}">Ponente</span>
+                <span th:text="${act instanceof T(com.congreso.modelo.Ponencia) ? act.ponente.nombres + ' ' + act.ponente.apellidos : act.instructor.nombres + ' ' + act.instructor.apellidos}">Ponente</span>
               </div>
               <div>
                 <span class="meta-icon" aria-hidden="true">
@@ -103,11 +110,12 @@
             </div>
             <div class="activity-card-footer">
               <span class="activity-date" th:text="${act.fecha}">2026-10-26</span>
-              <button class="btn btn-primary"
-                      th:disabled="${!act.hayCupoDisponible()}"
-                      th:text="${act.hayCupoDisponible()} ? 'Inscribirme' : 'Cupo agotado'">
-                Inscribirme
-              </button>
+              <form th:if="${puedeInscribir}" th:action="@{/actividades/inscribir/{id}(id=${act.codigo})}" method="post">
+                <button type="submit" class="btn btn-primary"
+                        th:disabled="${!act.hayCupoDisponible() or actividadesSeleccionadas.contains(act.codigo)}"
+                        th:text="${actividadesSeleccionadas.contains(act.codigo) ? 'Ya inscrito' : (act.hayCupoDisponible() ? 'Inscribirme' : 'Cupo agotado')}">Inscribirme</button>
+              </form>
+              <span th:if="${!puedeInscribir and !act.hayCupoDisponible()}" class="text-muted">Cupo agotado</span>
             </div>
           </div>
         </article>
@@ -120,14 +128,15 @@
           <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
       </span>
-      <h2>Estamos preparando el programa</h2>
-      <p>Las actividades del congreso estarán disponibles aquí próximamente.</p>
+      <h2 th:text="${hayFiltros} ? 'Sin resultados para estos filtros' : 'Estamos preparando el programa'">Estamos preparando el programa</h2>
+      <p th:text="${hayFiltros} ? 'Prueba con otro nombre, tipo o fecha, o limpia los filtros para ver todo el programa.'
+                                : 'Las actividades del congreso estarán disponibles aquí próximamente.'">Las actividades del congreso estarán disponibles aquí próximamente.</p>
       <a th:href="@{/}" href="index.html" class="btn btn-outline-primary">Volver al inicio</a>
     </div>
   </div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/bootstrap.bundle.min.js(v='5.3.0')}" src="/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

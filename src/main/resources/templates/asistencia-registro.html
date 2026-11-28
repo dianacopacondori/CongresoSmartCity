@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Registrar asistencia</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="dashboard-page dashboard-admin-page"><header th:replace="~{fragments/navbar-admin :: topbar}"></header><aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside><div th:replace="~{fragments/navbar-admin :: overlay}"></div>
+<main class="admin-main"><div class="admin-main-inner"><a th:href="@{/asistencias/admin/listar}">← Asistencias</a><h1>Registrar asistencia</h1>
+  <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <form class="card p-4" th:action="@{/asistencias/registrar}" method="post">
+    <label for="codigoAsistente" class="form-label">Código de asistente</label><input class="form-control mb-3" id="codigoAsistente" type="number" min="1" name="codigoAsistente" required>
+    <label for="codigoActividad" class="form-label">Código de actividad</label><input class="form-control mb-3" id="codigoActividad" type="number" min="1" name="codigoActividad" required>
+    <label for="mecanismoValidacion" class="form-label">Mecanismo de validación</label><select class="form-select mb-3" id="mecanismoValidacion" name="mecanismoValidacion" required><option value="MANUAL">Manual</option><option value="QR">QR</option><option value="CODIGO">Código</option></select>
+    <label for="codigoFotocheck" class="form-label">Código del fotocheck (obligatorio para QR o código)</label><input class="form-control mb-3" id="codigoFotocheck" type="number" min="1" name="codigoFotocheck">
+    <p class="text-muted">Solo se registra asistencia de asistentes con inscripción confirmada, pago completo y la actividad en su agenda. El registro manual queda asociado al administrador.</p>
+    <button class="btn btn-primary" type="submit">Registrar asistencia</button>
+  </form></div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>

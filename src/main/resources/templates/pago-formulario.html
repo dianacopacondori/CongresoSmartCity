@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pago simulado</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="public-page"><nav th:replace="~{fragments/navbar-publico :: navbar}"></nav><main class="container py-5 mt-5">
+  <a th:href="@{/dashboard-asistente}">← Mi panel</a><h1 class="mt-3">Pago simulado</h1>
+  <p class="alert alert-info">Demostración académica: no se solicitan tarjetas ni se realizan cobros reales. Estudiante: S/ 50 en un pago o dos cuotas de S/ 25. Externo: S/ 100 en un pago. La inscripción se confirma automáticamente al completar el total. La condición de estudiante se declara sin verificación.</p>
+  <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+  <p th:if="${#lists.isEmpty(inscripciones) and pasoSiguiente == 'CREAR_INSCRIPCION'}">Aún no tienes una inscripción activa. <a th:href="@{/inscripciones/nueva}">Crear inscripción</a>.</p>
+  <p th:if="${#lists.isEmpty(inscripciones) and pasoSiguiente == 'COMPLETAR_CUOTA'}">Tu inscripción está pendiente de la segunda cuota. <a th:href="@{/pagos/mis-pagos}">Completarla desde mis pagos</a>.</p>
+  <p th:if="${#lists.isEmpty(inscripciones) and pasoSiguiente == 'VER_AGENDA'}">Tu inscripción ya está confirmada. <a th:href="@{/inscripciones/mi-agenda}">Ver mi agenda</a>.</p>
+  <p th:if="${#lists.isEmpty(inscripciones) and pasoSiguiente == 'REVISAR_ESTADO'}">No hay un pago nuevo disponible. <a th:href="@{/pagos/mis-pagos}">Revisa el estado en mis pagos</a>.</p>
+  <div th:each="inscripcion : ${inscripciones}" class="card p-4 mb-3">
+    <h2 class="h5" th:text="|Inscripción #${inscripcion.codigo} — ${inscripcion.tipo}|">Inscripción</h2>
+    <p th:text="${inscripcion.tipo == 'Estudiante' ? 'Total ficticio: S/ 50' : 'Total ficticio: S/ 100'}">Total ficticio</p>
+    <form th:action="@{/pagos/nuevo}" method="post">
+      <input type="hidden" name="codigoInscripcion" th:value="${inscripcion.codigo}">
+      <label class="form-label" th:for="|modalidad-${inscripcion.codigo}|">Modalidad</label>
+      <select class="form-select mb-3" name="modalidad" th:id="|modalidad-${inscripcion.codigo}|" required>
+        <option value="COMPLETO">Completo (confirmación inmediata)</option>
+        <option th:if="${inscripcion.tipo == 'Estudiante'}" value="CUOTAS">Primera cuota S/ 25 (confirmación tras la segunda)</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Simular pago</button>
+    </form>
+  </div>
+  <a th:href="@{/pagos/mis-pagos}">Consultar mis pagos simulados</a>
+</main><script th:src="@{/js/bootstrap.bundle.min.js(v='5.3.0')}" src="/js/bootstrap.bundle.min.js"></script></body></html>
