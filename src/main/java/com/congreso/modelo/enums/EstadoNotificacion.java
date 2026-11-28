@@ -19,5 +19,8 @@ public enum EstadoNotificacion {
     FALLIDO,
 
     /** La notificación fue cancelada o anulada antes de su envío. */
-    CANCELADO
+    CANCELADO,
+
+    /** El entorno solo simuló el envío; no existe entrega SMTP real. */
+    SIMULADO
 }

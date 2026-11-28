@@ -9,6 +9,9 @@ package com.congreso.modelo.enums;
  */
 public enum TipoNotificacion {
 
+    /** Solicitud de inscripción registrada y pendiente de pago. */
+    SOLICITUD_INSCRIPCION,
+
     /** Confirmación de que la inscripción al congreso fue registrada. */
     CONFIRMACION_INSCRIPCION,
 
