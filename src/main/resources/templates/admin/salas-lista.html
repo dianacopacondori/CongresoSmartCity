@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salas</title>
+  <link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027c')}" href="../static/css/style.css">
+</head>
+<body class="dashboard-page dashboard-admin-page">
+<header th:replace="~{fragments/navbar-admin :: topbar}"></header>
+<aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside>
+<div th:replace="~{fragments/navbar-admin :: overlay}"></div>
+<main class="admin-main">
+  <div class="admin-main-inner">
+    <header class="form-page-header mb-4">
+      <div><span class="section-kicker d-block mt-3">GESTIÓN</span><h1>Salas</h1></div>
+      <a class="btn btn-primary" th:href="@{/admin/salas/nueva}">Nueva sala</a>
+    </header>
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <form class="card card-body mb-4" method="get" th:action="@{/admin/salas}">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-8">
+          <label class="form-label" for="busqueda">Código, nombre o ubicación</label>
+          <input class="form-control" id="busqueda" name="busqueda" th:value="${busqueda}">
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button class="btn btn-outline-primary" type="submit">Buscar</button>
+          <a class="btn btn-outline-secondary" th:href="@{/admin/salas}">Limpiar</a>
+        </div>
+      </div>
+    </form>
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+          <thead><tr><th>Código</th><th>Nombre</th><th>Capacidad</th><th>Ubicación</th><th>Acciones</th></tr></thead>
+          <tbody>
+          <tr th:each="sala : ${salas}">
+            <td th:text="${sala.codigo}">1</td>
+            <td th:text="${sala.nombre}">Auditorio</td>
+            <td th:text="${sala.capacidad}">100</td>
+            <td th:text="${sala.ubicacion}">Piso 1</td>
+            <td class="d-flex gap-2">
+              <a class="btn btn-sm btn-outline-primary"
+                 th:href="@{/admin/salas/editar/{id}(id=${sala.codigo})}">Editar</a>
+              <form th:action="@{/admin/salas/eliminar/{id}(id=${sala.codigo})}" method="post">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(salas)}">
+            <td colspan="5" class="text-center text-muted py-4">No hay salas que coincidan con la búsqueda.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+<th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block>
+</body>
+</html>

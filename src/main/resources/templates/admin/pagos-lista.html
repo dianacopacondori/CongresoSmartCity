@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pagos | Administración</title><link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet"><link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css"></head>
+<body class="dashboard-page dashboard-admin-page"><header th:replace="~{fragments/navbar-admin :: topbar}"></header><aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside><div th:replace="~{fragments/navbar-admin :: overlay}"></div><main class="admin-main"><div class="admin-main-inner"><h1>Pagos</h1>
+  <form th:action="@{/pagos/admin/listar}" method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-4">
+      <label for="estado" class="form-label">Estado</label>
+      <select id="estado" class="form-select" name="estado">
+        <option value="" th:selected="${estadoFiltro == ''}">Todos</option>
+        <option th:if="${estadoFiltro != '' and not #lists.contains(estadosPago, estadoFiltro)}"
+                th:value="${estadoFiltro}" th:text="${estadoFiltro}" selected>Estado inválido</option>
+        <option th:each="estado : ${estadosPago}" th:value="${estado}" th:text="${estado}"
+                th:selected="${estadoFiltro == estado}">PAGADO</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <label for="busqueda" class="form-label">Nombre, apellido o correo</label>
+      <input id="busqueda" class="form-control" type="search" name="busqueda"
+             th:value="${busquedaFiltro}" placeholder="Buscar asistente">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Filtrar</button>
+      <a class="btn btn-outline-secondary" th:href="@{/pagos/admin/listar}">Limpiar filtros</a>
+    </div>
+  </form>
+  <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <p th:if="${pagos == null or #lists.isEmpty(pagos)}">No hay pagos para mostrar.</p>
+  <p class="text-muted">Los pagos nuevos se simulan para fines académicos, sin cobros reales. El registro manual de abonos está deshabilitado.</p>
+  <div class="table-responsive" th:if="${pagos != null and not #lists.isEmpty(pagos)}"><table class="table table-striped"><thead><tr><th>Código</th><th>Asistente</th><th>Inscripción</th><th>Importe</th><th>Saldo</th><th>Fecha</th><th>Estado</th></tr></thead><tbody><tr th:each="pago : ${pagos}">
+    <td th:text="${pago.codigoPago}">1</td><td th:text="${pago.asistente != null ? pago.asistente.nombres + ' ' + pago.asistente.apellidos : '—'}">Asistente</td><td th:text="${pago.inscripcion != null ? pago.inscripcion.codigo : '—'}">Inscripción</td><td th:text="${pago.importe}">Importe</td><td th:text="${pago.saldo}">Saldo</td><td th:text="${pago.fechaPago}">Fecha</td><td th:text="${pago.estado}">Estado</td>
+  </tr></tbody></table></div>
+</div></main><th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block></body></html>
