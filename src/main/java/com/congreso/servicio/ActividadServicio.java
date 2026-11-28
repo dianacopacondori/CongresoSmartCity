@@ -1,26 +1,39 @@
 package com.congreso.servicio;
 
 import com.congreso.dao.ActividadDAO;
+import com.congreso.dao.ColaboradorDAO;
+import com.congreso.dao.SalaDAO;
+import com.congreso.dto.ActividadFormulario;
 import com.congreso.modelo.Actividad;
+import com.congreso.modelo.Colaborador;
 import com.congreso.modelo.Ponencia;
 import com.congreso.modelo.Sala;
 import com.congreso.modelo.Taller;
+import com.congreso.modelo.enums.EstadoActividad;
+import com.congreso.modelo.enums.RolUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class ActividadServicio {
 
     private final ActividadDAO actividadDAO;
+    private final SalaDAO salaDAO;
+    private final ColaboradorDAO colaboradorDAO;
 
     @Autowired
-    public ActividadServicio(ActividadDAO actividadDAO) {
+    public ActividadServicio(ActividadDAO actividadDAO, SalaDAO salaDAO, ColaboradorDAO colaboradorDAO) {
         this.actividadDAO = actividadDAO;
+        this.salaDAO = salaDAO;
+        this.colaboradorDAO = colaboradorDAO;
     }
 
     public List<Ponencia> listarPonenciasDisponibles() {
@@ -35,6 +48,98 @@ public class ActividadServicio {
         return actividadDAO.findBySalaAndFecha(sala, fecha);
     }
 
+    public List<Actividad> listarTodasLasActividades() {
+        return actividadDAO.findAll();
+    }
+
+    public Actividad crearDesdeFormulario(ActividadFormulario form) {
+        validarCosto(form);
+        Actividad actividad = switch (form.getTipo()) {
+            case "PONENCIA" -> new Ponencia();
+            case "TALLER" -> new Taller();
+            default -> throw new IllegalArgumentException("Tipo de actividad no válido");
+        };
+        completarActividad(actividad, form);
+        return actividadDAO.save(actividad);
+    }
+
+    public Actividad actualizarDesdeFormulario(Long codigo, ActividadFormulario form) {
+        validarCosto(form);
+        actividadDAO.bloquearCodigo(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
+        Actividad actividad = actividadDAO.findById(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
+        if (!form.getTipo().equals(actividad instanceof Ponencia ? "PONENCIA" : "TALLER")) {
+            throw new IllegalArgumentException("No se puede cambiar el tipo de una actividad existente");
+        }
+        completarActividad(actividad, form);
+        return actividadDAO.save(actividad);
+    }
+
+    private void completarActividad(Actividad actividad, ActividadFormulario form) {
+        if (form.getHorarioInicio() == null || form.getHorarioFin() == null
+                || !form.getHorarioInicio().isBefore(form.getHorarioFin())) {
+            throw new IllegalArgumentException("La hora de inicio debe ser anterior a la hora de fin");
+        }
+        Sala sala = salaDAO.bloquearPorCodigo(form.getSalaId())
+                .orElseThrow(() -> new IllegalArgumentException("Sala no encontrada"));
+        if (form.getCupo() > sala.getCapacidad() || form.getCupo() < actividad.getInscritos()) {
+            throw new IllegalArgumentException("El cupo debe ajustarse a la capacidad y a las inscripciones existentes");
+        }
+        boolean conflicto = actividadDAO.findBySalaAndFecha(sala, form.getFecha()).stream()
+                .anyMatch(otra -> otra.getEstado() == EstadoActividad.ACTIVA
+                        && !otra.getCodigo().equals(actividad.getCodigo())
+                        && otra.getHorarioInicio().isBefore(form.getHorarioFin())
+                        && otra.getHorarioFin().isAfter(form.getHorarioInicio()));
+        if (conflicto) throw new IllegalArgumentException("La sala ya está ocupada en ese horario");
+
+        Colaborador colaborador = colaboradorDAO.findById(form.getResponsableId())
+                .orElseThrow(() -> new IllegalArgumentException("Responsable no encontrado"));
+        if (!colaborador.estaActivo()) {
+            throw new IllegalArgumentException("El responsable seleccionado no está activo");
+        }
+        if (actividad instanceof Ponencia ponencia) {
+            if (colaborador.getTipoColaborador() != RolUsuario.PONENTE) {
+                throw new IllegalArgumentException("Selecciona un ponente válido");
+            }
+            ponencia.setPonente(colaborador);
+            ponencia.setTema(form.getTema());
+        } else if (actividad instanceof Taller taller) {
+            if (colaborador.getTipoColaborador() != RolUsuario.INSTRUCTOR) {
+                throw new IllegalArgumentException("Selecciona un instructor válido");
+            }
+            taller.setInstructor(colaborador);
+            // D01: informativo mientras no se apruebe incluir el costo del taller en la tarifa.
+            taller.setCosto(form.getCosto().setScale(2));
+            taller.setNivelDificultad(form.getNivelDificultad());
+            taller.setMaterialesRequeridos(form.getMaterialesRequeridos());
+            taller.setObjetivos(form.getObjetivos());
+        }
+        actividad.setTitulo(form.getTitulo());
+        actividad.setDescripcion(form.getDescripcion());
+        actividad.setFecha(form.getFecha());
+        actividad.setHorarioInicio(form.getHorarioInicio());
+        actividad.setHorarioFin(form.getHorarioFin());
+        actividad.setCupo(form.getCupo());
+        actividad.setSala(sala);
+    }
+
+    private void validarCosto(ActividadFormulario form) {
+        BigDecimal costo = form.getCosto();
+        if (costo == null || costo.compareTo(BigDecimal.ZERO) < 0
+                || costo.stripTrailingZeros().scale() > 2) {
+            throw new IllegalArgumentException("El costo del taller debe ser mayor o igual a cero y tener hasta dos decimales");
+        }
+        if ("PONENCIA".equals(form.getTipo()) && costo.compareTo(BigDecimal.ZERO) != 0) {
+            throw new IllegalArgumentException("El costo solo se puede indicar para talleres");
+        }
+    }
+
+    /** TODO D03: devolver false cuando se aprueben y configuren las fechas de la ventana de cambios. */
+    public boolean estaDentroDeVentanaDeCambios() {
+        return true;
+    }
+
     public Actividad crearActividad(Actividad actividad) {
         return actividadDAO.save(actividad);
     }
@@ -45,5 +150,74 @@ public class ActividadServicio {
 
     public void eliminarActividad(Long codigo) {
         actividadDAO.deleteById(codigo);
+    }
+
+    /**
+     * Obtiene todas las actividades activas con cupo disponible.
+     * Usado por el servlet para mostrar actividades disponibles al asistente.
+     */
+    public List<Actividad> obtenerActividadesActivas() {
+        return actividadDAO.findByEstado(EstadoActividad.ACTIVA).stream()
+                .filter(Actividad::hayCupoDisponible).toList();
+    }
+
+    /**
+     * Catálogo público filtrado. Parte siempre de actividades ACTIVAS con cupo,
+     * de modo que ningún filtro pueda mostrar sesiones no disponibles.
+     *
+     * @param nombre texto a buscar en el título (opcional)
+     * @param tipo   PONENCIA o TALLER (opcional)
+     * @param fecha  fecha exacta de la sesión (opcional)
+     */
+    public List<Actividad> obtenerActividadesFiltradas(String nombre, String tipo, LocalDate fecha) {
+        String texto = nombre == null ? "" : nombre.trim().toLowerCase(Locale.ROOT);
+        String tipoNormalizado = normalizarTipo(tipo);
+
+        return obtenerActividadesActivas().stream()
+                .filter(actividad -> texto.isEmpty() || (actividad.getTitulo() != null
+                        && actividad.getTitulo().toLowerCase(Locale.ROOT).contains(texto)))
+                .filter(actividad -> tipoNormalizado.isEmpty()
+                        || tipoNormalizado.equals(tipoDeActividad(actividad)))
+                .filter(actividad -> fecha == null || fecha.equals(actividad.getFecha()))
+                .toList();
+    }
+
+    private String normalizarTipo(String tipo) {
+        if (tipo == null) return "";
+        String valor = tipo.trim().toUpperCase(Locale.ROOT);
+        if (valor.isEmpty() || valor.equals("TODOS") || valor.equals("TODO")
+                || valor.equals("TODOS LOS TIPOS")) return "";
+        if (valor.startsWith("PONEN")) return "PONENCIA";
+        if (valor.startsWith("TALLER")) return "TALLER";
+        throw new IllegalArgumentException("Tipo de actividad no válido");
+    }
+
+    private String tipoDeActividad(Actividad actividad) {
+        return actividad instanceof Ponencia ? "PONENCIA" : "TALLER";
+    }
+
+    /**
+     * Busca una actividad por su código.
+     * Usado por el servlet para editar actividades.
+     */
+    public Optional<Actividad> buscarPorId(Long codigo) {
+        return actividadDAO.findById(codigo);
+    }
+
+    /**
+     * Cancela una actividad cambiando su estado a CANCELADA.
+     * Usado por el servlet para eliminar lógicamente actividades.
+     */
+    public void cancelarActividad(Long codigo) {
+        actividadDAO.bloquearCodigo(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
+        Actividad actividad = actividadDAO.findById(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Actividad no encontrada"));
+        if (actividad.getInscritos() != null && actividad.getInscritos() > 0) {
+            throw new IllegalArgumentException("No se puede cancelar una actividad con inscritos");
+        }
+
+        actividad.setEstado(EstadoActividad.CANCELADA);
+        actividadDAO.save(actividad);
     }
 }
