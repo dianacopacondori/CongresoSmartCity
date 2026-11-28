@@ -1,0 +1,2 @@
+ALTER TABLE colaboradores
+    ADD COLUMN IF NOT EXISTS empresa VARCHAR(150);
