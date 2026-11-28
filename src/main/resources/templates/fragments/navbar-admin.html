@@ -22,8 +22,10 @@
   <nav class="admin-top-links" aria-label="Accesos rápidos">
     <a th:href="@{/admin/dashboard}" href="dashboard-admin.html">Inicio</a>
     <a th:href="@{/admin/actividades}" href="admin-actividades.html">Actividades</a>
-    <a th:href="@{/admin/asistentes}" href="#">Asistentes</a>
-    <a th:href="@{/admin/pagos}" href="#">Pagos</a>
+    <a th:href="@{/admin/colaboradores}" href="#">Colaboradores</a>
+    <a th:href="@{/admin/salas}" href="#">Salas</a>
+    <a th:href="@{/asistentes/admin/listar}" href="#">Asistentes</a>
+    <a th:href="@{/pagos/admin/listar}" href="#">Pagos</a>
     <a th:href="@{/}" href="index.html">Sitio público</a>
   </nav>
 
@@ -36,7 +38,9 @@
         <small>Administración</small>
       </div>
     </div>
-    <a class="admin-logout-btn" th:href="@{/usuarios/logout}" href="login.html">Salir</a>
+    <form th:action="@{/usuarios/logout}" method="post">
+      <button class="admin-logout-btn" type="submit">Salir</button>
+    </form>
   </div>
 </header>
 
@@ -73,7 +77,15 @@
       </span>
       <span>Actividades</span>
     </a>
-    <a class="admin-side-link" th:href="@{/admin/asistentes}" href="#">
+    <a class="admin-side-link" th:href="@{/admin/colaboradores}" href="#">
+      <span class="side-icon" aria-hidden="true">C</span>
+      <span>Colaboradores</span>
+    </a>
+    <a class="admin-side-link" th:href="@{/admin/salas}" href="#">
+      <span class="side-icon" aria-hidden="true">S</span>
+      <span>Salas</span>
+    </a>
+    <a class="admin-side-link" th:href="@{/asistentes/admin/listar}" href="#">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M17 8h5M19.5 5.5v5"/>
@@ -81,7 +93,7 @@
       </span>
       <span>Asistentes</span>
     </a>
-    <a class="admin-side-link" th:href="@{/admin/pagos}" href="#">
+    <a class="admin-side-link" th:href="@{/pagos/admin/listar}" href="#">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/>
@@ -89,7 +101,7 @@
       </span>
       <span>Pagos</span>
     </a>
-    <a class="admin-side-link" th:href="@{/admin/asistencias}" href="#">
+    <a class="admin-side-link" th:href="@{/asistencias/admin/listar}" href="#">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 12.5 9 17l11-11"/>
@@ -97,7 +109,7 @@
       </span>
       <span>Asistencias</span>
     </a>
-    <a class="admin-side-link" th:href="@{/admin/reportes}" href="#">
+    <a class="admin-side-link" th:href="@{/reportes/admin/menu}" href="#">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>
@@ -105,57 +117,36 @@
       </span>
       <span>Reportes</span>
     </a>
-    <a class="admin-side-link" th:href="@{/admin/usuarios}" href="#">
+    <a class="admin-side-link" th:href="@{/inscripciones/admin/listar}" href="#">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>
         </svg>
       </span>
-      <span>Usuarios</span>
+      <span>Inscripciones</span>
     </a>
   </nav>
 
   <div class="admin-sidebar-footer">
-    <a class="admin-side-link danger" th:href="@{/usuarios/logout}" href="login.html">
+    <form th:action="@{/usuarios/logout}" method="post">
+      <button class="admin-side-link danger" type="submit">
       <span class="side-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 17l5-5-5-5M20 12H9M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7"/>
         </svg>
       </span>
-      <span>Cerrar sesión</span>
-    </a>
+        <span>Cerrar sesión</span>
+      </button>
+    </form>
   </div>
 </aside>
 
 <div th:fragment="overlay" class="admin-sidebar-overlay" id="adminSidebarOverlay" hidden></div>
 
 <th:block th:fragment="scripts">
-  <script>
-    (function () {
-      const body = document.body;
-      const hamburger = document.getElementById('adminHamburger');
-      const closeBtn = document.getElementById('adminSidebarClose');
-      const overlay = document.getElementById('adminSidebarOverlay');
-
-      function setSidebar(open) {
-        body.classList.toggle('sidebar-open', open);
-        if (hamburger) hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (overlay) overlay.hidden = !open;
-      }
-      function toggleSidebar() { setSidebar(!body.classList.contains('sidebar-open')); }
-
-      if (hamburger) hamburger.addEventListener('click', toggleSidebar);
-      if (closeBtn) closeBtn.addEventListener('click', function () { setSidebar(false); });
-      if (overlay) overlay.addEventListener('click', function () { setSidebar(false); });
-
-      if (window.matchMedia('(min-width: 992px)').matches) setSidebar(true);
-
-      window.addEventListener('resize', function () {
-        if (window.matchMedia('(min-width: 992px)').matches) setSidebar(true);
-        else setSidebar(false);
-      });
-    })();
-  </script>
+  <script th:src="@{/js/bootstrap.bundle.min.js(v='5.3.0')}" src="/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/admin-navbar.js}"></script>
+  <script th:src="@{/js/confirm-submit.js}"></script>
 </th:block>
 
 </body>
