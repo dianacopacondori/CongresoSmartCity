@@ -19,6 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "actividades")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "tipo", discriminatorType = DiscriminatorType.STRING, length = 50)
 public abstract class Actividad {
 
     @Id

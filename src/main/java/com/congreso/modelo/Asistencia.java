@@ -3,6 +3,7 @@ package com.congreso.modelo;
 import com.congreso.modelo.enums.EstadoAsistencia;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -12,7 +13,9 @@ import java.time.LocalTime;
  * @version 1.0.0
  */
 @Entity
-@Table(name = "asistencias")
+@Table(name = "asistencias", uniqueConstraints = @UniqueConstraint(
+        name = "uk_asistencia_asistente_actividad",
+        columnNames = {"codigo_asistente", "codigo_actividad"}))
 public class Asistencia {
 
     @Id
@@ -39,6 +42,21 @@ public class Asistencia {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoAsistencia estado;
+
+    /** Personal que registró la asistencia; permite trazabilidad de la corrección. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "registrado_por")
+    private Usuario registradoPor;
+
+    @Column(name = "justificacion_correccion", length = 500)
+    private String justificacionCorreccion;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "corregido_por")
+    private Usuario corregidoPor;
+
+    @Column(name = "fecha_correccion")
+    private LocalDateTime fechaCorreccion;
 
     // Constructor por defecto (OBLIGATORIO para JPA)
     public Asistencia() {
@@ -75,4 +93,18 @@ public class Asistencia {
 
     public EstadoAsistencia getEstado() { return estado; }
     public void setEstado(EstadoAsistencia estado) { this.estado = estado; }
+
+    public Usuario getRegistradoPor() { return registradoPor; }
+    public void setRegistradoPor(Usuario registradoPor) { this.registradoPor = registradoPor; }
+
+    public String getJustificacionCorreccion() { return justificacionCorreccion; }
+    public void setJustificacionCorreccion(String justificacionCorreccion) {
+        this.justificacionCorreccion = justificacionCorreccion;
+    }
+
+    public Usuario getCorregidoPor() { return corregidoPor; }
+    public void setCorregidoPor(Usuario corregidoPor) { this.corregidoPor = corregidoPor; }
+
+    public LocalDateTime getFechaCorreccion() { return fechaCorreccion; }
+    public void setFechaCorreccion(LocalDateTime fechaCorreccion) { this.fechaCorreccion = fechaCorreccion; }
 }

@@ -2,10 +2,14 @@ package com.congreso.modelo;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.DecimalMin;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "talleres")
 @PrimaryKeyJoinColumn(name = "codigo_actividad")
+@DiscriminatorValue("TALLER")
 public class Taller extends Actividad {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -23,6 +27,10 @@ public class Taller extends Actividad {
     @Column(length = 500)
     private String objetivos;
 
+    @DecimalMin(value = "0.00")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal costo = BigDecimal.ZERO;
+
     public Taller() {
         super();
     }
@@ -38,4 +46,7 @@ public class Taller extends Actividad {
 
     public String getObjetivos() { return objetivos; }
     public void setObjetivos(String objetivos) { this.objetivos = objetivos; }
+
+    public BigDecimal getCosto() { return costo; }
+    public void setCosto(BigDecimal costo) { this.costo = costo; }
 }

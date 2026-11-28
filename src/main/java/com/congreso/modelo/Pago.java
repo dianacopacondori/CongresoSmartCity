@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entidad que representa el pago realizado por un asistente.
@@ -54,6 +56,9 @@ public class Pago {
     @Column(length = 255)
     private String observaciones;
 
+    @OneToMany(mappedBy = "pago", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CuotaPago> historialCuotas = new ArrayList<>();
+
     public Pago() {
         this.fechaPago = LocalDate.now();
         this.estado = EstadoPago.PENDIENTE;
@@ -99,14 +104,37 @@ public class Pago {
     public String getObservaciones() { return observaciones; }
     public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 
-    public void registrarPago(double monto) {
-        if (monto >= this.saldo) {
-            this.saldo = 0;
-            this.estado = EstadoPago.PAGADO;
-        } else {
-            this.saldo -= monto;
-            this.estado = EstadoPago.PARCIAL;
+    public List<CuotaPago> getHistorialCuotas() {
+        return historialCuotas;
+    }
+
+    /**
+     * Registra un abono simulado de forma segura: importe estrictamente positivo y
+     * finito, sin sobrepago, sin reabrir pagos pagados o anulados, y dejando una
+     * entrada por cuota en el historial.
+     *
+     * @return la cuota registrada
+     */
+    public CuotaPago registrarPago(double monto) {
+        if (Double.isNaN(monto) || Double.isInfinite(monto) || monto <= 0) {
+            throw new IllegalArgumentException("El importe del abono debe ser positivo y finito");
         }
+        if (estado == EstadoPago.PAGADO || estado == EstadoPago.ANULADO) {
+            throw new IllegalStateException("Este pago ya no admite abonos");
+        }
+        if (monto > saldo + 1e-9) {
+            throw new IllegalArgumentException("El importe supera el saldo pendiente");
+        }
+
+        double abono = Math.min(monto, saldo);
+        saldo = Math.max(0.0, saldo - abono);
+        if (saldo < 1e-9) saldo = 0.0;
+        estado = saldo == 0.0 ? EstadoPago.PAGADO : EstadoPago.PARCIAL;
+
+        CuotaPago cuota = new CuotaPago(this, historialCuotas.size() + 1, abono,
+                LocalDate.now(), observaciones);
+        historialCuotas.add(cuota);
+        return cuota;
     }
 
     public boolean estaPagado() {

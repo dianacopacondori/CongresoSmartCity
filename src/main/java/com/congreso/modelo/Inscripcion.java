@@ -1,8 +1,12 @@
 package com.congreso.modelo;
 
 import com.congreso.modelo.enums.EstadoInscripcion;
+import com.congreso.modelo.enums.TipoInscripcion;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,11 @@ public class Inscripcion {
     @Size(max = 50, message = "El tipo no puede exceder 50 caracteres")
     private String tipo; // Ej: "Estudiante", "Externo"
 
+    @NotNull(message = "La tarifa de inscripción es obligatoria")
+    @DecimalMin(value = "0.00", message = "La tarifa no puede ser negativa")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal tarifa = BigDecimal.ZERO;
+
     @Column(nullable = false)
     private boolean confirmacion;
 
@@ -37,7 +46,10 @@ public class Inscripcion {
     @JoinTable(
             name = "detalle_inscripcion",
             joinColumns = @JoinColumn(name = "codigo_inscripcion"),
-            inverseJoinColumns = @JoinColumn(name = "codigo_actividad")
+            inverseJoinColumns = @JoinColumn(name = "codigo_actividad"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "uk_detalle_inscripcion_par",
+                    columnNames = {"codigo_inscripcion", "codigo_actividad"})
     )
     private List<Actividad> actividades = new ArrayList<>();
 
@@ -50,7 +62,7 @@ public class Inscripcion {
     public Inscripcion(Asistente asistente, String tipo) {
         this();
         this.asistente = asistente;
-        this.tipo = tipo;
+        setTipo(tipo);
     }
 
     // Getters y Setters
@@ -64,7 +76,13 @@ public class Inscripcion {
     public void setFechaInscripcion(LocalDate fechaInscripcion) { this.fechaInscripcion = fechaInscripcion; }
 
     public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+        TipoInscripcion.buscar(tipo).ifPresent(tipoInscripcion -> this.tarifa = tipoInscripcion.tarifa());
+    }
+
+    public BigDecimal getTarifa() { return tarifa; }
+    public void setTarifa(BigDecimal tarifa) { this.tarifa = tarifa; }
 
     public boolean isConfirmacion() { return confirmacion; }
     public void setConfirmacion(boolean confirmacion) { this.confirmacion = confirmacion; }
@@ -79,6 +97,7 @@ public class Inscripcion {
      * Agrega una actividad a la inscripción validando cupos y cruces.
      */
     public boolean agregarActividad(Actividad actividad) {
+        if (actividades.stream().anyMatch(a -> a.getCodigo().equals(actividad.getCodigo()))) return false;
         if (!actividad.hayCupoDisponible()) return false;
         if (validarCrucesHorario(actividad)) return false;
 

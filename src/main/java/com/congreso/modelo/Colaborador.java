@@ -20,6 +20,10 @@ public class Colaborador extends Usuario {
     @Size(max = 150, message = "La institución no puede exceder 150 caracteres")
     private String institucion;
 
+    @Size(max = 150, message = "La empresa no puede exceder 150 caracteres")
+    @Column(length = 150)
+    private String empresa;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_colaborador", nullable = false)
     private RolUsuario tipoColaborador; // PONENTE, INSTRUCTOR, COLABORADOR
@@ -44,6 +48,9 @@ public class Colaborador extends Usuario {
 
     public String getInstitucion() { return institucion; }
     public void setInstitucion(String institucion) { this.institucion = institucion; }
+
+    public String getEmpresa() { return empresa; }
+    public void setEmpresa(String empresa) { this.empresa = empresa; }
 
     public RolUsuario getTipoColaborador() { return tipoColaborador; }
     public void setTipoColaborador(RolUsuario tipoColaborador) { this.tipoColaborador = tipoColaborador; }

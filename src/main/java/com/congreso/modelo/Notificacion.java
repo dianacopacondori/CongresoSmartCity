@@ -44,6 +44,10 @@ public class Notificacion {
     @Column(name = "horario_personalizado", columnDefinition = "TEXT")
     private String horarioPersonalizado;
 
+    @Size(max = 80)
+    @Column(name = "evento_origen", length = 80)
+    private String eventoOrigen;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_envio", nullable = false)
     private EstadoNotificacion estadoEnvio;
@@ -82,6 +86,8 @@ public class Notificacion {
 
     public String getHorarioPersonalizado() { return horarioPersonalizado; }
     public void setHorarioPersonalizado(String horarioPersonalizado) { this.horarioPersonalizado = horarioPersonalizado; }
+    public String getEventoOrigen() { return eventoOrigen; }
+    public void setEventoOrigen(String eventoOrigen) { this.eventoOrigen = eventoOrigen; }
 
     public EstadoNotificacion getEstadoEnvio() { return estadoEnvio; }
     public void setEstadoEnvio(EstadoNotificacion estadoEnvio) { this.estadoEnvio = estadoEnvio; }
