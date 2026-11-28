@@ -70,7 +70,7 @@
             <span class="stat-trend">Recaudación</span>
           </div>
           <div class="stat-label">Ingresos Totales</div>
-          <div class="stat-value" th:text="'$' + ${totalIngresos}">$125,000</div>
+          <div class="stat-value" th:text="'S/ ' + ${totalIngresos}">S/ 125,000</div>
           <div class="stat-footnote">Ingresos acumulados</div>
         </div>
       </div>
@@ -200,7 +200,7 @@
             <tr th:each="pago : ${pagos}">
               <td th:text="${pago.asistente.nombres} + ' ' + ${pago.asistente.apellidos}">Alice Johnson</td>
               <td th:text="${pago.asistente.correo}">alice@example.com</td>
-              <td th:text="'$' + ${pago.importe}">$100.00</td>
+              <td th:text="'S/ ' + ${pago.importe}">S/ 100.00</td>
               <td>
                 <span class="badge"
                       th:classappend="${pago.estado.name() == 'PAGADO'} ? 'bg-success' :
