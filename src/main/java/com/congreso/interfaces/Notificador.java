@@ -1,6 +1,7 @@
 package com.congreso.interfaces;
 
 import com.congreso.modelo.Notificacion;
+import com.congreso.modelo.ResultadoNotificacion;
 
 /**
  * Interface para el envío de notificaciones.
@@ -12,9 +13,9 @@ public interface Notificador {
      * Envía una notificación al destinatario.
      *
      * @param notificacion la notificación a enviar
-     * @return true si la notificación se envió correctamente, false en caso contrario
+     * @return resultado con estado y fecha del intento
      */
-    boolean enviar(Notificacion notificacion);
+    ResultadoNotificacion enviar(String destinatario, String asunto, String cuerpo);
 
     /**
      * Verifica si el servicio de notificación está disponible.
