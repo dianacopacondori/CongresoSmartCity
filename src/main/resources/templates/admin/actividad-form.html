@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${edicion} ? 'Editar actividad' : 'Nueva actividad'">Actividad</title>
+  <link th:href="@{/css/bootstrap.min.css(v='5.3.0')}" href="/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/style.css(v='20261027c')}" href="../static/css/style.css">
+</head>
+<body class="dashboard-page dashboard-admin-page">
+
+<header th:replace="~{fragments/navbar-admin :: topbar}"></header>
+<aside th:replace="~{fragments/navbar-admin :: sidebar}"></aside>
+<div th:replace="~{fragments/navbar-admin :: overlay}"></div>
+
+<main class="admin-main">
+  <div class="admin-main-inner">
+    <header class="form-page-header mb-4">
+      <div>
+        <a th:href="@{/admin/actividades}" href="admin/admin-actividades.html" class="back-link">← Volver a actividades</a>
+        <span class="section-kicker d-block mt-3">PROGRAMACIÓN</span>
+        <h1 th:text="${edicion} ? 'Editar actividad' : 'Nueva actividad'">Nueva actividad</h1>
+        <p>Define el tipo, horario, sala y responsable de la sesión.</p>
+      </div>
+    </header>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form class="card form-shell"
+          th:object="${form}"
+          th:action="${edicion} ? @{/admin/actividades/editar/{id}(id=*{codigo})} : @{/admin/actividades}"
+          action="/admin/actividades"
+          method="post">
+      <input type="hidden" th:field="*{codigo}">
+
+      <div class="form-shell-grid">
+        <section>
+          <h2>Información general</h2>
+          <div class="mb-3">
+            <label class="form-label" for="tipo">Tipo *</label>
+            <select class="form-select" id="tipo" th:field="*{tipo}" th:disabled="${edicion}">
+              <option value="PONENCIA">Ponencia</option>
+              <option value="TALLER">Taller</option>
+            </select>
+            <input type="hidden" th:if="${edicion}" th:field="*{tipo}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="titulo">Título *</label>
+            <input class="form-control" id="titulo" th:field="*{titulo}" required maxlength="200"
+                   placeholder="Ej. Ciudades resilientes y datos abiertos">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="descripcion">Descripción</label>
+            <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="4"
+                      maxlength="1000" placeholder="Resume de qué trata la sesión"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="responsableId">Responsable *</label>
+            <select class="form-select" id="responsableId" th:field="*{responsableId}" required>
+              <option value="">Selecciona un responsable</option>
+              <option th:each="responsable : ${responsables}" th:value="${responsable.codigo}"
+                      th:text="|${responsable.nombres} ${responsable.apellidos} · ${responsable.tipoColaborador}|">
+                Responsable
+              </option>
+            </select>
+            <div class="form-text">El servidor valida que sea ponente para una ponencia o instructor para un taller.</div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Agenda y cupo</h2>
+          <div class="mb-3">
+            <label class="form-label" for="fecha">Fecha *</label>
+            <input class="form-control" type="date" id="fecha" th:field="*{fecha}" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="horarioInicio">Inicio *</label>
+              <input class="form-control" type="time" id="horarioInicio" th:field="*{horarioInicio}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="horarioFin">Fin *</label>
+              <input class="form-control" type="time" id="horarioFin" th:field="*{horarioFin}" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="cupo">Cupo *</label>
+            <input class="form-control" type="number" id="cupo" th:field="*{cupo}" min="1" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="salaId">Sala *</label>
+            <select class="form-select" id="salaId" th:field="*{salaId}" required>
+              <option value="">Selecciona una sala</option>
+              <option th:each="sala : ${salas}" th:value="${sala.codigo}"
+                      th:text="${sala.nombre + ' · ' + sala.ubicacion + ' (' + sala.capacidad + ' pers.)'}">
+                Sala
+              </option>
+            </select>
+          </div>
+        </section>
+
+        <section class="form-span-2" id="fieldsPonencia">
+          <h2>Detalles de ponencia</h2>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="tema">Tema</label>
+              <input class="form-control" id="tema" th:field="*{tema}" maxlength="200"
+                     placeholder="Tema principal de la ponencia">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-span-2" id="fieldsTaller">
+          <h2>Detalles de taller</h2>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="costo">Costo informativo (S/) *</label>
+              <input class="form-control" type="number" id="costo" th:field="*{costo}"
+                     min="0" step="0.01" required>
+              <div class="form-text">No se suma al pago de inscripción; la tarifa adicional de talleres sigue pendiente de aprobación (D01).</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="nivelDificultad">Nivel</label>
+              <input class="form-control" id="nivelDificultad" th:field="*{nivelDificultad}" maxlength="50">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="materialesRequeridos">Materiales</label>
+              <input class="form-control" id="materialesRequeridos" th:field="*{materialesRequeridos}" maxlength="500">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label" for="objetivos">Objetivos</label>
+              <input class="form-control" id="objetivos" th:field="*{objetivos}" maxlength="500">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="form-shell-actions">
+        <a th:href="@{/admin/actividades}" href="admin/admin-actividades.html" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary"
+                th:text="${edicion} ? 'Guardar cambios' : 'Crear actividad'">Crear actividad</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script th:src="@{/js/admin-form.js}"></script>
+<th:block th:replace="~{fragments/navbar-admin :: scripts}"></th:block>
+</body>
+</html>
