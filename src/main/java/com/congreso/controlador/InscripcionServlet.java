@@ -1,4 +1,206 @@
 package com.congreso.controlador;
 
+import com.congreso.dao.AsistenteDAO;
+import com.congreso.modelo.Actividad;
+import com.congreso.modelo.Asistente;
+import com.congreso.modelo.Inscripcion;
+import com.congreso.modelo.Usuario;
+import com.congreso.dto.ResumenInscripcion;
+import com.congreso.servicio.InscripcionServicio;
+import com.congreso.servicio.PagoServicio;
+import com.congreso.servicio.NotificacionServicio;
+import com.congreso.modelo.Notificacion;
+import com.congreso.dto.EstadoParticipacion;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.security.Principal;
+
+/**
+ * Controlador para la gestión de inscripciones al congreso.
+ *
+ * @author Equipo de Desarrollo
+ * @version 1.0.0
+ */
+@Controller
+@RequestMapping("/inscripciones")
 public class InscripcionServlet {
+
+    private final InscripcionServicio inscripcionServicio;
+    private final AsistenteDAO asistenteDAO;
+    private final PagoServicio pagoServicio;
+    @Autowired(required = false)
+    private NotificacionServicio notificacionServicio;
+
+    @Autowired
+    public InscripcionServlet(InscripcionServicio inscripcionServicio,
+                              AsistenteDAO asistenteDAO, PagoServicio pagoServicio) {
+        this.inscripcionServicio = inscripcionServicio;
+        this.asistenteDAO = asistenteDAO;
+        this.pagoServicio = pagoServicio;
+    }
+
+    /**
+     * Muestra el formulario de inscripción al congreso.
+     */
+    @GetMapping("/nueva")
+    public String mostrarFormularioInscripcion(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/usuarios/login";
+        }
+        model.addAttribute("usuario", usuario);
+        return "inscripcion-formulario";
+    }
+
+    /**
+     * Procesa la creación de una nueva inscripción al congreso.
+     */
+    @PostMapping("/nueva")
+    public String crearInscripcion(@RequestParam String tipo,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
+            if (usuario == null) {
+                redirectAttributes.addFlashAttribute("error", "Debe iniciar sesión para inscribirse");
+                return "redirect:/usuarios/login";
+            }
+
+            // Buscar el Asistente correspondiente al usuario de la sesión
+            Asistente asistente = asistenteDAO.findById(usuario.getCodigo())
+                    .orElseThrow(() -> new IllegalArgumentException("No se encontró el asistente"));
+
+            // Llamar al método real del servicio
+            Inscripcion inscripcion = inscripcionServicio.crearInscripcion(asistente, tipo);
+            if (notificacionServicio != null) {
+                Notificacion notificacion = notificacionServicio.enviarSolicitudInscripcion(asistente);
+                redirectAttributes.addFlashAttribute("estadoNotificacion",
+                        textoEstadoNotificacion(notificacion));
+            }
+
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Inscripción creada exitosamente. Código: " + inscripcion.getCodigo());
+            return "redirect:/inscripciones/confirmacion";
+        } catch (IllegalArgumentException | IllegalStateException |
+                 org.springframework.security.access.AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/inscripciones/nueva";
+        }
+    }
+
+    /**
+     * Muestra la confirmación de inscripción.
+     */
+    @GetMapping("/confirmacion")
+    public String mostrarConfirmacion(Principal principal, Model model) {
+        EstadoParticipacion estado = pagoServicio.estadoParticipacion(principal.getName());
+        model.addAttribute("pasoSiguiente", estado.paso().name());
+        return "inscripcion-confirmacion";
+    }
+
+    /**
+     * Muestra la agenda personalizada del asistente logueado.
+     */
+    @GetMapping("/mi-agenda")
+    public String consultarMiAgenda(HttpSession session, Model model) {
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/usuarios/login";
+        }
+
+        List<Actividad> agenda = inscripcionServicio.obtenerAgendaPersonalizada(usuario.getCodigo());
+        model.addAttribute("actividades", agenda);
+        return "agenda-personalizada";
+    }
+
+    /**
+     * Agrega una actividad únicamente a una inscripción del asistente autenticado.
+     */
+    @PostMapping("/agregar-actividad")
+    public String agregarActividad(@RequestParam Long codigoInscripcion,
+                                    @RequestParam Long codigoActividad,
+                                    Principal principal,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            inscripcionServicio.inscribirActividad(principal.getName(), codigoInscripcion, codigoActividad);
+            redirectAttributes.addFlashAttribute("mensaje", "Actividad agregada a tu agenda");
+            if (notificacionServicio != null) {
+                Asistente asistente = asistenteDAO.findByCorreo(principal.getName()).orElse(null);
+                if (asistente != null) {
+                    List<Actividad> actividades = inscripcionServicio.obtenerAgendaPersonalizada(asistente.getCodigo());
+                    String agenda = actividades.stream()
+                            .map(a -> a.getTitulo() + " - " + a.getFecha() + " " + a.getHorarioInicio())
+                            .collect(java.util.stream.Collectors.joining("\n"));
+                    Notificacion notificacion = notificacionServicio.enviarAgendaPersonalizada(asistente, agenda);
+                    redirectAttributes.addFlashAttribute("estadoNotificacion",
+                            textoEstadoNotificacion(notificacion));
+                }
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/inscripciones/mi-agenda";
+    }
+
+    private String textoEstadoNotificacion(Notificacion notificacion) {
+        return notificacion.getEstadoEnvio() == com.congreso.modelo.enums.EstadoNotificacion.SIMULADO
+                ? "Correo simulado; no se realizó una entrega real."
+                : notificacion.getEstadoEnvio() == com.congreso.modelo.enums.EstadoNotificacion.ENVIADO
+                ? "Correo enviado."
+                : "El correo no pudo enviarse.";
+    }
+
+    /**
+     * Lista todas las inscripciones (admin).
+     * Usa findAll() del DAO directamente.
+     */
+    @GetMapping("/admin/listar")
+    public String listarInscripciones(Model model) {
+        List<Inscripcion> inscripciones = inscripcionServicio.listarTodasLasInscripciones();
+        model.addAttribute("inscripciones", inscripciones);
+        Map<Long, ResumenInscripcion> resumenes = new HashMap<>();
+        for (Inscripcion inscripcion : inscripciones) {
+            resumenes.put(inscripcion.getCodigo(), inscripcionServicio.calcularResumenPago(inscripcion));
+        }
+        model.addAttribute("resumenesInscripcion", resumenes);
+        return "admin/inscripciones-lista";
+    }
+
+    /**
+     * Confirma una inscripción (admin o asistente).
+     */
+    @PostMapping("/confirmar/{codigo}")
+    public String confirmarInscripcion(@PathVariable Long codigo,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            inscripcionServicio.confirmarInscripcion(codigo);
+            redirectAttributes.addFlashAttribute("mensaje", "Inscripción confirmada");
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/inscripciones/admin/listar";
+    }
+
+    /**
+     * Cancela una inscripción (admin), con POST y CSRF. Libera cupos y conserva el historial.
+     */
+    @PostMapping("/admin/eliminar/{codigo}")
+    public String cancelarInscripcion(@PathVariable Long codigo, Principal principal,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            inscripcionServicio.cancelarInscripcion(codigo, principal == null ? null : principal.getName());
+            redirectAttributes.addFlashAttribute("mensaje", "Inscripción cancelada y cupos liberados");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/inscripciones/admin/listar";
+    }
 }
